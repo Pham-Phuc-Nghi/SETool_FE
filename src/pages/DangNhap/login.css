@@ -1,0 +1,91 @@
+.login-select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../../assets/wp8477946.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+}
+
+.card {
+  background: transparent;
+  width: 96%;
+  height: 100%;
+  padding: 90px;
+  padding-top: 70px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 1s linear;
+}
+
+.form__item__input {
+  color: white;
+}
+
+:where(.css-dev-only-do-not-override-fpg3f5).ant-form-item
+  .ant-form-item-label
+  > label {
+  color: white;
+  font-weight: bold;
+}
+
+/* 
+:where(.css-dev-only-do-not-override-fpg3f5).ant-input-affix-wrapper {
+  width: 290px;
+} */
+
+/* :where(.css-dev-only-do-not-override-fpg3f5).ant-form-item
+  .ant-form-item-explain-error {
+  margin-left: 50px;
+  margin-bottom: 10px;
+} */
+
+:where(.css-dev-only-do-not-override-fpg3f5).ant-checkbox-checked
+  .ant-checkbox-inner {
+  background-color: #6a32e3;
+  border-color: #6a32e3;
+}
+
+.ant-card-body {
+  height: 100%;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: sans-serif;
+}
+.overlay-container {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../../assets/pngegg.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.over {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
