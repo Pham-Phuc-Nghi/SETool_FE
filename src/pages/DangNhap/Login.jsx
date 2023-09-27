@@ -76,7 +76,7 @@ const Login = () => {
                     fontFamily: "sans-serif",
                   }}
                 >
-                  USER LOGIN
+                  SIGN IN
                 </Title>
                 <Form.Item
                   className="form__item__input"
