@@ -1,10 +1,12 @@
 import './App.css'
-import Login from './pages/DangNhap/Login'
+import DefaultLayout from './layout/DefaultLayout'
+// import Login from './pages/DangNhap/Login'
 
 function App() {
   return (
     <>
-      <Login></Login>
+      {/* <Login></Login> */}
+      <DefaultLayout></DefaultLayout>
     </>
   )
 }
