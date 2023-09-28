@@ -160,7 +160,7 @@ const Login = () => {
                   htmlType="submit"
                   style={{
                     fontWeight: 500,
-                    backgroundColor: "#E07A36",
+                    backgroundColor: "#FF4500",
                     fontSize: 18,
                     height: "auto",
                     fontFamily: "sans-serif",
