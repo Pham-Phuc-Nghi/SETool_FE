@@ -2,7 +2,7 @@ import { Avatar, Typography } from "antd";
 
 const { Text } = Typography
 const UserAvatar = () => {
-  const username_current = "Nguyen Van A"
+  const username_current = "Nguyen Van"
   return (
     <div>
       <span>

@@ -87,7 +87,7 @@ const DefaultLayout = ({ children}) => {
               SE TOOL
             </Text>
           )}
-          <SidebarMenu items={items_Admin} />
+          {/* <SidebarMenu items={items_Admin} /> */}
         </Sider>
         <Layout>
           <Header
