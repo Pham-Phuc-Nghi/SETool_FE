@@ -9,3 +9,8 @@
 .button{
     background-color: azure;
 }
+
+.done-column {
+    cursor: not-allowed; /* Đặt biểu tượng chuột là "not-allowed" */
+  }
+  

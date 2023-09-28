@@ -47,7 +47,11 @@ const TaskManager = () => {
   };
 
   const handleDragStart = (e, task) => {
-    e.dataTransfer.setData("task", JSON.stringify(task));
+    if (task.status === "Done") {
+      e.preventDefault();
+    } else {
+      e.dataTransfer.setData("task", JSON.stringify(task));
+    }
   };
 
   const handleDragOver = (e) => {
@@ -57,16 +61,20 @@ const TaskManager = () => {
   const handleDrop = (e, status) => {
     e.preventDefault();
     const droppedTask = JSON.parse(e.dataTransfer.getData("task"));
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === droppedTask.id) {
-        return { ...task, status };
-      }
-      return task;
-    });
-    setTasks(updatedTasks);
-    console.log("Updated tasks array:", updatedTasks);
+    
+    // Kiểm tra nếu cột hiện tại là "Done" thì không cho phép thả task vào đó
+    if (status !== "Done") {
+      const updatedTasks = tasks.map((task) => {
+        if (task.id === droppedTask.id) {
+          return { ...task, status };
+        }
+        return task;
+      });
+      setTasks(updatedTasks);
+      console.log("Updated tasks array:", updatedTasks);
+    }
   };
-
+  
   const renderTasks = (status) => {
     return tasks
       .filter((task) => task.status === status)
@@ -141,6 +149,7 @@ const TaskManager = () => {
             style={{ width: "100%", height: "100%", border: "1px solid green" }}
             onDragOver={(e) => handleDragOver(e)}
             onDrop={(e) => handleDrop(e, "Done")}
+            className="done-column"
           >
             <Title className="header" level={3}>
               Done
