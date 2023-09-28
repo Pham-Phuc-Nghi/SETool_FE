@@ -1,21 +1,24 @@
-import { Button, Layout, Typography } from "antd";
-import HeaderMenu from "../components/Header/Header";
 import { useState } from "react";
+import { Layout, Button, Spin } from "antd";
+import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
+import PropTypes from "prop-types";
 import {
-  AuditOutlined,
-  DollarOutlined,
-  ExceptionOutlined,
-  FileAddOutlined,
-  FileDoneOutlined,
-  HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  TeamOutlined,
 } from "@ant-design/icons";
-import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
-import { useNavigate } from "react-router-dom";
-const { Header, Content, Sider } = Layout;
-const { Text } = Typography;
+const { Header, Sider } = Layout;
+import { Content } from "antd/es/layout/layout";
+import {
+  TeamOutlined,
+  AuditOutlined,
+  ExceptionOutlined,
+  FileDoneOutlined,
+  FileAddOutlined,
+  HomeOutlined,
+  DollarOutlined,
+} from "@ant-design/icons";
+import HeaderMenu from "../components/Header/Header";
+// import { useNavigate } from "react-router-dom";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -55,74 +58,95 @@ const items_Admin = [
     getItem("Hợp Đồng Nhân Viên", "DSHopDong"),
     getItem("Hợp Đồng Của Tôi", "HopDong"),
   ]),
-  // getItem("Tuyển Dụng", "7", <MailOutlined />, [
-  //   getItem("Danh Sách Ứng Viên", "DSUngVien"),
-  // ]),
 ];
 
-const DefaultLayout = ({ children}) => {
-  const [collapsed, setCollapsed] = useState(false);
+const DefaultLayout = ({ children }) => {
   // const nav = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const token = sessionStorage.getItem('token');
+  //   if (!token || token === '' || token === null || token === undefined) {
+  //     message.error("Bạn Cần Phải Đăng Nhập Để Sử Dụng Hệ Thống");
+  //     nav('/');
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // }, [nav])
 
   return (
     <>
-      <Layout style={{ width: "100vw", height: "100vh" }}>
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          style={{ minHeight: "100vh", background: "white", height: "100%" }}
-          width={280}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
         >
-          {!collapsed && (
-            <Text
-              style={{
-                fontSize: 40,
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 10,
-              }}
+          <Spin size="large" style={{ fontSize: "77px", marginRight: '17px' }}></Spin>
+          <h1 style={{ color: 'blue', marginTop: '33px', fontSize: '37px' }}>Vui Lòng Đợi Trong Giây Lát...</h1>
+        </div>
+      ) : (
+        <>
+          <Layout>
+            <Sider
+              trigger={null}
+              collapsible
+              collapsed={collapsed}
+              style={{ minHeight: "100vh", background: "white" }}
+              width={280}
             >
-              SE TOOL
-            </Text>
-          )}
-          {/* <SidebarMenu items={items_Admin} /> */}
-        </Sider>
-        <Layout>
-          <Header
-            style={{
-              padding: 0,
-              background: "white",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
+              {!collapsed && (
+                <img src="https://amazingtech.vn/Content/amazingtech/assets/img/logo-color.png" />
+              )}
+              <SidebarMenu items={items_Admin} />
+            </Sider>
+            <Layout>
+              <Header
                 style={{
-                  fontSize: "16px",
-                  width: 64,
-                  height: 64,
+                  padding: 0,
+                  background: "white",
                 }}
-              />
-              <HeaderMenu></HeaderMenu>
-            </div>
-          </Header>
-          <Content
-            style={{
-              margin: "24px 16px",
-              padding: 24,
-              minHeight: 280,
-              background: "white",
-              height: "100%",
-            }}
-          >{children && children}</Content>
-        </Layout>
-      </Layout>
+              >
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button
+                    type="text"
+                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{
+                      fontSize: "16px",
+                      width: 64,
+                      height: 64,
+                    }}
+                  />
+                  <HeaderMenu></HeaderMenu>
+                </div>
+              </Header>
+              <Content
+                style={{
+                  margin: "24px 16px",
+                  padding: 24,
+                  minHeight: 280,
+                  background: "white",
+                }}
+              >
+                {children && children}
+              </Content>
+            </Layout>
+          </Layout>
+        </>
+      )}
     </>
   );
+};
+
+DefaultLayout.propTypes = {
+  isAdmin: PropTypes.bool.isRequired,
+  children: PropTypes.node,
 };
 
 export default DefaultLayout;

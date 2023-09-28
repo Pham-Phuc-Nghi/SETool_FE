@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import "./sidebarMenu.css";
 
 const SidebarMenu = ({ items }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const currentPath = window.location.pathname;
   const initialSelectedKeys = [currentPath];
@@ -29,7 +29,7 @@ const SidebarMenu = ({ items }) => {
 
   const handleMenuClick = ({ key }) => {
     setSelectedKeys([key]);
-    navigate(key);
+    // navigate(key);
   };
 
   const handleSubMenuOpenChange = (keys) => {
