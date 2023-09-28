@@ -65,8 +65,6 @@ const DefaultLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
-
   return (
     <>
       {loading ? (
