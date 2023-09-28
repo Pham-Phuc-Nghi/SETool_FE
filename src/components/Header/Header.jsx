@@ -1,10 +1,21 @@
+import { LogoutOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import UserAvatar from "./UserAvatar";
 
-const Header = () => {
+const HeaderMenu = () => {
     return (
         <div>
-            456
+        <div style={{ display: "flex" }}>
+        <UserAvatar></UserAvatar>
+        {/* <Link to={"/"} onClick={handleDangXuat}> */}
+          <Button
+            icon={<LogoutOutlined />}
+            style={{ margin: 10, marginTop: 10, padding: "0" }}
+          />
+        {/* </Link> */}
+      </div>
         </div>
     );
 };
 
-export default Header;
+export default HeaderMenu;

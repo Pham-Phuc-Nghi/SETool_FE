@@ -96,7 +96,7 @@ const Login = () => {
                     prefix={<UserOutlined />}
                     allowClear
                     style={{
-                      marginBottom: "10px",
+                      // marginBottom: "10px",
                       width: "100%",
                       fontSize: 16,
                     }}
@@ -135,7 +135,7 @@ const Login = () => {
                     }}
                     style={{ width: "100%" }}
                   >
-                    <Checkbox style={{ color: "black" }}>
+                    <Checkbox style={{ color: "#black" }}>
                       {
                         <Text style={{ color: "black", fontSize: 15 }}>
                           Remember me
@@ -151,7 +151,9 @@ const Login = () => {
                     }}
                     style={{ width: "50%" }}
                   >
-                    <a style={{ fontSize: 14 }}>Forgot password?</a>
+                    <a style={{ fontSize: 14, color: "#FF4500" }}>
+                      Forgot password?
+                    </a>
                   </Form.Item>
                 </div>
                 <Button
@@ -160,7 +162,7 @@ const Login = () => {
                   htmlType="submit"
                   style={{
                     fontWeight: 500,
-                    backgroundColor: "#E07A36",
+                    backgroundColor: "#FF4500",
                     fontSize: 18,
                     height: "auto",
                     fontFamily: "sans-serif",
@@ -181,6 +183,14 @@ const Login = () => {
                 <Button
                   block
                   icon={<GoogleOutlined />}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = "#FF4500";
+                    e.target.style.borderColor = "#FF4500";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = "";
+                    e.target.style.borderColor = "";
+                  }}
                   style={{
                     fontWeight: 500,
                     fontSize: 18,
@@ -201,7 +211,7 @@ const Login = () => {
                 >
                   Not have account yet?
                   <a
-                    style={{ fontSize: 14, marginLeft: 4 }}
+                    style={{ fontSize: 14, marginLeft: 4, color: "#FF4500" }}
                     onClick={() => setCurrentForm("signUp")}
                   >
                     Sign Up
@@ -259,7 +269,6 @@ const Login = () => {
                     prefix={<UserOutlined />}
                     allowClear
                     style={{
-                      marginBottom: "10px",
                       width: "100%",
                       fontSize: 16,
                     }}
@@ -283,7 +292,7 @@ const Login = () => {
                     allowClear
                     prefix={<LockOutlined />}
                     placeholder="Password"
-                    style={{ width: "100%", fontSize: 16, marginBottom: 10 }}
+                    style={{ width: "100%", fontSize: 16 }}
                   />
                 </Form.Item>
                 <Form.Item
@@ -291,7 +300,11 @@ const Login = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Enter confirm password",
+                      message: (
+                        <Text style={{ fontSize: 14, color: "#F04F6A" }}>
+                          ConfirmPassword must not be a blank
+                        </Text>
+                      ),
                     },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
@@ -309,7 +322,7 @@ const Login = () => {
                     allowClear
                     prefix={<LockOutlined />}
                     placeholder="Confirmpassword"
-                    style={{ width: "100%", fontSize: 16, marginBottom: 10 }}
+                    style={{ width: "100%", fontSize: 16 }}
                   />
                 </Form.Item>
                 <Button
@@ -318,9 +331,10 @@ const Login = () => {
                   htmlType="submit"
                   style={{
                     fontWeight: 500,
-                    backgroundColor: "#E07A36",
+                    backgroundColor: "#FF4500",
                     fontSize: 18,
                     height: "auto",
+                    marginTop: 10,
                     fontFamily: "sans-serif",
                   }}
                 >
@@ -336,7 +350,7 @@ const Login = () => {
                 >
                   Have an account ?
                   <a
-                    style={{ fontSize: 14, marginLeft: 4 }}
+                    style={{ fontSize: 14, marginLeft: 4, color: "#FF4500" }}
                     onClick={() => setCurrentForm("userLogin")}
                   >
                     Login

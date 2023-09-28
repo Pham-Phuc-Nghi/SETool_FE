@@ -1,0 +1,46 @@
+.Menu {
+  height: 85vh !important;
+  left: 0;
+  max-width: 100%;
+  position: sticky;
+  overflow-y: scroll;
+  top: 0;
+  border-right: 0.8;
+  font-size: 14px;
+}
+
+html ::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 0px;
+}
+
+html ::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+html ::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 0px;
+}
+
+img {
+  height: 57px;
+  margin: 12px 0 12px 50px;
+}
+
+/* Target the SubMenu titles and make them bold */
+.Menu .ant-menu-submenu-title {
+  font-weight: 700;
+}
+
+.custom-sidebar-menu .ant-menu-item.ant-menu-item-only-child,
+.custom-sidebar-menu .ant-menu-submenu-title {
+  height: 28px !important;
+  line-height: 28px !important;
+
+}
+
+.custom-sidebar-menu .ant-menu-item.ant-menu-item-only-child {
+  padding-left: 59px !important;
+}
