@@ -65,16 +65,7 @@ const DefaultLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const token = sessionStorage.getItem('token');
-  //   if (!token || token === '' || token === null || token === undefined) {
-  //     message.error("Bạn Cần Phải Đăng Nhập Để Sử Dụng Hệ Thống");
-  //     nav('/');
-  //   } else {
-  //     setLoading(false);
-  //   }
-  // }, [nav])
+
 
   return (
     <>
