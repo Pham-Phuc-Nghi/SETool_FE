@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Button, Spin } from "antd";
+import { Layout, Button, Spin, Typography } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
 import {
@@ -19,7 +19,7 @@ import {
 } from "@ant-design/icons";
 import HeaderMenu from "../components/Header/Header";
 // import { useNavigate } from "react-router-dom";
-
+const {Text} = Typography
 function getItem(label, key, icon, children, type) {
   return {
     key,
@@ -92,7 +92,7 @@ const DefaultLayout = ({ children }) => {
         </div>
       ) : (
         <>
-          <Layout>
+          <Layout style={{width:"100vw",height:"100vh"}}>
             <Sider
               trigger={null}
               collapsible
@@ -101,7 +101,7 @@ const DefaultLayout = ({ children }) => {
               width={280}
             >
               {!collapsed && (
-                <img src="https://amazingtech.vn/Content/amazingtech/assets/img/logo-color.png" />
+                <Text style={{fontSize:40,display:"flex",justifyContent:"center",fontFamily:"cursive",color:"#FF4500"}}>SE TOOL</Text>
               )}
               <SidebarMenu items={items_Admin} />
             </Sider>
