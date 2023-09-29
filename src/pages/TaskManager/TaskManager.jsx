@@ -1,12 +1,13 @@
-import { Button, Card, Col, Modal, Row, Typography } from "antd";
+import { Card, Modal, Typography } from "antd";
 import { useState } from "react";
-const { Title } = Typography;
+import { ArrowRightOutlined } from "@ant-design/icons";
+const { Title, Text } = Typography;
 import "./taskManager.css";
 const TaskManager = () => {
   const [tasks, setTasks] = useState([
     {
       id: 1,
-      name: "Task 1",
+      name: "Build fe layout for manager",
       descrip: "Task 1",
       age: "Task 1",
       moths: "Task 1",
@@ -14,7 +15,7 @@ const TaskManager = () => {
     },
     {
       id: 2,
-      name: "Task 2",
+      name: "Build fe layout ",
       descrip: "Task 2",
       age: "Task 2",
       moths: "Task 2",
@@ -22,11 +23,11 @@ const TaskManager = () => {
     },
     {
       id: 3,
-      name: "Task 3",
+      name: "Build BE API",
       descrip: "Task 3",
       age: "Task 3",
       moths: "Task 3",
-      status: "QA",
+      status: "Testing",
     },
     {
       id: 4,
@@ -47,7 +48,7 @@ const TaskManager = () => {
   };
 
   const handleDragStart = (e, task) => {
-    if (task.status === "Done") {
+    if (task.status === "Done" || task.status === "Testing") {
       e.preventDefault();
     } else {
       e.dataTransfer.setData("task", JSON.stringify(task));
@@ -64,98 +65,109 @@ const TaskManager = () => {
 
     if (status !== "Done") {
       const updatedTasks = [...tasks];
-      const taskIndex = updatedTasks.findIndex((task) => task.id === droppedTask.id);
+      const taskIndex = updatedTasks.findIndex(
+        (task) => task.id === droppedTask.id
+      );
 
       if (taskIndex !== -1) {
         updatedTasks.splice(taskIndex, 1);
         updatedTasks.unshift({ ...droppedTask, status });
         setTasks(updatedTasks);
       }
-      console.log(updatedTasks)
+      console.log(updatedTasks[0]);
     }
   };
 
   const renderTasks = (status) => {
     return tasks
       .filter((task) => task.status === status)
-      .map((task) => (
-        <Button
-          block
-          style={{ marginBottom: 10 }}
-          classNames="button"
-          key={task.id}
-          className="task"
-          draggable
-          onDragStart={(e) => handleDragStart(e, task)}
-          onDoubleClick={() => handleTaskDoubleClick(task)}
-        >
-          {task.name}
-        </Button>
-      ));
+      .map((task) => {
+        let taskName = task.name;
+        if (taskName.length > 20) {
+          taskName = taskName.substring(0, 20) + "...";
+        }
+        return (
+          <Card
+            title={
+              <>
+                <Text>Type :<Text style={{color:"red"}}>{task.id}</Text></Text>
+              </>
+            }
+            size="small"
+            style={{
+              marginBottom: 30,
+              scale: "1.15",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              display: "flex",
+              justifyContent: "flex-start",
+              flexDirection: "column",
+            }}
+            classNames="button"
+            key={task.id}
+            className="task"
+            draggable
+            onDragStart={(e) => handleDragStart(e, task)}
+            onDoubleClick={() => handleTaskDoubleClick(task)}
+          >
+            <Title level={5} style={{ marginTop: 0, paddingTop: 0 }}>
+              {taskName}
+            </Title>
+          </Card>
+        );
+      });
   };
+  const statuses = ["To Do", "In Progress", "Testing", "Done"];
+  const shouldShowScrollBar = tasks.length >= 5;
+  const tasksInColumn = tasks.filter((task) => task.status === status);
+  const cardHeight =
+    tasksInColumn.length > 0 ? `${tasksInColumn.length * 60}px` : "auto";
 
   return (
     <div
       style={{
         background: "white",
         color: "black",
+        overflowY: "hidden",
+        height: "100%",
       }}
     >
-      <Row gutter={24} justify={"space-between"} style={{ margin: "10px" }}>
-        <Col span={6}>
-          <Card
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "1px solid green",
-            }}
-            onDragOver={(e) => handleDragOver(e)}
-            onDrop={(e) => handleDrop(e, "To Do")}
-          >
-            <Title className="header" level={3}>
-              To Do
-            </Title>
-            {renderTasks("To Do")}
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card
-            style={{ width: "100%", height: "100%", border: "1px solid green" }}
-            onDragOver={(e) => handleDragOver(e)}
-            onDrop={(e) => handleDrop(e, "In Progress")}
-          >
-            <Title className="header" level={3}>
-              In Progress
-            </Title>
-            {renderTasks("In Progress")}
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card
-            style={{ width: "100%", height: "100%", border: "1px solid green" }}
-            onDragOver={(e) => handleDragOver(e)}
-            onDrop={(e) => handleDrop(e, "QA")}
-          >
-            <Title className="header" level={3}>
-              QA
-            </Title>
-            {renderTasks("QA")}
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card
-            style={{ width: "100%", height: "100%", border: "1px solid green" }}
-            onDragOver={(e) => handleDragOver(e)}
-            onDrop={(e) => handleDrop(e, "Done")}
-            className="done-column"
-          >
-            <Title className="header" level={3}>
-              Done
-            </Title>
-            {renderTasks("Done")}
-          </Card>
-        </Col>
-      </Row>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "auto",
+          overflowX: shouldShowScrollBar ? "auto" : "hidden",
+          minWidth: `${statuses.length * (300 + 10)}px`,
+        }}
+      >
+        {statuses.map((status, index) => (
+          <>
+            <Card
+              key={status}
+              style={{
+                width: "300px",
+                height: cardHeight,
+                marginRight: 30,
+                verticalAlign: "top",
+              }}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, status)}
+              title={<Title className="header" level={4}>
+                {status}
+              </Title>}
+            >
+              
+              {renderTasks(status)}
+            </Card>
+            {index !== statuses.length - 1 && (
+              <ArrowRightOutlined
+                style={{ fontSize: 20, position: "relative", marginRight: 30 }}
+              />
+            )}
+          </>
+        ))}
+      </div>
       <Modal
         title="Task Details"
         visible={isModalVisible}

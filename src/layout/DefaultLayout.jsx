@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Button, Spin, Typography } from "antd";
+import { Layout, Button, Spin, Typography, Select } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
 import {
@@ -14,7 +14,7 @@ import {
 const { Header, Sider } = Layout;
 import { Content } from "antd/es/layout/layout";
 import HeaderMenu from "../components/Header/Header";
-const { Text } = Typography
+const { Text } = Typography;
 function getItem(label, key, icon, children, type) {
   return {
     key,
@@ -55,8 +55,13 @@ const DefaultLayout = ({ children }) => {
             height: "70vh",
           }}
         >
-          <Spin size="large" style={{ fontSize: "77px", marginRight: '17px' }}></Spin>
-          <h1 style={{ color: 'blue', marginTop: '33px', fontSize: '37px' }}>Vui Lòng Đợi Trong Giây Lát...</h1>
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
         </div>
       ) : (
         <>
@@ -69,7 +74,17 @@ const DefaultLayout = ({ children }) => {
               width={280}
             >
               {collapsed && (
-                <Text style={{ fontSize: 40, display: "flex", justifyContent: "center", fontFamily: "cursive", color: "#FF4500" }}>SE TOOL</Text>
+                <Text
+                  style={{
+                    fontSize: 40,
+                    display: "flex",
+                    justifyContent: "center",
+                    fontFamily: "cursive",
+                    color: "#FF4500",
+                  }}
+                >
+                  SE TOOL
+                </Text>
               )}
               <SidebarMenu items={items_for_manager} />
             </Sider>
@@ -80,17 +95,54 @@ const DefaultLayout = ({ children }) => {
                   background: "white",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <Button
-                    type="text"
-                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                    onClick={() => setCollapsed(!collapsed)}
-                    style={{
-                      fontSize: "16px",
-                      width: 64,
-                      height: 64,
-                    }}
-                  />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <div style={{ width: "50%" }}>
+                    <Button
+                      type="text"
+                      icon={
+                        collapsed ? (
+                          <MenuUnfoldOutlined />
+                        ) : (
+                          <MenuFoldOutlined />
+                        )
+                      }
+                      onClick={() => setCollapsed(!collapsed)}
+                      style={{
+                        fontSize: "16px",
+                        width: 64,
+                        height: 64,
+                      }}
+                    />
+                    <Select
+                      style={{ width: "50%" }}
+                      placeholder="Choose sprint"
+                      defaultValue={1}
+                      options={[
+                        {
+                          value: 1,
+                          label: "Bird Management / Sprint 1",
+                        },
+                        {
+                          value: 2,
+                          label: "Bird Management / Sprint 2",
+                        },
+                        {
+                          value: 3,
+                          label: "Bird Management / Sprint 3",
+                        },
+                        {
+                          value: 4,
+                          label: "Bird Management / Sprint 4",
+                        },
+                      ]}
+                    ></Select>
+                  </div>
                   <HeaderMenu></HeaderMenu>
                 </div>
               </Header>

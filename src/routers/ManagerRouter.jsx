@@ -1,9 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import DefaultLayout from "../layout/DefaultLayout";
 import TaskManager from "../pages/TaskManager/TaskManager"
+import Backlogs from "../pages/BackLogs/Backlogs";
+import Collab from "../pages/Collaboration/Collab";
 
 const adminRoutesData = [
   { path: "task", component: <TaskManager />},
+  { path: "backlog", component: <Backlogs />},
+  { path: "collaborators", component: <Collab />},
 ];
 
 const ManagerRouter = () => {
