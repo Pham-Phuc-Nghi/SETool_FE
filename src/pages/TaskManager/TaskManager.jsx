@@ -61,20 +61,20 @@ const TaskManager = () => {
   const handleDrop = (e, status) => {
     e.preventDefault();
     const droppedTask = JSON.parse(e.dataTransfer.getData("task"));
-    
-    // Kiểm tra nếu cột hiện tại là "Done" thì không cho phép thả task vào đó
+
     if (status !== "Done") {
-      const updatedTasks = tasks.map((task) => {
-        if (task.id === droppedTask.id) {
-          return { ...task, status };
-        }
-        return task;
-      });
-      setTasks(updatedTasks);
-      console.log("Updated tasks array:", updatedTasks);
+      const updatedTasks = [...tasks];
+      const taskIndex = updatedTasks.findIndex((task) => task.id === droppedTask.id);
+
+      if (taskIndex !== -1) {
+        updatedTasks.splice(taskIndex, 1);
+        updatedTasks.unshift({ ...droppedTask, status });
+        setTasks(updatedTasks);
+      }
+      console.log(updatedTasks)
     }
   };
-  
+
   const renderTasks = (status) => {
     return tasks
       .filter((task) => task.status === status)

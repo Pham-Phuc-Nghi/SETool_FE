@@ -20,7 +20,7 @@ const UserAvatar = () => {
       <span>
         <Avatar
           style={{
-            backgroundColor: "violet",
+            backgroundColor: "#FF4500",
             marginRight: "6px",
             marginBottom: 4,
           }}

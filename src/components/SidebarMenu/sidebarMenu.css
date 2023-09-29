@@ -44,3 +44,13 @@ img {
 .custom-sidebar-menu .ant-menu-item.ant-menu-item-only-child {
   padding-left: 59px !important;
 }
+
+/* .ant-layout-sider {
+  max-width: 225px !important;
+  min-width: 225px !important;
+}
+
+.ant-layout-sider .ant-layout-sider-dark .ant-layout-sider-collapsed {
+  max-width: 80px !important;
+  min-width: 80px !important;
+} */
