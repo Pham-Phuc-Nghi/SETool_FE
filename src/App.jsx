@@ -1,15 +1,13 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import DefaultLayout from './layout/DefaultLayout';
-import TaskManager from './pages/TaskManager/TaskManager';
+import { Route, Routes } from 'react-router-dom';
+import Login from './pages/DangNhap/Login.jsx'
+import ManagerRouter from './routers/ManagerRouter.jsx';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<DefaultLayout />} />
-        <Route path='/test' element={<TaskManager />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path='' element={<Login />} />
+      <Route path='home/*' element={<ManagerRouter />} />
+    </Routes>
   );
 }
 

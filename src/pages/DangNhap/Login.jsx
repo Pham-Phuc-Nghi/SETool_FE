@@ -4,10 +4,16 @@ import { UserOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 const { Text, Title } = Typography;
 import "./login.css";
 import setImage from "../../assets/setool.png";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const nav = useNavigate();
   const [showCard, setShowCard] = useState(false);
   const [currentForm, setCurrentForm] = useState("userLogin");
+
+  const handleClickLoginByGG = () => {
+    nav("/home");
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -65,7 +71,7 @@ const Login = () => {
                   remember: true,
                 }}
                 autoComplete="off"
-                // onFinish={handleLogin}
+              // onFinish={handleLogin}
               >
                 <Title
                   style={{
@@ -181,6 +187,7 @@ const Login = () => {
                   Or login with
                 </Text>
                 <Button
+                  onClick={handleClickLoginByGG}
                   block
                   icon={<GoogleOutlined />}
                   onMouseEnter={(e) => {
@@ -238,7 +245,7 @@ const Login = () => {
                   remember: true,
                 }}
                 autoComplete="off"
-                // onFinish={handleLogin}
+              // onFinish={handleLogin}
               >
                 <Title
                   style={{
