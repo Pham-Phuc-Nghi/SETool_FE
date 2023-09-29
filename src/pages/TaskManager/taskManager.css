@@ -1,0 +1,16 @@
+.header {
+    text-align: center;
+    padding: 10px;
+    margin: 0;
+    background-color: aqua;
+    border-radius: 15px;
+}
+
+.button{
+    background-color: azure;
+}
+
+.done-column {
+    cursor: not-allowed; /* Đặt biểu tượng chuột là "not-allowed" */
+  }
+  

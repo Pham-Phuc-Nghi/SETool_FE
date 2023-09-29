@@ -9,6 +9,7 @@
   background-repeat: no-repeat;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .card {
@@ -50,10 +51,27 @@
   margin-bottom: 10px;
 } */
 
-:where(.css-dev-only-do-not-override-fpg3f5).ant-checkbox-checked
+:where(.css-dev-only-do-not-override-1ck3jst)[class^="ant-typography"],
+:where(.css-dev-only-do-not-override-1ck3jst)[class*=" ant-typography"] {
+  margin-left: 10px;
+}
+
+/* :where(.css-dev-only-do-not-override-fpg3f5).ant-checkbox-checked
   .ant-checkbox-inner {
   background-color: #6a32e3;
   border-color: #6a32e3;
+} */
+
+:where(.css-dev-only-do-not-override-1ck3jst).ant-checkbox-checked
+  .ant-checkbox-inner {
+  border-color: #ff4500;
+  background: #ff4500;
+}
+
+:where(.css-dev-only-do-not-override-1ck3jst).ant-checkbox-checked
+  .ant-checkbox-inner:hover {
+  border-color: #ff4500;
+  background: #ff4500;
 }
 
 .ant-card-body {
