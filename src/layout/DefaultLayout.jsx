@@ -14,7 +14,6 @@ import {
 const { Header, Sider } = Layout;
 import { Content } from "antd/es/layout/layout";
 import HeaderMenu from "../components/Header/Header";
-import { useNavigate } from "react-router-dom";
 const { Text } = Typography
 function getItem(label, key, icon, children, type) {
   return {
@@ -42,7 +41,6 @@ const items_for_manager = [
 // ];
 
 const DefaultLayout = ({ children }) => {
-  const nav = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
 
