@@ -62,7 +62,7 @@ const DefaultLayout = ({ children }) => {
         </div>
       ) : (
         <>
-          <Layout style={{ width: "100vw", height: "100vh" }}>
+          <Layout>
             <Sider
               trigger={null}
               collapsible

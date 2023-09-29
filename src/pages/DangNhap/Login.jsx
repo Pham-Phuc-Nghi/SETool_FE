@@ -34,7 +34,6 @@ const Login = () => {
               position: "absolute",
               top: 55,
               right: 100,
-              width: 140,
             }}
             src={setImage}
           />

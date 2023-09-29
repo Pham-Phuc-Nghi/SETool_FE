@@ -8,9 +8,6 @@
   padding: 0;
   font: inherit;
 }
-body{
-  overflow: hidden;
-}
 img,
 picture,
 svg,
@@ -35,4 +32,5 @@ body {
   font-weight: 400;
   font-size: 16px;
   line-height: 1;
+  overflow: hidden;
 }
