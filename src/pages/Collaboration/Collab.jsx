@@ -149,6 +149,7 @@ const Collab = () => {
             columns={column}
             bordered
             dataSource={dummyData}
+            size="middle"
           />
           <Modal
             open={isModalAdd}

@@ -145,7 +145,7 @@ const DefaultLayout = ({ children }) => {
                         src={setImage2}
                       />
                     )}
-                    <Tag style={{ fontSize: "16px",fontWeight:"bold" }}>Bird Management</Tag>
+                    <Tag style={{ fontSize: "16px",fontWeight:"bold" }} color="orange">Bird Management</Tag>
                   </div>
                   <HeaderMenu></HeaderMenu>
                 </div>

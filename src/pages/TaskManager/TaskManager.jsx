@@ -42,6 +42,7 @@ const TaskManager = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [draggedTask, setDraggedTask] = useState(null);
 
   const handleTaskDoubleClick = (task) => {
     setSelectedTask(task);
@@ -52,6 +53,7 @@ const TaskManager = () => {
     if (task.status === "Done" || task.status === "Testing") {
       e.preventDefault();
     } else {
+      setDraggedTask({ task, status: task.status });
       e.dataTransfer.setData("task", JSON.stringify(task));
     }
   };
@@ -60,23 +62,62 @@ const TaskManager = () => {
     e.preventDefault();
   };
 
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+
+  const showConfirmModal = () => {
+    setConfirmModalVisible(true);
+  };
+
+  const handleBeforeDrop = (task, status) => {
+    if (status !== "Testing") return true;
+    if (draggedTask) {
+      // If a task is being dragged, show the confirmation modal
+      showConfirmModal();
+    }
+    return false;
+  };
+
+  const handleCancel = () => {
+    setConfirmModalVisible(false);
+  };
+
   const handleDrop = (e, status) => {
     e.preventDefault();
     const droppedTask = JSON.parse(e.dataTransfer.getData("task"));
 
-    if (status !== "Done") {
-      const updatedTasks = [...tasks];
-      const taskIndex = updatedTasks.findIndex(
-        (task) => task.id === droppedTask.id
-      );
+    if (handleBeforeDrop(droppedTask, status)) {
+      if (status !== "Done") {
+        const updatedTasks = [...tasks];
+        const taskIndex = updatedTasks.findIndex(
+          (task) => task.id === droppedTask.id
+        );
 
-      if (taskIndex !== -1) {
-        updatedTasks.splice(taskIndex, 1);
-        updatedTasks.unshift({ ...droppedTask, status });
-        setTasks(updatedTasks);
+        if (taskIndex !== -1) {
+          updatedTasks.splice(taskIndex, 1);
+          updatedTasks.unshift({ ...droppedTask, status });
+          setTasks(updatedTasks);
+        }
+        console.log(updatedTasks[0]);
       }
-      console.log(updatedTasks[0]);
     }
+  };
+
+  const handleOk = () => {
+    if (draggedTask) {
+      const updatedTasks = tasks.map((task) => {
+        if (task.id === draggedTask.task.id) {
+          return { ...task, status: "Testing" };
+        }
+        return task;
+      });
+      const updatedTask = updatedTasks.find(
+        (task) => task.id === draggedTask.task.id
+      );
+      console.log("Updated Task:", updatedTask);
+      setTasks(updatedTasks);
+    }
+    setConfirmModalVisible(false);
+    setDraggedTask(null);
   };
 
   const renderTasks = (status) => {
@@ -132,15 +173,15 @@ const TaskManager = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case "To Do":
-        return "#F29F05"; 
+        return "#F29F05";
       case "In Progress":
-        return "#F99A9C"; 
+        return "#F99A9C";
       case "Testing":
-        return "#F2D98D"; 
+        return "#F2D98D";
       case "Done":
-        return "#84D9BA"; 
+        return "#84D9BA";
       default:
-        return "white"; 
+        return "white";
     }
   };
 
@@ -154,7 +195,7 @@ const TaskManager = () => {
       }}
     >
       <Select
-        style={{ width: "20%", marginBottom: 20,textAlign:"center" }}
+        style={{ width: "20%", marginBottom: 20, textAlign: "center"}}
         placeholder="Choose sprint"
         dropdownStyle={{ textAlign: "center" }}
         defaultValue={1}
@@ -244,6 +285,14 @@ const TaskManager = () => {
           </div>
         )} */}
         <TaskDetail></TaskDetail>
+      </Modal>
+      <Modal
+        title="Xác nhận"
+        visible={confirmModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Bạn có chắc chắn muốn chuyển task này vào Testing?</p>
       </Modal>
     </div>
   );
