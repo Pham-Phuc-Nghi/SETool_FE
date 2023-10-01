@@ -35,7 +35,7 @@ const AddMember = ({ form }) => {
         >
           <Input placeholder="Input Member Name or Email"></Input>
         </Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button className="custom-btn-add-d" htmlType="submit">
           Add member
         </Button>
       </Form>

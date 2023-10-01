@@ -39,7 +39,7 @@ const AddBacklogs = ({ onClose }) => {
           >
             <Form.Item>
               <Button
-                danger
+                className="custom-btn-close"
                 onClick={handleCancel}
                 style={{ marginRight: "10px" }}
               >
@@ -47,7 +47,7 @@ const AddBacklogs = ({ onClose }) => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button className="custom-btn-add-d" htmlType="submit">
                 Add
               </Button>
             </Form.Item>
