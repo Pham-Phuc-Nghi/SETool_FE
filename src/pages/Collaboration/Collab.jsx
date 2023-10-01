@@ -79,7 +79,7 @@ const Collab = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      width: 100,
+      width: 200,
       render: (text, record) => (
         <div>
           <Select

@@ -3,7 +3,7 @@ import { Button, Checkbox, Form, Input, Typography } from "antd";
 import { UserOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 const { Text, Title } = Typography;
 import "./login.css";
-import setImage from "../../assets/setool.png";
+import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -38,8 +38,11 @@ const Login = () => {
           <img
             style={{
               position: "absolute",
-              top: 55,
+              top: 60,
               right: 100,
+              width:100,
+              height:100,
+              backgroundColor:"transparent"
             }}
             src={setImage}
           />

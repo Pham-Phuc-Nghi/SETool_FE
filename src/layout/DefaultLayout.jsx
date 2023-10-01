@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Button, Spin, Typography, Select } from "antd";
+import { Layout, Button, Spin, Typography, Tag } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
 import {
@@ -15,6 +15,9 @@ const { Header, Sider } = Layout;
 import { Content } from "antd/es/layout/layout";
 import HeaderMenu from "../components/Header/Header";
 const { Text } = Typography;
+import setImage from "../assets/789.png";
+import setImage2 from "../assets/cdww.png";
+
 function getItem(label, key, icon, children, type) {
   return {
     key,
@@ -74,17 +77,18 @@ const DefaultLayout = ({ children }) => {
               width={280}
             >
               {collapsed && (
-                <Text
+                <img
                   style={{
-                    fontSize: 40,
-                    display: "flex",
-                    justifyContent: "center",
-                    fontFamily: "cursive",
-                    color: "#FF4500",
+                    width: "170px",
+                    height: "100px",
+                    objectFit: "cover",
+                    backgroundRepeat: "no-repeat",
+                    margin: "0 auto",
+                    backgroundSize: "cover",
+                    display: "block",
                   }}
-                >
-                  SE TOOL
-                </Text>
+                  src={setImage}
+                />
               )}
               <SidebarMenu items={items_for_manager} />
             </Sider>
@@ -93,6 +97,7 @@ const DefaultLayout = ({ children }) => {
                 style={{
                   padding: 0,
                   background: "white",
+                  boxShadow:"0 4px 2px -2px #ccc"
                 }}
               >
                 <div
@@ -102,7 +107,14 @@ const DefaultLayout = ({ children }) => {
                     width: "100%",
                   }}
                 >
-                  <div style={{ width: "50%" }}>
+                  <div
+                    style={{
+                      width: "50%",
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
                     <Button
                       type="text"
                       icon={
@@ -119,29 +131,21 @@ const DefaultLayout = ({ children }) => {
                         height: 64,
                       }}
                     />
-                    <Select
-                      style={{ width: "50%" }}
-                      placeholder="Choose sprint"
-                      defaultValue={1}
-                      options={[
-                        {
-                          value: 1,
-                          label: "Bird Management / Sprint 1",
-                        },
-                        {
-                          value: 2,
-                          label: "Bird Management / Sprint 2",
-                        },
-                        {
-                          value: 3,
-                          label: "Bird Management / Sprint 3",
-                        },
-                        {
-                          value: 4,
-                          label: "Bird Management / Sprint 4",
-                        },
-                      ]}
-                    ></Select>
+                    {!collapsed && (
+                      <img
+                        style={{
+                          width: "110px",
+                          height: "60px",
+                          objectFit: "cover",
+                          backgroundRepeat: "no-repeat",
+                          margin: "0 ",
+                          backgroundSize: "cover",
+                          display: "block",
+                        }}
+                        src={setImage2}
+                      />
+                    )}
+                    <Tag style={{ fontSize: "16px",fontWeight:"bold" }}>Bird Management</Tag>
                   </div>
                   <HeaderMenu></HeaderMenu>
                 </div>
