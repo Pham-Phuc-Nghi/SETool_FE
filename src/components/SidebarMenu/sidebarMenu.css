@@ -31,7 +31,7 @@ img {
 
 /* Target the SubMenu titles and make them bold */
 .Menu .ant-menu-submenu-title {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .custom-sidebar-menu .ant-menu-item.ant-menu-item-only-child,

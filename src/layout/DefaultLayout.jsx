@@ -3,13 +3,13 @@ import { Layout, Button, Spin, Typography, Tag } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
 import {
-  ContainerOutlined,
   DatabaseOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  WechatOutlined,
   TeamOutlined,
   HomeOutlined,
+  CommentOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 const { Header, Sider } = Layout;
 import { Content } from "antd/es/layout/layout";
@@ -32,8 +32,8 @@ const items_for_manager = [
   getItem("Dashboard", "dashboard", <HomeOutlined />),
   getItem("Collaborators & Teams", "collaborators", <TeamOutlined />),
   getItem("Backlog", "backlog", <DatabaseOutlined />),
-  getItem("My Task", "task", <ContainerOutlined />),
-  getItem("Issue", "issue", <WechatOutlined />),
+  getItem("My Task", "task", <SolutionOutlined />),
+  getItem("Issue", "issue", <CommentOutlined />),
 ];
 
 // const items_for_member = [

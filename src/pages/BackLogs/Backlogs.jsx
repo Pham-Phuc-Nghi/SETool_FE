@@ -72,7 +72,7 @@ const Backlogs = () => {
         //   value={searchText}
         />
         <Button
-          className="custom-btn-export"
+          className="custom-btn-add-d"
           icon={<PlusOutlined />}
           onClick={showModalTaoDon}
           style={{ float: "right" }}
@@ -89,13 +89,14 @@ const Backlogs = () => {
             <List.Item
               actions={[
                 <Button
+                  className="custom-btn-watch-report"
                   key="edit"
                   icon={<EditOutlined />}
                   onClick={showModalEdit}
                 >
                   Edit
                 </Button>,
-                <Button key="delete" icon={<DeleteOutlined />} danger>
+                <Button className="custom-btn-del" key="delete" icon={<DeleteOutlined />}>
                   Delete
                 </Button>,
               ]}

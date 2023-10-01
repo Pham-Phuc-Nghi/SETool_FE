@@ -98,8 +98,8 @@ const Collab = () => {
             ]}
           ></Select>
           <Button
+            className="custom-btn-del"
             icon={<DeleteOutlined />}
-            danger
             onClick={() => handleDelete(record.key)}
           >
             DELETE
@@ -134,9 +134,8 @@ const Collab = () => {
             //   value={searchText}
             />
             <Button
-              className="custom-btn-save-and-add"
+              className="custom-btn-add-d"
               icon={<PlusOutlined />}
-              // type="primary"
               onClick={showModalTaoDon}
               style={{
                 float: "right",

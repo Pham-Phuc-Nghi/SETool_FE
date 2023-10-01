@@ -38,12 +38,11 @@ const SidebarMenu = ({ items }) => {
   return (
     <Menu
       className="Menu custom-sidebar-menu"
-      style={{ fontWeight: "500" }}
       onClick={handleMenuClick}
       selectedKeys={selectedKeys}
       openKeys={openSubMenuKeys}
       onOpenChange={handleSubMenuOpenChange}
-      mode="inline"
+      mode="vertical"
     >
       {items.map((item) =>
         item.children ? (
