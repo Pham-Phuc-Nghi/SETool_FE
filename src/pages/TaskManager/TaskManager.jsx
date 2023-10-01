@@ -1,8 +1,9 @@
-import { Card, Modal, Typography } from "antd";
+import { Card, Modal, Select, Typography } from "antd";
 import { useState } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
 import "./taskManager.css";
+import TaskDetail from "./TaskDetail";
 const TaskManager = () => {
   const [tasks, setTasks] = useState([
     {
@@ -90,17 +91,22 @@ const TaskManager = () => {
           <Card
             title={
               <>
-                <Text>Type :<Text style={{color:"red"}}>{task.id}</Text></Text>
+                <Text>
+                  Type :<Text style={{ color: "red" }}>{task.id}</Text>
+                </Text>
               </>
             }
             size="small"
+            bordered={false}
             style={{
               marginBottom: 30,
               scale: "1.15",
-              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
               display: "flex",
               justifyContent: "flex-start",
               flexDirection: "column",
+              backgroundColor: "transparent",
+              cursor: "pointer",
             }}
             classNames="button"
             key={task.id}
@@ -116,11 +122,27 @@ const TaskManager = () => {
         );
       });
   };
+
   const statuses = ["To Do", "In Progress", "Testing", "Done"];
   const shouldShowScrollBar = tasks.length >= 5;
   const tasksInColumn = tasks.filter((task) => task.status === status);
   const cardHeight =
     tasksInColumn.length > 0 ? `${tasksInColumn.length * 60}px` : "auto";
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "To Do":
+        return "#F29F05"; 
+      case "In Progress":
+        return "#F99A9C"; 
+      case "Testing":
+        return "#F2D98D"; 
+      case "Done":
+        return "#84D9BA"; 
+      default:
+        return "white"; 
+    }
+  };
 
   return (
     <div
@@ -131,6 +153,30 @@ const TaskManager = () => {
         height: "100%",
       }}
     >
+      <Select
+        style={{ width: "20%", marginBottom: 20,textAlign:"center" }}
+        placeholder="Choose sprint"
+        dropdownStyle={{ textAlign: "center" }}
+        defaultValue={1}
+        options={[
+          {
+            value: 1,
+            label: "Sprint 1",
+          },
+          {
+            value: 2,
+            label: "Sprint 2",
+          },
+          {
+            value: 3,
+            label: "Sprint 3",
+          },
+          {
+            value: 4,
+            label: "Sprint 4",
+          },
+        ]}
+      ></Select>
       <div
         style={{
           display: "flex",
@@ -153,16 +199,29 @@ const TaskManager = () => {
               }}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, status)}
-              title={<Title className="header" level={4}>
-                {status}
-              </Title>}
+              title={
+                <Title
+                  className="header"
+                  level={4}
+                  style={{
+                    color: getStatusColor(status),
+                    border: "1px solid black",
+                  }}
+                >
+                  {status}
+                </Title>
+              }
             >
-              
               {renderTasks(status)}
             </Card>
             {index !== statuses.length - 1 && (
               <ArrowRightOutlined
-                style={{ fontSize: 20, position: "relative", marginRight: 30 }}
+                style={{
+                  fontSize: 20,
+                  position: "relative",
+                  marginRight: 30,
+                  color: "#FF4500",
+                }}
               />
             )}
           </>
@@ -173,8 +232,9 @@ const TaskManager = () => {
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
+        width={1200}
       >
-        {selectedTask && (
+        {/* {selectedTask && (
           <div>
             <h3>Name: {selectedTask.name}</h3>
             <p>Description: {selectedTask.descrip}</p>
@@ -182,7 +242,8 @@ const TaskManager = () => {
             <p>Months: {selectedTask.moths}</p>
             <p>Status: {selectedTask.status}</p>
           </div>
-        )}
+        )} */}
+        <TaskDetail></TaskDetail>
       </Modal>
     </div>
   );
