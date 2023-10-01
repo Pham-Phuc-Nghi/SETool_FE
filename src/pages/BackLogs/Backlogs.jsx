@@ -1,5 +1,5 @@
 import { Avatar, Button, Input, List, Modal, Skeleton, Typography } from "antd";
-import { UserOutlined, PlusOutlined, DeleteOutlined,EditOutlined } from "@ant-design/icons";
+import { UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import EditBacklogs from "./EditBacklogs";
 import AddBacklogs from "./AddBacklogs";
@@ -62,20 +62,20 @@ const Backlogs = () => {
 
   return (
     <>
-      <div style={{marginBottom:40}}>
-      <Input.Search
-              allowClear
-              placeholder="Input task name"
-              style={{ width: "25%"}}
-              //   onSearch={handleSearch}
-              //   onChange={(e) => handleSearch(e.target.value)}
-              //   value={searchText}
-            />
+      <div style={{ marginBottom: 40 }}>
+        <Input.Search
+          allowClear
+          placeholder="Input task name"
+          style={{ width: "25%" }}
+        //   onSearch={handleSearch}
+        //   onChange={(e) => handleSearch(e.target.value)}
+        //   value={searchText}
+        />
         <Button
+          className="custom-btn-export"
           icon={<PlusOutlined />}
-          type="primary"
           onClick={showModalTaoDon}
-          style={{ float: "right"}}
+          style={{ float: "right" }}
         >
           Add Backlogs
         </Button>

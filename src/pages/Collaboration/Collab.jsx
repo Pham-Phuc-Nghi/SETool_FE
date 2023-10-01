@@ -129,13 +129,14 @@ const Collab = () => {
               allowClear
               placeholder="Input member name"
               style={{ width: "25%", marginBottom: 20 }}
-              //   onSearch={handleSearch}
-              //   onChange={(e) => handleSearch(e.target.value)}
-              //   value={searchText}
+            //   onSearch={handleSearch}
+            //   onChange={(e) => handleSearch(e.target.value)}
+            //   value={searchText}
             />
             <Button
+              className="custom-btn-save-and-add"
               icon={<PlusOutlined />}
-              type="primary"
+              // type="primary"
               onClick={showModalTaoDon}
               style={{
                 float: "right",
