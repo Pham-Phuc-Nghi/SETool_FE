@@ -1,5 +1,10 @@
 import { Avatar, Button, Input, List, Modal, Skeleton, Typography } from "antd";
-import { UserOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import EditBacklogs from "./EditBacklogs";
 import AddBacklogs from "./AddBacklogs";
@@ -58,8 +63,6 @@ const Backlogs = () => {
     setIsModalAdd(false);
   };
 
-
-
   return (
     <>
       <div style={{ marginBottom: 40 }}>
@@ -67,9 +70,9 @@ const Backlogs = () => {
           allowClear
           placeholder="Input task name"
           style={{ width: "25%" }}
-        //   onSearch={handleSearch}
-        //   onChange={(e) => handleSearch(e.target.value)}
-        //   value={searchText}
+          //   onSearch={handleSearch}
+          //   onChange={(e) => handleSearch(e.target.value)}
+          //   value={searchText}
         />
         <Button
           className="custom-btn-add-d"
@@ -89,14 +92,18 @@ const Backlogs = () => {
             <List.Item
               actions={[
                 <Button
-                  className="custom-btn-watch-report"
                   key="edit"
+                  className="custom-btn-watch-report"
                   icon={<EditOutlined />}
                   onClick={showModalEdit}
                 >
                   Edit
                 </Button>,
-                <Button className="custom-btn-del" key="delete" icon={<DeleteOutlined />}>
+                <Button
+                  key="delete"
+                  className="custom-btn-del"
+                  icon={<DeleteOutlined />}
+                >
                   Delete
                 </Button>,
               ]}
@@ -119,6 +126,7 @@ const Backlogs = () => {
           footer={null}
           onCancel={closeEditModal}
           title="Edit backlogs"
+          width={600}
         >
           <EditBacklogs onClose={closeEditModal}></EditBacklogs>
         </Modal>

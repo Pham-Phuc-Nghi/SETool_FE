@@ -274,6 +274,7 @@ const TaskManager = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         width={1200}
+        style={{top:50}}
       >
         {/* {selectedTask && (
           <div>

@@ -1,6 +1,7 @@
 import { Button, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { PlusOutlined } from "@ant-design/icons";
 const AddMember = ({ form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
 
@@ -31,11 +32,11 @@ const AddMember = ({ form }) => {
           rules={[
             { required: true, message: "Member Name must not be a blank" },
           ]}
-          style={{ width: "90%", marginRight: 10 }}
+          style={{ width: "80%", marginRight: 10 }}
         >
           <Input placeholder="Input Member Name or Email"></Input>
         </Form.Item>
-        <Button className="custom-btn-add-d" htmlType="submit">
+        <Button icon={<PlusOutlined />} className="custom-btn-add-d" htmlType="submit">
           Add member
         </Button>
       </Form>

@@ -156,6 +156,7 @@ const Collab = () => {
             footer={null}
             onCancel={closeAddModal}
             title="Add member"
+            width={600}
           >
             <AddMember form={form} ></AddMember>
           </Modal>

@@ -1,7 +1,8 @@
-import { Button, Col, Form, Modal, Row, Select, Typography,Input } from "antd";
+import { Button, Col, Form, Modal, Row, Select, Typography, Input } from "antd";
 import { useState } from "react";
 const { Text } = Typography;
 import PropTypes from "prop-types";
+import { EditOutlined } from "@ant-design/icons";
 const EditBacklogs = ({ onClose }) => {
   const [form] = Form.useForm();
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
@@ -30,7 +31,10 @@ const EditBacklogs = ({ onClose }) => {
         style={{ maxHeight: 1000, marginTop: "10px" }}
       >
         <Form.Item label={<Text>Description</Text>} name="reason">
-          <Input.TextArea placeholder="Input description" allowClear></Input.TextArea>
+          <Input.TextArea
+            placeholder="Input description"
+            allowClear
+          ></Input.TextArea>
         </Form.Item>
         <Form.Item label={<Text>Member Apply</Text>} name="member">
           <Select
@@ -49,22 +53,24 @@ const EditBacklogs = ({ onClose }) => {
             ]}
           ></Select>
         </Form.Item>
-        <Row gutter={24} style={{ marginRight: "5px" }}>
+        <Row gutter={24} style={{width:"100%"}}>
           <Col
             span={24}
-            style={{ display: "flex", justifyContent: "flex-end" }}
+            style={{ display: "flex", justifyContent: "flex-end",gap:"10px"}}
           >
             <Form.Item>
               <Button
-                danger
+                className="custom-btn-close"
                 onClick={handleCancel}
-                style={{ marginRight: "10px" }}
               >
                 Cancel
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button
+                className="custom-btn-watch-report"
+                htmlType="submit"
+              >
                 Edit
               </Button>
             </Form.Item>
@@ -81,7 +87,7 @@ const EditBacklogs = ({ onClose }) => {
 };
 
 EditBacklogs.propTypes = {
-    onClose: PropTypes.func.isRequired, // Ensure that onClose is a function and is required
-  };
+  onClose: PropTypes.func.isRequired, // Ensure that onClose is a function and is required
+};
 
 export default EditBacklogs;
