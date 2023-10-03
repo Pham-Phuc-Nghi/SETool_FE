@@ -141,7 +141,7 @@ const Collab = () => {
                 float: "right",
               }}
             >
-              Thêm thành viên
+              Add members
             </Button>
           </>
           <Table
