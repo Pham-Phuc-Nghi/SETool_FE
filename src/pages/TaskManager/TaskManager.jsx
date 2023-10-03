@@ -274,7 +274,7 @@ const TaskManager = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         width={1200}
-        style={{top:50}}
+        style={{top:40}}
       >
         {/* {selectedTask && (
           <div>
@@ -283,7 +283,7 @@ const TaskManager = () => {
             <p>Age: {selectedTask.age}</p>
             <p>Months: {selectedTask.moths}</p>
             <p>Status: {selectedTask.status}</p>
-          </div>
+          </div> 
         )} */}
         <TaskDetail></TaskDetail>
       </Modal>
