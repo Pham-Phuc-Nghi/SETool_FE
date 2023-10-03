@@ -36,30 +36,32 @@ const SidebarMenu = ({ items }) => {
   };
 
   return (
-    <Menu
-      className="Menu custom-sidebar-menu"
-      onClick={handleMenuClick}
-      selectedKeys={selectedKeys}
-      openKeys={openSubMenuKeys}
-      onOpenChange={handleSubMenuOpenChange}
-      mode="vertical"
-    >
-      {items.map((item) =>
-        item.children ? (
-          <SubMenu key={item.key} icon={item.icon} title={item.label}>
-            {item.children.map((child) => (
-              <Menu.Item key={child.key}>
-                <Link to={child.key}>{child.label}</Link>
-              </Menu.Item>
-            ))}
-          </SubMenu>
-        ) : (
-          <Menu.Item key={item.key} icon={item.icon}>
-            <Link to={item.key}>{item.label}</Link>
-          </Menu.Item>
-        )
-      )}
-    </Menu>
+    <>
+      <Menu
+        className="Menu custom-sidebar-menu"
+        onClick={handleMenuClick}
+        selectedKeys={selectedKeys}
+        openKeys={openSubMenuKeys}
+        onOpenChange={handleSubMenuOpenChange}
+        mode="vertical"
+      >
+        {items.map((item) =>
+          item.children ? (
+            <SubMenu key={item.key} icon={item.icon} title={item.label}>
+              {item.children.map((child) => (
+                <Menu.Item key={child.key}>
+                  <Link to={child.key}>{child.label}</Link>
+                </Menu.Item>
+              ))}
+            </SubMenu>
+          ) : (
+            <Menu.Item key={item.key} icon={item.icon}>
+              <Link to={item.key}>{item.label}</Link>
+            </Menu.Item>
+          )
+        )}
+      </Menu>
+    </>
   );
 };
 

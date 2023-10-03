@@ -12,7 +12,7 @@ const Login = () => {
   const [currentForm, setCurrentForm] = useState("userLogin");
 
   const handleClickLoginByGG = () => {
-    nav("/home");
+    nav("/home/dashboard");
   }
 
   useEffect(() => {

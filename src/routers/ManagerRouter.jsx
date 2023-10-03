@@ -3,22 +3,25 @@ import DefaultLayout from "../layout/DefaultLayout";
 import TaskManager from "../pages/TaskManager/TaskManager"
 import Backlogs from "../pages/BackLogs/Backlogs";
 import Collab from "../pages/Collaboration/Collab";
+import Dashboard from "../pages/Dashboard/Dashboard";
+
 
 const adminRoutesData = [
-  { path: "task", component: <TaskManager />},
-  { path: "backlog", component: <Backlogs />},
-  { path: "collaborators", component: <Collab />},
+  { path: "task", component: <TaskManager /> },
+  { path: "backlog", component: <Backlogs /> },
+  { path: "collaborators", component: <Collab /> },
+  { path: "dashboard", component: <Dashboard /> },
 ];
 
 const ManagerRouter = () => {
-//   const nav = useNavigate();
-//   useEffect(() => {
-//     const isAdmin_key = sessionStorage.getItem('isAdmin_key');
-//     if (isAdmin_key === 'false') {
-//       message.error('Tài Khoản của bạn không được phép truy cập vào trang này!');
-//       nav('/staff');
-//     }
-//   }, [nav])
+  //   const nav = useNavigate();
+  //   useEffect(() => {
+  //     const isAdmin_key = sessionStorage.getItem('isAdmin_key');
+  //     if (isAdmin_key === 'false') {
+  //       message.error('Tài Khoản của bạn không được phép truy cập vào trang này!');
+  //       nav('/staff');
+  //     }
+  //   }, [nav])
 
   return (
     <>

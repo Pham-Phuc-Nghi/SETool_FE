@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Button, Spin, Typography, Tag } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
@@ -33,7 +33,6 @@ const items_for_manager = [
   getItem("Collaborators & Teams", "collaborators", <TeamOutlined />),
   getItem("Backlog", "backlog", <DatabaseOutlined />),
   getItem("My Task", "task", <SolutionOutlined />),
-  getItem("Issue", "issue", <CommentOutlined />),
 ];
 
 // const items_for_member = [
@@ -97,7 +96,7 @@ const DefaultLayout = ({ children }) => {
                 style={{
                   padding: 0,
                   background: "white",
-                  boxShadow:"0 4px 2px -2px #ccc"
+                  boxShadow: "0 4px 2px -2px #ccc"
                 }}
               >
                 <div
@@ -145,7 +144,7 @@ const DefaultLayout = ({ children }) => {
                         src={setImage2}
                       />
                     )}
-                    <Tag style={{ fontSize: "16px",fontWeight:"bold" }} color="orange">Bird Management</Tag>
+                    <Tag style={{ fontSize: "16px", fontWeight: "bold" }} color="orange">Bird Management</Tag>
                   </div>
                   <HeaderMenu></HeaderMenu>
                 </div>
