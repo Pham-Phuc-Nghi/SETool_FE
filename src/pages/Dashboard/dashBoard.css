@@ -1,0 +1,16 @@
+.header {
+    text-align: center;
+    padding: 4px;
+    margin: 0;
+    border-radius: 15px;
+    transform: scale(1.15);
+  }
+  .button {
+    background-color: azure;
+    padding: 0;
+  }
+  
+  .done-column {
+    cursor: not-allowed; 
+  }
+  

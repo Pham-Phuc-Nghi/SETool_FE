@@ -167,8 +167,18 @@ const TaskManager = () => {
   const statuses = ["To Do", "In Progress", "Testing", "Done"];
   const shouldShowScrollBar = tasks.length >= 5;
   const tasksInColumn = tasks.filter((task) => task.status === status);
-  const cardHeight =
-    tasksInColumn.length > 0 ? `${tasksInColumn.length * 60}px` : "auto";
+
+  const cardHeights = {};
+
+  statuses.forEach((status) => {
+    const filteredTasks = tasks.filter((task) => task.status === status);
+    if (filteredTasks.length > 0) {
+      const height = `${filteredTasks.length * 115 + 100}px`;
+      cardHeights[status] = height;
+    } else {
+      cardHeights[status] = "auto";
+    }
+  });
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -191,11 +201,11 @@ const TaskManager = () => {
         background: "white",
         color: "black",
         overflowY: "hidden",
-        height: "100%",
+        height: "80vh",
       }}
     >
       <Select
-        style={{ width: "20%", marginBottom: 20, textAlign: "center"}}
+        style={{ width: "20%", marginBottom: 20, textAlign: "center" }}
         placeholder="Choose sprint"
         dropdownStyle={{ textAlign: "center" }}
         defaultValue={1}
@@ -234,7 +244,7 @@ const TaskManager = () => {
               key={status}
               style={{
                 width: "300px",
-                height: cardHeight,
+                height: cardHeights[status],
                 marginRight: 30,
                 verticalAlign: "top",
               }}
@@ -274,7 +284,7 @@ const TaskManager = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         width={1200}
-        style={{top:40}}
+        style={{ top: 40 }}
       >
         {/* {selectedTask && (
           <div>
