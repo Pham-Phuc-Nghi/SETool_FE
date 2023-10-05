@@ -311,7 +311,7 @@ const Dashboard = () => {
     <Avatar
       onClick={() => showModal(index)}
       key={index}
-      style={{ backgroundColor: pastelColors[index], fontSize: 10 }}
+      style={{ backgroundColor: pastelColors[index], fontSize: 10,cursor:"pointer" }}
     >
       {initial}
     </Avatar>

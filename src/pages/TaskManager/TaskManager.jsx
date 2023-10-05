@@ -71,7 +71,6 @@ const TaskManager = () => {
   const handleBeforeDrop = (task, status) => {
     if (status !== "Testing") return true;
     if (draggedTask) {
-      // If a task is being dragged, show the confirmation modal
       showConfirmModal();
     }
     return false;
@@ -166,8 +165,6 @@ const TaskManager = () => {
 
   const statuses = ["To Do", "In Progress", "Testing", "Done"];
   const shouldShowScrollBar = tasks.length >= 5;
-  const tasksInColumn = tasks.filter((task) => task.status === status);
-
   const cardHeights = {};
 
   statuses.forEach((status) => {
@@ -286,15 +283,6 @@ const TaskManager = () => {
         width={1200}
         style={{ top: 40 }}
       >
-        {/* {selectedTask && (
-          <div>
-            <h3>Name: {selectedTask.name}</h3>
-            <p>Description: {selectedTask.descrip}</p>
-            <p>Age: {selectedTask.age}</p>
-            <p>Months: {selectedTask.moths}</p>
-            <p>Status: {selectedTask.status}</p>
-          </div> 
-        )} */}
         <TaskDetail></TaskDetail>
       </Modal>
       <Modal
