@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Layout, Button, Spin, Typography, Tag } from "antd";
+import {useState } from "react";
+import { Layout, Button, Spin, Tag } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
 import {
@@ -8,13 +8,11 @@ import {
   MenuUnfoldOutlined,
   TeamOutlined,
   HomeOutlined,
-  CommentOutlined,
   SolutionOutlined,
 } from "@ant-design/icons";
 const { Header, Sider } = Layout;
 import { Content } from "antd/es/layout/layout";
 import HeaderMenu from "../components/Header/Header";
-const { Text } = Typography;
 import setImage from "../assets/789.png";
 import setImage2 from "../assets/cdww.png";
 
