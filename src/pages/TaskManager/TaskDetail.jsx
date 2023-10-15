@@ -173,7 +173,7 @@ const TaskDetail = () => {
               header={<div>Comments</div>}
               itemLayout="horizontal"
               dataSource={comments}
-              renderItem={(item, index) => (
+              renderItem={(item) => (
                 <Item>
                   <Item.Meta
                     avatar={<Avatar>{item.author.charAt(0)}</Avatar>}
@@ -239,7 +239,7 @@ const TaskDetail = () => {
               }
               itemLayout="horizontal"
               dataSource={historyData}
-              renderItem={(item, index) => (
+              renderItem={(item) => (
                 <Item>
                   <Item.Meta
                     avatar={

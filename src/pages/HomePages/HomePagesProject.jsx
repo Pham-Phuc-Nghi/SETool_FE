@@ -1,8 +1,20 @@
-import { Row, Col, Space, Typography, Card, FloatButton, Modal } from "antd";
+import {
+  Row,
+  Col,
+  Space,
+  Typography,
+  Card,
+  FloatButton,
+  Modal,
+  Form,
+  Input,
+  Carousel,
+} from "antd";
 const { Text, Title } = Typography;
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import CreateProject from "./CreateProject";
+
 const HomePagesProject = () => {
   const projects = [
     { key: 1, name: "Project 1", managerName: "Manager A" },
@@ -53,18 +65,56 @@ const HomePagesProject = () => {
     setIsModalAdd(false);
   };
 
+  const [searchText, setSearchText] = useState("");
+  // const [filteredData, setFilteredData] = useState(dsTangCa);
+
+  // useEffect(() => {
+  //   const newFilteredData = dsTangCa.filter((_dsTangCa) => {
+  //     const fullName = `${_dsTangCa.staff.lastName} ${_dsTangCa.staff.firstName}`;
+  //     return fullName.toLowerCase().includes(searchText.toLowerCase());
+  //   });
+  //   setFilteredData(newFilteredData);
+  // }, [searchText, dsTangCa]);
+
+  const handleSearch = (value) => {
+    setSearchText(value);
+  };
+  const contentStyle = {
+    height: "200px",
+    color: "#fff",
+    lineHeight: "160px",
+    textAlign: "center",
+    alignItems:"center",
+    background: "#364d79",
+  };
+
   return (
     <>
-      <Row gutter={24} style={{ width: "100%" }}>
+      <Row gutter={24} style={{ width: "95%", margin:"0 auto" }}>
         <Col
           span={24}
           style={{
             overflow: "auto",
             lineHeight: 2.5,
             width: "100%",
+            padding:0
           }}
         >
-          <Space direction="vertical" style={{ width: "100%" }}>
+          <Space direction="vertical" style={{ width: "100%"}}>
+            <Carousel autoplay style={{margin:"0 auto",width:"90%"}}>
+              <div>
+                <h3 style={contentStyle}>1</h3>
+              </div>
+              <div>
+                <h3 style={contentStyle}>2</h3>
+              </div>
+              <div>
+                <h3 style={contentStyle}>3</h3>
+              </div>
+              <div>
+                <h3 style={contentStyle}>4</h3>
+              </div>
+            </Carousel>
             <div
               style={{
                 display: "flex",
@@ -72,27 +122,53 @@ const HomePagesProject = () => {
                 alignItems: "center",
               }}
             >
-              <Title
-                style={{ marginTop: 20, color: "#E96D71", marginBottom: 0 }}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  width: "100%",
+                }}
               >
-                Các project hiện có
-              </Title>
+                <Title
+                  style={{ marginTop: 20, color: "#E96D71", marginBottom: 0,marginLeft:30 }}
+                >
+                  Current projects
+                </Title>
+                <Form
+                  labelCol={{ span: 8 }}
+                  wrapperCol={{ span: 16 }}
+                  style={{ width: "30%" }}
+                >
+                  <Form.Item
+                    name="searchHopDong"
+                    style={{
+                      marginTop: "26px",
+                      marginBottom: 0,
+                      marginLeft: 30,
+                    }}
+                  >
+                    <Input.Search
+                      allowClear
+                      placeholder="Search Project"
+                      onSearch={handleSearch}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      value={searchText}
+                      className="custom-search-input"
+                    />
+                  </Form.Item>
+                </Form>
+              </div>
               <FloatButton
                 onClick={showModalTaoDon}
                 type="primary"
                 tooltip={<Text style={{ color: "white" }}>Create project</Text>}
                 icon={<PlusOutlined />}
-                style={{ marginRight: 20}}
-                
+                style={{ marginRight: 20 }}
               ></FloatButton>
             </div>
-            <div
-              style={{
-                overflowY: "auto",
-                maxHeight: "560px",
-              }}
-            >
-              <Row gutter={24} style={{ width: "100%" }}>
+            <div>
+              <Row gutter={24} style={{ width: "100%",marginTop:30 }}>
                 {projects.map((project) => (
                   <Col key={project.key} span={6}>
                     <Card
@@ -103,10 +179,22 @@ const HomePagesProject = () => {
                         color: "#F4F5F6",
                         backgroundColor: "#FF4500",
                         textAlign: "center",
+                        cursor: "pointer",
+                        height:140,
                       }}
                     >
-                      <p>{project.name}</p>
-                      <p>{project.managerName}</p>
+                      <div
+                        style={{
+                          height:80,
+                          display: "flex",
+                          justifyContent: "center",
+                          alignContent: "center",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Text style={{fontSize:18}}>{project.name}</Text>
+                        <Text style={{fontSize:18,marginTop:20}}>{project.managerName}</Text>
+                      </div>
                     </Card>
                   </Col>
                 ))}
@@ -115,8 +203,14 @@ const HomePagesProject = () => {
           </Space>
         </Col>
       </Row>
-      <Modal open={isModalAdd} footer={null} onCancel={closeAddModal} title="Create Project" width={800}
-      style={{top:40}}>
+      <Modal
+        open={isModalAdd}
+        footer={null}
+        onCancel={closeAddModal}
+        title="Create Project"
+        width={800}
+        style={{ top: 40 }}
+      >
         <CreateProject onClose={closeAddModal} />
       </Modal>
     </>

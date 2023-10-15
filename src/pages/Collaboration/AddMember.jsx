@@ -36,7 +36,7 @@ const AddMember = ({ form }) => {
         >
           <Input placeholder="Input Member Name or Email"></Input>
         </Form.Item>
-        <Button icon={<PlusOutlined />} className="custom-btn-add-d" htmlType="submit">
+        <Button icon={<PlusOutlined style={{marginTop:5}}/>} className="custom-btn-add-d" htmlType="submit">
           Add member
         </Button>
       </Form>

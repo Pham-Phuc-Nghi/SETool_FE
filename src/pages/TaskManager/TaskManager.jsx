@@ -242,7 +242,7 @@ const TaskManager = () => {
               style={{
                 width: "300px",
                 height: cardHeights[status],
-                marginRight: 30,
+                marginRight: 20,
                 verticalAlign: "top",
               }}
               onDragOver={handleDragOver}

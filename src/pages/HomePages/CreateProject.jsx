@@ -3,6 +3,7 @@ import {
   BarsOutlined,
   CalendarOutlined,
   FormOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -10,6 +11,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Modal,
   Row,
   Typography,
@@ -97,7 +99,7 @@ const CreateProject = ({ onClose }) => {
           rules={[{ required: true, message: "startDate must not be a blank" }]}
         >
           <DatePicker
-            style={{ width: "100%" }}
+            style={{ width: "50%" }}
             disabledDate={(current) => {
               const currentDate = dayjs(current);
               const today = dayjs();
@@ -116,7 +118,7 @@ const CreateProject = ({ onClose }) => {
           rules={[{ required: true, message: "endDate must not be a blank" }]}
         >
           <DatePicker
-            style={{ width: "100%" }}
+            style={{ width: "50%" }}
             disabledDate={(current) => {
               const currentDate = dayjs(current);
               const today = dayjs();
@@ -137,14 +139,14 @@ const CreateProject = ({ onClose }) => {
               required: "true",
               type: "number",
               min: 1,
-              message: "Total day per sprint must be large than one",
+              message: "Total day per sprint must be larger than 1",
             },
           ]}
         >
-          <Input
-            style={{ width: "100%" }}
+          <InputNumber
+            style={{ width: "50%" }}
             placeholder="Input number of day per sprint"
-          ></Input>
+          ></InputNumber>
         </Form.Item>
         <Form.Item
           label={
@@ -176,11 +178,9 @@ const CreateProject = ({ onClose }) => {
                 Hủy
               </Button>
             </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Tạo đơn tăng ca
+              <Button icon={<PlusCircleOutlined  style={{marginTop:5}}/>} type="primary" htmlType="submit">
+                Create project
               </Button>
-            </Form.Item>
           </Col>
         </Row>
       </Form>

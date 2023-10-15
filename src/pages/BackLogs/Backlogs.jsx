@@ -1,13 +1,26 @@
-import { Avatar, Button, Input, List, Modal, Skeleton, Typography } from "antd";
+import {
+  Avatar,
+  Button,
+  Drawer,
+  Form,
+  Input,
+  List,
+  Modal,
+  Popconfirm,
+  Skeleton,
+  Typography,
+} from "antd";
 import {
   UserOutlined,
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 import EditBacklogs from "./EditBacklogs";
 import AddBacklogs from "./AddBacklogs";
+import Assignee from "./Assignee";
 const { Text } = Typography;
 const Backlogs = () => {
   const dummyData = [
@@ -43,24 +56,58 @@ const Backlogs = () => {
     },
   ];
 
-  const [isModalEdit, setIsModalEdit] = useState(false);
+  const [isDrawerAdd, setIsDrawerAdd] = useState(false);
+  const [form] = Form.useForm();
 
-  const showModalEdit = () => {
-    setIsModalEdit(true);
+  const showAddDrawer = () => {
+    setIsDrawerAdd(true);
   };
 
-  const closeEditModal = () => {
-    setIsModalEdit(false);
+  const closeAddDrawer = () => {
+    setIsDrawerAdd(false);
+    form.resetFields();
   };
 
-  const [isModalAdd, setIsModalAdd] = useState(false);
+  const [isDrawerEdit, setIsDrawerEdit] = useState(false);
+  const [form1] = Form.useForm();
 
-  const showModalTaoDon = () => {
-    setIsModalAdd(true);
+  const showDrawerEdit = () => {
+    setIsDrawerEdit(true);
   };
 
-  const closeAddModal = () => {
-    setIsModalAdd(false);
+  const closeEditDrawer = () => {
+    setIsDrawerEdit(false);
+    form1.resetFields();
+  };
+
+  const [isModalAssignee, setIsModalAssignee] = useState(false);
+  const [form2] = Form.useForm();
+
+  const showModalAssignee = () => {
+    setIsModalAssignee(true);
+  };
+
+  const closeAssigneeModal = () => {
+    setIsModalAssignee(false);
+    form2.resetFields();
+  };
+
+  const [searchText, setSearchText] = useState("");
+  // const [filteredData, setFilteredData] = useState(dsTangCa);
+
+  // useEffect(() => {
+  //   const newFilteredData = dsTangCa.filter((_dsTangCa) => {
+  //     const fullName = `${_dsTangCa.staff.lastName} ${_dsTangCa.staff.firstName}`;
+  //     return fullName.toLowerCase().includes(searchText.toLowerCase());
+  //   });
+  //   setFilteredData(newFilteredData);
+  // }, [searchText, dsTangCa]);
+
+  const handleSearch = (value) => {
+    setSearchText(value);
+  };
+
+  const handleDelete = () => {
   };
 
   return (
@@ -70,14 +117,14 @@ const Backlogs = () => {
           allowClear
           placeholder="Input task name"
           style={{ width: "25%" }}
-          //   onSearch={handleSearch}
-          //   onChange={(e) => handleSearch(e.target.value)}
-          //   value={searchText}
+          onSearch={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
+          value={searchText}
         />
         <Button
           className="custom-btn-add-d"
           icon={<PlusOutlined />}
-          onClick={showModalTaoDon}
+          onClick={showAddDrawer}
           style={{ float: "right" }}
         >
           Add Backlogs
@@ -92,20 +139,32 @@ const Backlogs = () => {
             <List.Item
               actions={[
                 <Button
+                  key="assignee"
+                  className="custom-btn-update"
+                  icon={<UserAddOutlined />}
+                  onClick={showModalAssignee}
+                >
+                  Assignee & review
+                </Button>,
+                <Button
                   key="edit"
                   className="custom-btn-watch-report"
                   icon={<EditOutlined />}
-                  onClick={showModalEdit}
+                  onClick={showDrawerEdit}
                 >
                   Edit
                 </Button>,
-                <Button
+                <Popconfirm
                   key="delete"
-                  className="custom-btn-del"
-                  icon={<DeleteOutlined />}
+                  title="Are you sure you want to delete this item?"
+                  onConfirm={handleDelete}
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  Delete
-                </Button>,
+                  <Button className="custom-btn-del" icon={<DeleteOutlined />}>
+                    Delete
+                  </Button>
+                </Popconfirm>,
               ]}
             >
               <Skeleton avatar title={false} loading={item.loading} active>
@@ -116,29 +175,43 @@ const Backlogs = () => {
                   title={<a href="https://ant.design">{item.name?.last}</a>}
                   description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                 />
-                <Text>John</Text>
+                <Text>Reviewer: John</Text>
               </Skeleton>
             </List.Item>
           )}
         />
-        <Modal
-          open={isModalEdit}
-          footer={null}
-          onCancel={closeEditModal}
+        <Drawer
           title="Edit backlogs"
-          width={600}
+          placement="right"
+          closable={true}
+          visible={isDrawerEdit}
+          onClose={closeEditDrawer}
+          width={700}
+          style={{ top: 42 }}
         >
-          <EditBacklogs onClose={closeEditModal}></EditBacklogs>
-        </Modal>
-        <Modal
-          open={isModalAdd}
-          footer={null}
-          onCancel={closeAddModal}
+          <EditBacklogs onClose={closeEditDrawer} form={form1}></EditBacklogs>
+        </Drawer>
+        <Drawer
           title="Add backlogs"
+          placement="right"
+          closable={true}
+          visible={isDrawerAdd}
+          onClose={closeAddDrawer}
+          width={700}
+          style={{ top: 42 }}
         >
-          <AddBacklogs onClose={closeAddModal}></AddBacklogs>
+          <AddBacklogs onClose={closeAddDrawer} form={form}></AddBacklogs>
+        </Drawer>
+        <Modal
+          title="Assignee & review"
+          open={isModalAssignee}
+          footer={null}
+          onCancel={closeAssigneeModal}
+          width={500}
+        >
+          <Assignee form={form2} onClose={closeAssigneeModal}></Assignee>
         </Modal>
-      </div>{" "}
+      </div>
     </>
   );
 };
