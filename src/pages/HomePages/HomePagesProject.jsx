@@ -14,6 +14,7 @@ const { Text, Title } = Typography;
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import CreateProject from "./CreateProject";
+import { useNavigate } from "react-router-dom";
 
 const HomePagesProject = () => {
   const projects = [
@@ -75,7 +76,7 @@ const HomePagesProject = () => {
   //   });
   //   setFilteredData(newFilteredData);
   // }, [searchText, dsTangCa]);
-
+  const navigate = useNavigate();
   const handleSearch = (value) => {
     setSearchText(value);
   };
@@ -84,24 +85,24 @@ const HomePagesProject = () => {
     color: "#fff",
     lineHeight: "160px",
     textAlign: "center",
-    alignItems:"center",
+    alignItems: "center",
     background: "#364d79",
   };
 
   return (
     <>
-      <Row gutter={24} style={{ width: "95%", margin:"0 auto" }}>
+      <Row gutter={24} style={{ width: "95%", margin: "0 auto" }}>
         <Col
           span={24}
           style={{
             overflow: "auto",
             lineHeight: 2.5,
             width: "100%",
-            padding:0
+            padding: 0,
           }}
         >
-          <Space direction="vertical" style={{ width: "100%"}}>
-            <Carousel autoplay style={{margin:"0 auto",width:"90%"}}>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <Carousel autoplay style={{ margin: "0 auto", width: "90%" }}>
               <div>
                 <h3 style={contentStyle}>1</h3>
               </div>
@@ -131,7 +132,12 @@ const HomePagesProject = () => {
                 }}
               >
                 <Title
-                  style={{ marginTop: 20, color: "#E96D71", marginBottom: 0,marginLeft:30 }}
+                  style={{
+                    marginTop: 20,
+                    color: "#E96D71",
+                    marginBottom: 0,
+                    marginLeft: 30,
+                  }}
                 >
                   Current projects
                 </Title>
@@ -168,10 +174,13 @@ const HomePagesProject = () => {
               ></FloatButton>
             </div>
             <div>
-              <Row gutter={24} style={{ width: "100%",marginTop:30 }}>
+              <Row gutter={24} style={{ width: "100%", marginTop: 30 }}>
                 {projects.map((project) => (
                   <Col key={project.key} span={6}>
                     <Card
+                      onClick={() => {
+                        navigate("/home/dashboard");
+                      }}
                       style={{
                         width: "100%",
                         marginBottom: 12,
@@ -180,20 +189,22 @@ const HomePagesProject = () => {
                         backgroundColor: "#FF4500",
                         textAlign: "center",
                         cursor: "pointer",
-                        height:140,
+                        height: 140,
                       }}
                     >
                       <div
                         style={{
-                          height:80,
+                          height: 80,
                           display: "flex",
                           justifyContent: "center",
                           alignContent: "center",
                           flexDirection: "column",
                         }}
                       >
-                        <Text style={{fontSize:18}}>{project.name}</Text>
-                        <Text style={{fontSize:18,marginTop:20}}>{project.managerName}</Text>
+                        <Text style={{ fontSize: 18 }}>{project.name}</Text>
+                        <Text style={{ fontSize: 18, marginTop: 20 }}>
+                          {project.managerName}
+                        </Text>
                       </div>
                     </Card>
                   </Col>
