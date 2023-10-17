@@ -148,8 +148,8 @@ a {
 
 .custom-btn-search:hover {
   border: 1px solid var(--blue-1677ff);
-  color: var(--white) !important;
   background-color: var(--blue-1677ff);
+  color: var(--white) !important;
 }
 
 .custom-btn-del {
