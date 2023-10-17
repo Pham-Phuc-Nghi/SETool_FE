@@ -182,7 +182,7 @@ const HomePagesProject = () => {
                       onMouseEnter={() => setHoveredCard(index)}
                       onMouseLeave={() => setHoveredCard(null)}
                       onClick={() => {
-                        navigate("/home/dashboard");
+                        navigate("/project/dashboard");
                       }}
                       style={{
                         width: "100%",
