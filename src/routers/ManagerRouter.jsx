@@ -1,14 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import DefaultLayout from "../layout/DefaultLayout";
 import TaskManager from "../pages/TaskManager/TaskManager"
-import Backlogs from "../pages/BackLogs/Backlogs";
 import Collab from "../pages/Collaboration/Collab";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import ManagerZone from "../pages/ManagerZone/ManagerZone";
 
 
 const adminRoutesData = [
   { path: "task", component: <TaskManager /> },
-  { path: "backlog", component: <Backlogs /> },
+  { path: "management", component: <ManagerZone /> },
   { path: "collaborators", component: <Collab /> },
   { path: "dashboard", component: <Dashboard /> },
 ];

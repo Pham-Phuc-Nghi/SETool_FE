@@ -88,6 +88,7 @@ const HomePagesProject = () => {
     alignItems: "center",
     background: "#364d79",
   };
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
     <>
@@ -175,9 +176,11 @@ const HomePagesProject = () => {
             </div>
             <div>
               <Row gutter={24} style={{ width: "100%", marginTop: 30 }}>
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <Col key={project.key} span={6}>
                     <Card
+                      onMouseEnter={() => setHoveredCard(index)}
+                      onMouseLeave={() => setHoveredCard(null)}
                       onClick={() => {
                         navigate("/home/dashboard");
                       }}
@@ -190,6 +193,9 @@ const HomePagesProject = () => {
                         textAlign: "center",
                         cursor: "pointer",
                         height: 140,
+                        transform:
+                          hoveredCard === index ? "scale(1.1)" : "scale(1)",
+                        transition: "transform 0.2s",
                       }}
                     >
                       <div

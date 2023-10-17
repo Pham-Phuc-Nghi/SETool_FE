@@ -171,11 +171,11 @@ const CreateProject = ({ onClose }) => {
           >
             <Form.Item>
               <Button
-                danger
+              className="custom-btn-close"
                 onClick={handleCancel}
                 style={{ marginRight: "10px" }}
               >
-                Hủy
+                Cancel
               </Button>
             </Form.Item>
               <Button icon={<PlusCircleOutlined  style={{marginTop:5}}/>} type="primary" htmlType="submit">

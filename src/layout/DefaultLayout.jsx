@@ -29,7 +29,7 @@ function getItem(label, key, icon, children, type) {
 const items_for_manager = [
   getItem("Dashboard", "dashboard", <HomeOutlined />),
   getItem("Collaborators & Teams", "collaborators", <TeamOutlined />),
-  getItem("Backlog", "backlog", <DatabaseOutlined />),
+  getItem("Manager Zone", "management", <DatabaseOutlined />),
   getItem("My Task", "task", <SolutionOutlined />),
 ];
 

@@ -1,6 +1,6 @@
 import { Avatar, Card, Modal, Tag, Typography } from "antd";
 import { useState } from "react";
-const { Title, Text } = Typography;
+const { Title } = Typography;
 import "./dashBoard.css";
 import TaskDetail from "../TaskManager/TaskDetail";
 import {
@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState([
+  const tasks=[
     {
       id: 1,
       name: "Build fe layout for manager",
@@ -147,7 +147,7 @@ const Dashboard = () => {
       moths: "Task 12",
       status: "To Do",
     },
-  ]);
+  ];
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -194,9 +194,8 @@ const Dashboard = () => {
               backgroundColor: "white",
               cursor: "pointer",
             }}
-            classNames="button"
             key={task.id}
-            className="task"
+            className="task-card"
             onDoubleClick={() => handleTaskDoubleClick(task)}
           >
             <div
@@ -352,7 +351,7 @@ const Dashboard = () => {
           minWidth: `${statuses.length * (300 + 10)}px`,
         }}
       >
-        {statuses.map((status, index) => (
+        {statuses.map((status) => (
           <>
             <Card
               key={status}

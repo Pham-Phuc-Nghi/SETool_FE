@@ -148,9 +148,8 @@ const TaskManager = () => {
               backgroundColor: "transparent",
               cursor: "pointer",
             }}
-            classNames="button"
             key={task.id}
-            className="task"
+            className="task-card"
             draggable
             onDragStart={(e) => handleDragStart(e, task)}
             onDoubleClick={() => handleTaskDoubleClick(task)}

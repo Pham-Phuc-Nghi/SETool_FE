@@ -14,3 +14,10 @@
     cursor: not-allowed; 
   }
   
+  .task-card {
+    transition: transform 0.2s; 
+  }
+  
+  .task-card:hover {
+    transform: scale(1.05); 
+  }
