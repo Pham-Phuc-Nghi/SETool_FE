@@ -93,17 +93,17 @@ const AddBacklogs = ({ onClose,form }) => {
         style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
       >
         <Form.Item
-          label={<Text>Project name</Text>}
+          label={<Text>Task name</Text>}
           name="name"
           style={{ marginRight: 10 }}
           rules={[
             {
               required: true,
-              message: "Project name must not be a blank",
+              message: "Task name must not be a blank",
             },
           ]}
         >
-          <Input placeholder="Input project name" allowClear></Input>
+          <Input placeholder="Input Task name" allowClear></Input>
         </Form.Item>
         <Form.Item
           label={<Text>Description</Text>}
