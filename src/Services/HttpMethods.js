@@ -1,5 +1,4 @@
 import { AxiosInstance } from "../config/AxiosInstance";
-import handleError from "../config/axiosError";
 
 // todo: GET
 export const getRequest = async (url) => {
@@ -7,7 +6,7 @@ export const getRequest = async (url) => {
         const res = await AxiosInstance.get(`${url}`);
         return res;
     } catch (error) {
-        return handleError(error);
+        console.log("🚀 ~ file: HttpMethods.js:9 ~ getRequest ~ error:", error)
     }
 };
 
@@ -17,7 +16,7 @@ export const postRequest = async (url, payload) => {
         const res = AxiosInstance.post(`${url}`, payload);
         return res;
     } catch (error) {
-        return handleError(error);
+        console.log("🚀 ~ file: HttpMethods.js:19 ~ postRequest ~ error:", error)
     }
 };
 
@@ -27,7 +26,7 @@ export const putRequest = async (url, payload) => {
         const res = AxiosInstance.put(`${url}`, payload);
         return res;
     } catch (error) {
-        return handleError(error);
+        console.log("🚀 ~ file: HttpMethods.js:29 ~ putRequest ~ error:", error)
     }
 };
 
@@ -37,7 +36,7 @@ export const deleteRequest = async (url) => {
         const res = AxiosInstance.delete(`${url}`);
         return res;
     } catch (error) {
-        return handleError(error);
+        console.log("🚀 ~ file: HttpMethods.js:39 ~ deleteRequest ~ error:", error)
     }
 };
 
@@ -47,6 +46,6 @@ export const patchRequest = async (url, payload) => {
         const res = AxiosInstance.patch(`${url}`, payload);
         return res;
     } catch (error) {
-        return handleError(error);
+        console.log("🚀 ~ file: HttpMethods.js:49 ~ patchRequest ~ error:", error)
     }
 };

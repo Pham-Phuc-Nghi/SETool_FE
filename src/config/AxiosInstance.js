@@ -35,12 +35,12 @@ AxiosInstance.interceptors.response.use(
 
 const handleDangNhap = (newToken) => {
     authToken = newToken;
+    console.log("🚀 ~ authToken:", authToken)
     AxiosInstance.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-    sessionStorage.setItem('token', authToken);
+    //sessionStorage.setItem('AccessToken', authToken);
 }
 
 const handleDangXuat = () => {
-    localStorage.clear();
     sessionStorage.clear();
     AxiosInstance.defaults.headers.common['Authorization'] = undefined;
 }

@@ -10,10 +10,13 @@ import {
   Typography,
 } from "antd";
 import { useState } from "react";
+import { handleDangXuat } from "../../config/AxiosInstance";
+import { useNavigate } from "react-router";
 const { Text } = Typography;
 
 const UserAvatar = () => {
-  const username_current = "Admin SE TOOL";
+  const nav = useNavigate();
+  const username_current = sessionStorage.getItem("name_current");
   const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -31,7 +34,10 @@ const UserAvatar = () => {
         Đổi mật khẩu
       </Menu.Item>
       {/* <Link to={"/"} onClick={handleDangXuat}> */}
-      <Menu.Item key="2" icon={<LogoutOutlined />}>
+      <Menu.Item key="2" icon={<LogoutOutlined />} onClick={() => {
+        handleDangXuat();
+        nav("/");
+      }}>
         Đăng xuất
       </Menu.Item>
       {/* </Link> */}

@@ -1,18 +1,34 @@
 import { useEffect, useState } from "react";
-import { Button, Checkbox, Form, Input, Typography } from "antd";
+import { Button, Checkbox, Form, Input, Typography, message } from "antd";
 import { UserOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 const { Text, Title } = Typography;
 import "./login.css";
 import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import { getAccessTokenSelector, getUserNameSelector } from "../../Redux/selector";
+import { handleDangNhap } from "../../config/AxiosInstance";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const nav = useNavigate();
   const [showCard, setShowCard] = useState(false);
   const [currentForm, setCurrentForm] = useState("userLogin");
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
   const [form3] = Form.useForm();
+
+  const username = useSelector(getUserNameSelector);
+  const accessToken = useSelector(getAccessTokenSelector);
+
+  useEffect(() => {
+    if (accessToken !== null && accessToken !== '' && accessToken !== undefined) {
+      handleDangNhap(accessToken);
+      sessionStorage.setItem("name_current", username);
+    }
+  }, [username, accessToken])
+
 
   const handleClickLoginByGG = () => {
     nav("/homepage");
@@ -24,15 +40,21 @@ const Login = () => {
     }, 200);
     return () => clearTimeout(timer);
   }, []);
+
   //login
   const handleLogin = (values) => {
     // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
-    console.log("Đăng nhập với tên đăng nhập:", values);
+    dispatch(login(values)).unwrap()
+      .then(() => {
+        nav("/homepage");
+      })
+      .catch((error) => {
+        message.error(error);
+      })
   };
   //sign up
   const handleSignUp = (values) => {
     // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
-    console.log("Đăng nhập với tên đăng nhập:", values);
     setCurrentForm("otp");
   };
 
