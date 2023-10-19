@@ -83,9 +83,11 @@ const Collab = () => {
       render: (text, record) => (
         <div>
           <Select
-            style={{ width: "40%", marginRight: 10 }}
+            style={{ width: "60%", marginRight: 10 }}
             placeholder="Choose role"
+            mode="multiple"
             defaultValue={1}
+            maxTagCount={3}
             options={[
               {
                 value: 1,
@@ -93,7 +95,11 @@ const Collab = () => {
               },
               {
                 value: 2,
-                label: "Manager",
+                label: "Dev",
+              },
+              {
+                value: 3,
+                label: "QA",
               },
             ]}
           ></Select>

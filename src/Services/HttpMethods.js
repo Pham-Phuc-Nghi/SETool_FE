@@ -14,9 +14,11 @@ export const getRequest = async (url) => {
 export const postRequest = async (url, payload) => {
     try {
         const res = AxiosInstance.post(`${url}`, payload);
+        //console.log("Post try: ", res);
         return res;
     } catch (error) {
         console.log("🚀 ~ file: HttpMethods.js:19 ~ postRequest ~ error:", error)
+        return error;
     }
 };
 

@@ -1,13 +1,29 @@
 import { useEffect, useState } from "react";
-import { Button, Checkbox, Form, Input, Typography, message } from "antd";
-import { UserOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  Typography,
+  message,
+  notification,
+} from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  GoogleOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 const { Text, Title } = Typography;
 import "./login.css";
 import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../Redux/Slices/DangNhap/DangNhapSlice";
-import { getAccessTokenSelector, getUserNameSelector } from "../../Redux/selector";
+import { dangki, login, otp } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import {
+  getAccessTokenSelector,
+  getUserNameSelector,
+} from "../../Redux/selector";
 import { handleDangNhap } from "../../config/AxiosInstance";
 
 const Login = () => {
@@ -23,12 +39,15 @@ const Login = () => {
   const accessToken = useSelector(getAccessTokenSelector);
 
   useEffect(() => {
-    if (accessToken !== null && accessToken !== '' && accessToken !== undefined) {
+    if (
+      accessToken !== null &&
+      accessToken !== "" &&
+      accessToken !== undefined
+    ) {
       handleDangNhap(accessToken);
       sessionStorage.setItem("name_current", username);
     }
-  }, [username, accessToken])
-
+  }, [username, accessToken]);
 
   const handleClickLoginByGG = () => {
     nav("/homepage");
@@ -44,21 +63,55 @@ const Login = () => {
   //login
   const handleLogin = (values) => {
     // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
-    dispatch(login(values)).unwrap()
+    dispatch(login(values))
+      .unwrap()
       .then(() => {
         nav("/homepage");
       })
       .catch((error) => {
         message.error(error);
-      })
+      });
   };
+
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
+  };
+
   //sign up
   const handleSignUp = (values) => {
-    // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
-    setCurrentForm("otp");
+    console.log(values);
+    dispatch(dangki(values))
+      .unwrap()
+      .then((result) => {
+        message.success(result, 1.5);
+        setCurrentForm("otp");
+      })
+      .catch((error) => {
+        error.forEach((errorMessage, index) => {
+          if (errorMessage) {
+            openNotification("error " + (index + 1) + ": ", errorMessage);
+          }
+        });
+      });
   };
 
   //otp
+
+  const handleOTP = (values) => {
+    dispatch(otp(values))
+      .unwrap()
+      .then((result) => {
+        nav("/login");
+        message.success(result, 1.5);
+      })
+      .catch((error) => {
+        message.error(error);
+      });
+  };
+
   const [digits, setDigits] = useState(["", "", "", "", "", ""]);
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -162,7 +215,7 @@ const Login = () => {
                 >
                   <Input
                     type="email"
-                    prefix={<UserOutlined />}
+                    prefix={<MailOutlined />}
                     allowClear
                     style={{
                       // marginBottom: "10px",
@@ -338,7 +391,7 @@ const Login = () => {
                 >
                   <Input
                     type="email"
-                    prefix={<UserOutlined />}
+                    prefix={<MailOutlined />}
                     allowClear
                     style={{
                       width: "100%",
@@ -379,6 +432,14 @@ const Login = () => {
                       message: (
                         <Text style={{ fontSize: 14, color: "#F04F6A" }}>
                           Password must not be a blank
+                        </Text>
+                      ),
+                    },
+                    {
+                      min: 6,
+                      message: (
+                        <Text style={{ fontSize: 14, color: "#F04F6A" }}>
+                          Password must be at least 6 characters
                         </Text>
                       ),
                     },
@@ -469,7 +530,7 @@ const Login = () => {
                 //   remember: true,
                 // }}
                 // autoComplete="off"
-                // onFinish={handleLoginClick}
+                onFinish={handleOTP}
                 className="login-select-container position-relative"
                 style={{ background: "white" }}
               >
@@ -498,7 +559,7 @@ const Login = () => {
                         marginLeft: 10,
                         textAlignLast: "center",
                       }}
-                      name="token"
+                      name="otp"
                       rules={[
                         {
                           pattern: /^[0-9]*$/,

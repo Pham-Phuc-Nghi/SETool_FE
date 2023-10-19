@@ -244,11 +244,6 @@ const Dashboard = () => {
     }
   });
 
-  const toDoTasks = tasks.filter((task) => task.status === "To Do");
-  toDoTasks.forEach((task, index) => {
-    console.log(index);
-  });
-
   const pastelColors = [
     "#B2A0E2",
     "#FFD6BA",
@@ -390,7 +385,7 @@ const Dashboard = () => {
         <TaskDetail></TaskDetail>
       </Modal>
       <Modal
-        visible={visibleModal !== undefined}
+        open={visibleModal !== undefined}
         title={visibleModal?.title}
         onCancel={() => setVisibleModal(undefined)}
       >

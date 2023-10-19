@@ -102,6 +102,32 @@ const Assignee = ({ onClose, form }) => {
             ]}
           ></Select>
         </Form.Item>
+        <Form.Item
+          label={<Text>Sprint</Text>}
+          name="sprint"
+          style={{ marginRight: 10 }}
+          rules={[
+            {
+              required: true,
+              message: "Sprint must not be a blank",
+            },
+          ]}
+        >
+          <Select
+            style={{ width: "60%" }}
+            placeholder="Choose Sprint"
+            options={[
+              {
+                value: 0,
+                label: <Text>1</Text>,
+              },
+              {
+                value: 1,
+                label: <Text>2</Text>,
+              },
+            ]}
+          ></Select>
+        </Form.Item>
         <Row gutter={24} style={{ marginRight: "5px" }}>
           <Col
             span={24}

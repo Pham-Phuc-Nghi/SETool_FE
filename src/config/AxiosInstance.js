@@ -29,7 +29,7 @@ AxiosInstance.interceptors.response.use(
     },
     async (error) => {
         console.log("🚀 ~ Response in Error (in AxiosInstance):", error);
-        //return error;
+        return error;
     }
 );
 

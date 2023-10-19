@@ -15,18 +15,43 @@ import {
   Modal,
   Row,
   Typography,
+  message,
+  notification,
 } from "antd";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+import { createProject } from "../../Redux/Slices/HonePages/HomePagesSlice";
 const { Text } = Typography;
 
 const CreateProject = ({ onClose }) => {
   const [form] = Form.useForm();
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const dispatch = useDispatch();
+
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
+  };
 
   const handleFormSubmit = (values) => {
     const data = { ...values };
-    console.log(data);
+    if (data) {
+      dispatch(createProject(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+        })
+        .catch((error) => {
+          error.forEach((errorMessage, index) => {
+            if (errorMessage) {
+              openNotification("error " + (index + 1) + ": ", errorMessage);
+            }
+          });
+        });
+    }
   };
 
   const handleCancel = () => {
@@ -58,7 +83,7 @@ const CreateProject = ({ onClose }) => {
               <BarsOutlined /> Project name
             </Text>
           }
-          name="name"
+          name="projectName"
           rules={[
             {
               required: "true",
@@ -77,17 +102,19 @@ const CreateProject = ({ onClose }) => {
               <BarsOutlined /> Total sprint
             </Text>
           }
-          name="totalSprint"
+          name="projectTotalSprint"
           rules={[
             {
-              required: "true",
               type: "number",
               min: 1,
-              message: "Sprint must be large than one",
+              message: "Sprint must be larger than one",
             },
           ]}
         >
-          <Input style={{ width: "100%" }} placeholder="Input sprint"></Input>
+          <InputNumber
+            style={{ width: "100%" }}
+            placeholder="Input sprint"
+          ></InputNumber>
         </Form.Item>
         <Form.Item
           label={
@@ -95,7 +122,7 @@ const CreateProject = ({ onClose }) => {
               <CalendarOutlined /> Start date:
             </Text>
           }
-          name="startDate"
+          name="projectStartDay"
           rules={[{ required: true, message: "startDate must not be a blank" }]}
         >
           <DatePicker
@@ -114,7 +141,7 @@ const CreateProject = ({ onClose }) => {
               <CalendarOutlined /> End date:
             </Text>
           }
-          name="endDate"
+          name="projectEndDay"
           rules={[{ required: true, message: "endDate must not be a blank" }]}
         >
           <DatePicker
@@ -133,7 +160,7 @@ const CreateProject = ({ onClose }) => {
               <BarsOutlined /> Total day per sprint
             </Text>
           }
-          name="totalDayPerSprint"
+          name="projectDayPerSprint"
           rules={[
             {
               required: "true",
@@ -154,7 +181,7 @@ const CreateProject = ({ onClose }) => {
               <FormOutlined /> Project descriptions
             </Text>
           }
-          name="reason"
+          name="projectDescription"
           rules={[
             {
               required: "true",
@@ -171,16 +198,20 @@ const CreateProject = ({ onClose }) => {
           >
             <Form.Item>
               <Button
-              className="custom-btn-close"
+                className="custom-btn-close"
                 onClick={handleCancel}
                 style={{ marginRight: "10px" }}
               >
                 Cancel
               </Button>
             </Form.Item>
-              <Button icon={<PlusCircleOutlined  style={{marginTop:5}}/>} type="primary" htmlType="submit">
-                Create project
-              </Button>
+            <Button
+              icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
+              type="primary"
+              htmlType="submit"
+            >
+              Create project
+            </Button>
           </Col>
         </Row>
       </Form>
