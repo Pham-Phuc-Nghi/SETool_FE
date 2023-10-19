@@ -10,10 +10,13 @@ const Login = () => {
   const nav = useNavigate();
   const [showCard, setShowCard] = useState(false);
   const [currentForm, setCurrentForm] = useState("userLogin");
+  const [form1] = Form.useForm();
+  const [form2] = Form.useForm();
+  const [form3] = Form.useForm();
 
   const handleClickLoginByGG = () => {
     nav("/homepage");
-  }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -21,6 +24,40 @@ const Login = () => {
     }, 200);
     return () => clearTimeout(timer);
   }, []);
+  //login
+  const handleLogin = (values) => {
+    // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
+    console.log("Đăng nhập với tên đăng nhập:", values);
+  };
+  //sign up
+  const handleSignUp = (values) => {
+    // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
+    console.log("Đăng nhập với tên đăng nhập:", values);
+    setCurrentForm("otp");
+  };
+
+  //otp
+  const [digits, setDigits] = useState(["", "", "", "", "", ""]);
+  const handleChange = (e, index) => {
+    const value = e.target.value;
+    if (/^[0-9]*$/.test(value) || value === "") {
+      const newDigits = [...digits];
+      newDigits[index] = value;
+      setDigits(newDigits);
+      if (value === "") {
+        if (index > 0) {
+          document.getElementById(`digit${index}`).focus();
+        }
+      } else if (index < 5) {
+        document.getElementById(`digit${index + 2}`).focus();
+      }
+    }
+  };
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && index > 0 && digits[index] === "") {
+      document.getElementById(`digit${index}`).focus();
+    }
+  };
 
   return (
     <div className="login-select-container">
@@ -40,9 +77,9 @@ const Login = () => {
               position: "absolute",
               top: 60,
               right: 100,
-              width:100,
-              height:100,
-              backgroundColor:"transparent"
+              width: 100,
+              height: 100,
+              backgroundColor: "transparent",
             }}
             src={setImage}
           />
@@ -56,6 +93,7 @@ const Login = () => {
           >
             {currentForm === "userLogin" && (
               <Form
+                form={form1}
                 key="userLogin"
                 name="basic"
                 labelCol={{
@@ -73,7 +111,7 @@ const Login = () => {
                   remember: true,
                 }}
                 autoComplete="off"
-              // onFinish={handleLogin}
+                onFinish={handleLogin}
               >
                 <Title
                   style={{
@@ -88,19 +126,20 @@ const Login = () => {
                 </Title>
                 <Form.Item
                   className="form__item__input"
-                  name="username"
+                  name="email"
                   rules={[
                     {
                       required: true,
                       message: (
                         <Text style={{ fontSize: 14, color: "#F04F6A" }}>
-                          Username must not be a blank
+                          Email must not be a blank
                         </Text>
                       ),
                     },
                   ]}
                 >
                   <Input
+                    type="email"
                     prefix={<UserOutlined />}
                     allowClear
                     style={{
@@ -108,7 +147,7 @@ const Login = () => {
                       width: "100%",
                       fontSize: 16,
                     }}
-                    placeholder="Username"
+                    placeholder="Email"
                   />
                 </Form.Item>
                 <Form.Item
@@ -135,7 +174,6 @@ const Login = () => {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <Form.Item
-                    name="remember"
                     valuePropName="checked"
                     wrapperCol={{
                       offset: 1,
@@ -152,7 +190,6 @@ const Login = () => {
                     </Checkbox>
                   </Form.Item>
                   <Form.Item
-                    name="forgot"
                     wrapperCol={{
                       offset: 1,
                       span: 23,
@@ -175,6 +212,7 @@ const Login = () => {
                     height: "auto",
                     fontFamily: "sans-serif",
                   }}
+                  className="task-card"
                 >
                   Login
                 </Button>
@@ -207,6 +245,7 @@ const Login = () => {
                     fontFamily: "sans-serif",
                     marginTop: 10,
                   }}
+                  className="task-card"
                 >
                   Login with mail @fpt.edu.vn
                 </Button>
@@ -230,6 +269,7 @@ const Login = () => {
             )}
             {currentForm === "signUp" && (
               <Form
+                form={form2}
                 name="basic"
                 key="signUp"
                 labelCol={{
@@ -247,7 +287,7 @@ const Login = () => {
                   remember: true,
                 }}
                 autoComplete="off"
-              // onFinish={handleLogin}
+                onFinish={handleSignUp}
               >
                 <Title
                   style={{
@@ -262,13 +302,38 @@ const Login = () => {
                 </Title>
                 <Form.Item
                   className="form__item__input"
-                  name="username"
+                  name="email"
                   rules={[
                     {
                       required: true,
                       message: (
                         <Text style={{ fontSize: 14, color: "#F04F6A" }}>
-                          Username must not be a blank
+                          Email must not be a blank
+                        </Text>
+                      ),
+                    },
+                  ]}
+                >
+                  <Input
+                    type="email"
+                    prefix={<UserOutlined />}
+                    allowClear
+                    style={{
+                      width: "100%",
+                      fontSize: 16,
+                    }}
+                    placeholder="Email"
+                  />
+                </Form.Item>
+                <Form.Item
+                  className="form__item__input"
+                  name="name"
+                  rules={[
+                    {
+                      required: true,
+                      message: (
+                        <Text style={{ fontSize: 14, color: "#F04F6A" }}>
+                          Name must not be a blank
                         </Text>
                       ),
                     },
@@ -281,7 +346,7 @@ const Login = () => {
                       width: "100%",
                       fontSize: 16,
                     }}
-                    placeholder="Username"
+                    placeholder="Name"
                   />
                 </Form.Item>
                 <Form.Item
@@ -346,6 +411,7 @@ const Login = () => {
                     marginTop: 10,
                     fontFamily: "sans-serif",
                   }}
+                  className="task-card"
                 >
                   Sign Up
                 </Button>
@@ -365,6 +431,110 @@ const Login = () => {
                     Login
                   </a>
                 </Text>
+              </Form>
+            )}
+            {currentForm === "otp" && (
+              <Form
+                form={form3}
+                name="otp"
+                key="otp"
+                // style={{
+                //   maxWidth: 1000,
+                //   height: "70%",
+                //   width: "70%",
+                // }}
+                // initialValues={{
+                //   remember: true,
+                // }}
+                // autoComplete="off"
+                // onFinish={handleLoginClick}
+                className="login-select-container position-relative"
+                style={{ background: "white" }}
+              >
+                <Title></Title>
+                <br></br>
+                <main
+                  className="login position-absolute top-50 start-50 translate-middle password-blur"
+                  style={{ height: "310px" }}
+                >
+                  <Title
+                    className="text-center fw-bold"
+                    style={{
+                      marginBottom: 40,
+                      textAlign: "center",
+                      fontSize: 35,
+                      fontFamily: "sans-serif",
+                      color: "black",
+                    }}
+                  >
+                    OTP Verification
+                  </Title>
+                  <br></br>
+                  <div className="mb-3">
+                    <Form.Item
+                      style={{
+                        marginLeft: 10,
+                        textAlignLast: "center",
+                      }}
+                      name="token"
+                      rules={[
+                        {
+                          pattern: /^[0-9]*$/,
+                          message: "OTP không hợp lệ",
+                        },
+                      ]}
+                    >
+                      {digits.map((digit, index) => (
+                        <Input
+                          key={index}
+                          type="text"
+                          id={`digit${index + 1}`}
+                          className="digit-input"
+                          maxLength="1"
+                          value={digit}
+                          onChange={(e) => handleChange(e, index)}
+                          onKeyDown={(e) => handleKeyDown(e, index)}
+                        />
+                      ))}
+                    </Form.Item>
+                  </div>
+                  <Form.Item
+                    wrapperCol={24}
+                    style={{ width: "100%", textAlign: "center" }}
+                  >
+                    <Text
+                      style={{
+                        color: "green",
+                        fontSize: "13px",
+                        fontStyle: "italic",
+                        textAlign: "center",
+                        width: "100%",
+                        fontWeight: 900,
+                      }}
+                    >
+                      Mã OTP đã được gửi đến email: danh
+                    </Text>
+                  </Form.Item>
+                  <Form.Item className="text-center">
+                    <Button
+                      htmlType="submit"
+                      type="primary"
+                      style={{
+                        fontWeight: 500,
+                        backgroundColor: "#FF4500",
+                        fontSize: 18,
+                        height: "auto",
+                        fontFamily: "sans-serif",
+                        marginTop: 10,
+                        marginLeft: 10,
+                      }}
+                      className="task-card"
+                      block
+                    >
+                      Xác nhận
+                    </Button>
+                  </Form.Item>
+                </main>
               </Form>
             )}
           </div>
