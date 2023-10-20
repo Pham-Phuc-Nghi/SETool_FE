@@ -43,6 +43,8 @@ const CreateProject = ({ onClose }) => {
         .unwrap()
         .then((result) => {
           message.success(result, 1.5);
+          form.resetFields();
+          onClose();
         })
         .catch((error) => {
           error.forEach((errorMessage, index) => {

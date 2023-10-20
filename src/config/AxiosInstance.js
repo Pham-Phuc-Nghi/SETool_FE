@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let authToken = sessionStorage.getItem('token');
+let authToken = sessionStorage.getItem('AccessToken');
 
 const AxiosInstance = axios.create({
     baseURL: "https://localhost:7254/api/",
@@ -37,7 +37,8 @@ const handleDangNhap = (newToken) => {
     authToken = newToken;
     console.log("🚀 ~ authToken:", authToken)
     AxiosInstance.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-    //sessionStorage.setItem('AccessToken', authToken);
+    sessionStorage.setItem('AccessToken', authToken);
+    console.log("ALO QQ: ", AxiosInstance.defaults.headers.common['Authorization']);
 }
 
 const handleDangXuat = () => {

@@ -19,11 +19,11 @@ import "./login.css";
 import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { dangki, login, otp } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import { create, login, otp } from "../../Redux/Slices/DangNhap/DangNhapSlice";
 import {
   getAccessTokenSelector,
   getUserNameSelector,
-} from "../../Redux/selector";
+} from "../../Redux/Selector";
 import { handleDangNhap } from "../../config/AxiosInstance";
 
 const Login = () => {
@@ -62,7 +62,6 @@ const Login = () => {
 
   //login
   const handleLogin = (values) => {
-    // Thực hiện xử lý đăng nhập ở đây, có thể gửi dữ liệu đăng nhập đi đâu đó.
     dispatch(login(values))
       .unwrap()
       .then(() => {
@@ -83,7 +82,7 @@ const Login = () => {
   //sign up
   const handleSignUp = (values) => {
     console.log(values);
-    dispatch(dangki(values))
+    dispatch(create(values))
       .unwrap()
       .then((result) => {
         message.success(result, 1.5);
@@ -99,7 +98,6 @@ const Login = () => {
   };
 
   //otp
-
   const handleOTP = (values) => {
     dispatch(otp(values))
       .unwrap()

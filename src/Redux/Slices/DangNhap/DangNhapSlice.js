@@ -42,8 +42,8 @@ export const login = createAsyncThunk(
   }
 );
 
-export const dangki = createAsyncThunk(
-  "dang_nhap/dangki",
+export const create = createAsyncThunk(
+  "dang_nhap/create",
   async (values, { rejectWithValue, fulfillWithValue }) => {
     try {
       let { name, email, password, confirmPassword } = values;

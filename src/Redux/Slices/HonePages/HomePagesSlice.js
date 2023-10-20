@@ -29,7 +29,6 @@ export const getDSProject = createAsyncThunk(
     }
   }
 );
-const userID_current = sessionStorage.getItem("name_current");
 
 export const createProject = createAsyncThunk(
   "homepage/createProject",
@@ -43,12 +42,11 @@ export const createProject = createAsyncThunk(
         projectTotalSprint,
         projectDayPerSprint,
       } = values;
-      const userID = userID_current;
       projectStartDay = dayjs(projectStartDay).format(
         "YYYY-MM-DDTHH:mm:ss.SSSZ"
       );
       projectEndDay = dayjs(projectEndDay).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-      const res = await postRequest(`projects/create-project/${userID}`, {
+      const res = await postRequest(`projects/create-project`, {
         projectName,
         projectDescription,
         projectStartDay,
@@ -57,7 +55,7 @@ export const createProject = createAsyncThunk(
         projectTotalSprint,
         projectDayPerSprint,
       });
-      if (res.data?.status === 200) {
+      if (res.status === 200) {
         return fulfillWithValue("Đã tạo project thành công");
       }
       if (res.response?.status === 400) {
