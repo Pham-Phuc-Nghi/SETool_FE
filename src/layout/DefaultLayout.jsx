@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Layout, Button, Spin, Tag } from "antd";
+import { Layout, Button, Spin, Tag, Tooltip } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
 import {
@@ -18,6 +18,7 @@ import setImage2 from "../assets/cdww.png";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectDetails } from "../Redux/Slices/ManagerZone/ManagerSlice";
 import { getProjectDetailSelector } from "../Redux/Selector";
+import { useNavigate } from "react-router-dom";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -49,6 +50,7 @@ const DefaultLayout = ({ children }) => {
   const dispatch = useDispatch();
   const projectDetails = useSelector(getProjectDetailSelector);
   const refreshTable = false;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -62,6 +64,10 @@ const DefaultLayout = ({ children }) => {
         console.error("Error fetching data: ", error);
       });
   }, [refreshTable]);
+
+  const handleHomePage = () => {
+    navigate("/homepage");
+  };
 
   return (
     <>
@@ -93,18 +99,22 @@ const DefaultLayout = ({ children }) => {
               width={280}
             >
               {collapsed && (
-                <img
-                  style={{
-                    width: "170px",
-                    height: "100px",
-                    objectFit: "cover",
-                    backgroundRepeat: "no-repeat",
-                    margin: "0 auto",
-                    backgroundSize: "cover",
-                    display: "block",
-                  }}
-                  src={setImage}
-                />
+                <Tooltip title="To Homepage">
+                  <img
+                    style={{
+                      width: "170px",
+                      height: "100px",
+                      objectFit: "cover",
+                      backgroundRepeat: "no-repeat",
+                      margin: "0 auto",
+                      backgroundSize: "cover",
+                      display: "block",
+                      cursor: "pointer",
+                    }}
+                    src={setImage}
+                    onClick={handleHomePage}
+                  />
+                </Tooltip>
               )}
               <SidebarMenu items={items_for_manager} />
             </Sider>
@@ -148,18 +158,22 @@ const DefaultLayout = ({ children }) => {
                       }}
                     />
                     {!collapsed && (
-                      <img
-                        style={{
-                          width: "110px",
-                          height: "60px",
-                          objectFit: "cover",
-                          backgroundRepeat: "no-repeat",
-                          margin: "0 ",
-                          backgroundSize: "cover",
-                          display: "block",
-                        }}
-                        src={setImage2}
-                      />
+                      <Tooltip title="To Homepage">
+                        <img
+                          style={{
+                            width: "110px",
+                            height: "60px",
+                            objectFit: "cover",
+                            backgroundRepeat: "no-repeat",
+                            margin: "0 ",
+                            backgroundSize: "cover",
+                            display: "block",
+                            cursor: "pointer",
+                          }}
+                          src={setImage2}
+                          onClick={handleHomePage}
+                        />
+                      </Tooltip>
                     )}
                     <Tag
                       style={{ fontSize: "16px", fontWeight: "bold" }}

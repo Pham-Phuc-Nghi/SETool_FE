@@ -7,6 +7,7 @@ import {
 
 const initialState = {
   dsMember: [],
+  dsMemberList: [],
   isAddedSuccess: false,
   isDeletedSuccess: false,
 };
@@ -18,6 +19,9 @@ export const CollaborationSlice = createSlice({
     builder.addCase(getDSMember.fulfilled, (state, action) => {
       state.dsMember = action.payload;
     });
+    builder.addCase(getDSAllMember.fulfilled, (state, action) => {
+      state.dsMemberList = action.payload;
+    });
   },
 });
 
@@ -28,6 +32,20 @@ export const getDSMember = createAsyncThunk(
       console.log("ProjectID current: ", projectID);
       const res = await getRequest(
         `projects/get-all-users-in-project/${projectID}`
+      );
+      return res.data;
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+);
+
+export const getDSAllMember = createAsyncThunk(
+  "collaboration/getDSAllMember",
+  async (projectID) => {
+    try {
+      const res = await getRequest(
+        `/projects/get-all-users-in-project/${projectID}`
       );
       return res.data;
     } catch (error) {

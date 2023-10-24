@@ -1,6 +1,7 @@
 import {
   BarsOutlined,
   CalendarOutlined,
+  DeleteOutlined,
   FormOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
@@ -11,6 +12,7 @@ import {
   DatePicker,
   Form,
   Input,
+  Popconfirm,
   Row,
   Spin,
   Typography,
@@ -21,9 +23,11 @@ import { getProjectDetailSelector } from "../../Redux/Selector";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
+  deleteProject,
   editProject,
   getProjectDetails,
 } from "../../Redux/Slices/ManagerZone/ManagerSlice";
+import { useNavigate } from "react-router-dom";
 const { Text } = Typography;
 
 const ProjectController = () => {
@@ -32,6 +36,7 @@ const ProjectController = () => {
   const [loading, setLoading] = useState(true);
   const [refreshTable, setRefreshTable] = useState(false);
   const projectDetails = useSelector(getProjectDetailSelector);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -55,6 +60,22 @@ const ProjectController = () => {
         .then((result) => {
           message.success(result, 1.5);
           setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
+    }
+  };
+
+  const handleDeleteProject = () => {
+    const projectID = sessionStorage.getItem("current_project");
+    if (projectID) {
+      dispatch(deleteProject(projectID))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          setRefreshTable(!refreshTable);
+          navigate("/homepage")
         })
         .catch((error) => {
           message.error(error, 1.5);
@@ -231,6 +252,20 @@ const ProjectController = () => {
                   span={24}
                   style={{ display: "flex", justifyContent: "flex-end" }}
                 >
+                  <Popconfirm
+                    title="Are you sure you want to delete project?"
+                    onConfirm={handleDeleteProject}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      icon={<DeleteOutlined />}
+                      className="custom-btn-del"
+                      style={{ marginRight: 10 }}
+                    >
+                      Delete project
+                    </Button>
+                  </Popconfirm>
                   <Button
                     icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
                     className="custom-btn-save-and-add"

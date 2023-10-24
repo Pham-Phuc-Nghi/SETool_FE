@@ -55,14 +55,17 @@ const Backlogs = () => {
   const [isModalAssignee, setIsModalAssignee] = useState(false);
   const [form2] = Form.useForm();
 
-  const showModalAssignee = () => {
+  const showModalAssignee = (id) => {
+    form2.setFieldsValue({ id });
     setIsModalAssignee(true);
   };
 
   const closeAssigneeModal = () => {
     setIsModalAssignee(false);
     form2.resetFields();
+    setRefreshTable(!refreshTable)
   };
+
   const dispatch = useDispatch();
   const dsTaskAll = useSelector(getDSTaskAllSelector);
   const [refreshTable, setRefreshTable] = useState(false);
@@ -70,6 +73,7 @@ const Backlogs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSTask(projectID))
       .unwrap()
@@ -85,11 +89,13 @@ const Backlogs = () => {
   const [filteredData, setFilteredData] = useState(dsTaskAll);
 
   useEffect(() => {
-    const newFilteredData = dsTaskAll.data.filter((_dsTaskAll) => {
-      const fullName = `${_dsTaskAll.taskName}`;
-      return fullName.toLowerCase().includes(searchText.toLowerCase());
-    });
-    setFilteredData(newFilteredData);
+    if (dsTaskAll.data !== undefined) {
+      const newFilteredData = dsTaskAll.data.filter((_dsTaskAll) => {
+        const fullName = `${_dsTaskAll.taskName}`;
+        return fullName.toLowerCase().includes(searchText.toLowerCase());
+      });
+      setFilteredData(newFilteredData);
+    }
   }, [searchText, dsTaskAll]);
 
   const handleSearch = (value) => {
@@ -145,12 +151,13 @@ const Backlogs = () => {
               dataSource={filteredData}
               renderItem={(item) => (
                 <List.Item
+                  key={item.id}
                   actions={[
                     <Button
                       key="assignee"
                       className="custom-btn-update"
                       icon={<UserAddOutlined />}
-                      onClick={showModalAssignee}
+                      onClick={() => showModalAssignee(item.id)}
                     >
                       Assignee & review
                     </Button>,
@@ -254,7 +261,7 @@ const Backlogs = () => {
               width={500}
             >
               <Assignee form={form2} onClose={closeAssigneeModal}></Assignee>
-            </Modal>
+            </Modal> 
           </div>
         </>
       )}

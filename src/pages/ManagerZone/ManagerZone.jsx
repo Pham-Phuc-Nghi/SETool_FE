@@ -36,8 +36,7 @@ const ManagerZone = () => {
     },
   ];
 
-  const onChange = () => {
-  };
+  const onChange = () => {};
 
   return (
     <div>

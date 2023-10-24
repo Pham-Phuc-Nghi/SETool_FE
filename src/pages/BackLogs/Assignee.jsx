@@ -1,12 +1,30 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Col, DatePicker, Form, Modal, Row, Select, Typography } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Modal,
+  Row,
+  Select,
+  Typography,
+  message,
+} from "antd";
 import dayjs from "dayjs";
 const { Text } = Typography;
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  editAssignee,
+} from "../../Redux/Slices/Backlogs/BacklogsSlice";
+import { getDSAllSprintSelector, getListDevSelector, getListQASelector } from "../../Redux/Selector";
+import { getDSSprint, getListDev, getListQA } from "../../Redux/Slices/ManagerZone/ManagerSlice";
 
 const Assignee = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const taskID = form.getFieldValue("id");
+  const dispatch = useDispatch();
 
   const layout = {
     labelCol: {
@@ -24,24 +42,63 @@ const Assignee = ({ onClose, form }) => {
   };
 
   const handleFormSubmit = (values) => {
-    const data = { ...values };
-    console.log("Assignee add: ", data);
-    // if (!isEmployee) {
-    //   data.staffID = parseInt(staffID_current);
-    // }
-    // if (data) {
-    //   dispatch(taoDonTangCa(data))
-    //     .unwrap()
-    //     .then((result) => {
-    //       message.success(result);
-    //       form.resetFields();
-    //       onClose();
-    //     })
-    //     .catch((error) => {
-    //       message.error(error);
-    //     });
-    // }
+    const data = { ...values, taskID };
+    if (data) {
+      dispatch(editAssignee(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          form.resetFields();
+          onClose();
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
+    }
   };
+  
+//list dev
+  const listDev = useSelector(getListDevSelector);
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getListDev(projectID));
+  }, []);
+
+  let option_list_Dev;
+  option_list_Dev = listDev.map((type) => ({
+    value: type.id,
+    label: type.name,
+  }));
+
+//list QA
+  const listQA = useSelector(getListQASelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getListQA(projectID));
+  }, []);
+
+  let option_list_QA;
+
+  option_list_QA = listQA.map((type) => ({
+    value: type.id,
+    label: type.name,
+  }));
+
+//list sprint
+  const listSprint= useSelector(getDSAllSprintSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSSprint(projectID));
+  }, []);
+
+  let option_list_Sprint;
+
+  option_list_Sprint = listSprint.map((type) => ({
+    value: type.id,
+    label: "Sprint " + type.sprintNumber,
+  }));
 
   return (
     <>
@@ -53,7 +110,7 @@ const Assignee = ({ onClose, form }) => {
       >
         <Form.Item
           label={<Text>Assignee</Text>}
-          name="assignee"
+          name="assigneeID"
           style={{ marginRight: 10 }}
           rules={[
             {
@@ -65,21 +122,12 @@ const Assignee = ({ onClose, form }) => {
           <Select
             style={{ width: "60%" }}
             placeholder="Choose Assignee"
-            options={[
-              {
-                value: 0,
-                label: <Text>DEV</Text>,
-              },
-              {
-                value: 1,
-                label: <Text>QA</Text>,
-              },
-            ]}
+            options={option_list_Dev}
           ></Select>
         </Form.Item>
         <Form.Item
           label={<Text>Reviewer</Text>}
-          name="reviewer"
+          name="reporterID"
           style={{ marginRight: 10 }}
           rules={[
             {
@@ -91,21 +139,12 @@ const Assignee = ({ onClose, form }) => {
           <Select
             style={{ width: "60%" }}
             placeholder="Choose Reviewer"
-            options={[
-              {
-                value: 0,
-                label: <Text>DEV</Text>,
-              },
-              {
-                value: 1,
-                label: <Text>QA</Text>,
-              },
-            ]}
+            options={option_list_QA}
           ></Select>
         </Form.Item>
         <Form.Item
           label={<Text>Sprint</Text>}
-          name="sprint"
+          name="sprintID"
           style={{ marginRight: 10 }}
           rules={[
             {
@@ -117,21 +156,12 @@ const Assignee = ({ onClose, form }) => {
           <Select
             style={{ width: "60%" }}
             placeholder="Choose Sprint"
-            options={[
-              {
-                value: 0,
-                label: <Text>1</Text>,
-              },
-              {
-                value: 1,
-                label: <Text>2</Text>,
-              },
-            ]}
+            options={option_list_Sprint}
           ></Select>
         </Form.Item>
         <Form.Item
           label={<Text>Start date</Text>}
-          name="startDate"
+          name="taskStartDay"
           style={{ marginRight: 10 }}
           rules={[
             {
@@ -153,7 +183,7 @@ const Assignee = ({ onClose, form }) => {
         </Form.Item>
         <Form.Item
           label={<Text>End date</Text>}
-          name="endDate"
+          name="taskEndDay"
           style={{ marginRight: 10 }}
           rules={[
             {
