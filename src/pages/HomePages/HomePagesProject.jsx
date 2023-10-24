@@ -15,7 +15,7 @@ const { Text, Title } = Typography;
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import CreateProject from "./CreateProject";
-import { useNavigate } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDSProjectSelector } from "../../Redux/Selector";
 import { getDSProject } from "../../Redux/Slices/HonePages/HomePagesSlice";
@@ -67,7 +67,7 @@ const HomePagesProject = () => {
 
   const contentStyle = {
     height: "200px",
-    color: "#fff",
+    color: "#fff", 
     lineHeight: "160px",
     textAlign: "center",
     alignItems: "center",
@@ -75,6 +75,13 @@ const HomePagesProject = () => {
   };
 
   const [hoveredCard, setHoveredCard] = useState(null);
+  
+  const handleCardClick = (id, projectName) => {
+    console.log("Clicked Card ID:", id);
+    console.log("Clicked Card Project Name:", projectName);
+    sessionStorage.setItem('current_project', id);
+    navigate(`/project/dashboard`); 
+  };  
 
   return (
     <>
@@ -197,9 +204,9 @@ const HomePagesProject = () => {
                             <Card
                               onMouseEnter={() => setHoveredCard(index)}
                               onMouseLeave={() => setHoveredCard(null)}
-                              onClick={() => {
-                                navigate("/project/dashboard");
-                              }}
+                              onClick={() =>
+                                handleCardClick(project.id, project.projectName)
+                              }
                               style={{
                                 width: "100%",
                                 marginBottom: 12,
@@ -228,9 +235,6 @@ const HomePagesProject = () => {
                                 <Text style={{ fontSize: 18 }}>
                                   {project.projectName}
                                 </Text>
-                                {/* <Text style={{ fontSize: 18, marginTop: 20 }}>
-                          {project.managerName}
-                        </Text> */}
                               </div>
                             </Card>
                           </Col>
@@ -249,7 +253,7 @@ const HomePagesProject = () => {
             width={800}
             style={{ top: 40 }}
           >
-            <CreateProject onClose={closeAddModal}/>
+            <CreateProject onClose={closeAddModal} />
           </Modal>
         </>
       )}

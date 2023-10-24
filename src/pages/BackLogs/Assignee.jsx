@@ -1,5 +1,6 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Modal, Row, Select, Typography } from "antd";
+import { Button, Col, DatePicker, Form, Modal, Row, Select, Typography } from "antd";
+import dayjs from "dayjs";
 const { Text } = Typography;
 import PropTypes from "prop-types";
 import { useState } from "react";
@@ -127,6 +128,50 @@ const Assignee = ({ onClose, form }) => {
               },
             ]}
           ></Select>
+        </Form.Item>
+        <Form.Item
+          label={<Text>Start date</Text>}
+          name="startDate"
+          style={{ marginRight: 10 }}
+          rules={[
+            {
+              required: true,
+              message: "Please select a start date",
+            },
+          ]}
+        >
+          <DatePicker
+            placeholder="Select start date"
+            style={{ width: "60%" }}
+            disabledDate={(current) => {
+              const currentDate = dayjs(current);
+              const today = dayjs();
+              return currentDate.isBefore(today, "day");
+            }}
+            format="DD/MM/YYYY"
+          ></DatePicker>
+        </Form.Item>
+        <Form.Item
+          label={<Text>End date</Text>}
+          name="endDate"
+          style={{ marginRight: 10 }}
+          rules={[
+            {
+              required: true,
+              message: "Please select an end date",
+            },
+          ]}
+        >
+          <DatePicker
+            placeholder="Select end date"
+            style={{ width: "60%" }}
+            disabledDate={(current) => {
+              const currentDate = dayjs(current);
+              const today = dayjs();
+              return currentDate.isBefore(today, "day");
+            }}
+            format="DD/MM/YYYY"
+          ></DatePicker>
         </Form.Item>
         <Row gutter={24} style={{ marginRight: "5px" }}>
           <Col

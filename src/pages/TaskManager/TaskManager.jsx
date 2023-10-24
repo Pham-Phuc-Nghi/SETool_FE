@@ -1,4 +1,4 @@
-import { Card, Modal, Select, Typography } from "antd";
+import { Card, Modal, Select, Tooltip, Typography } from "antd";
 import { useState } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
@@ -128,36 +128,37 @@ const TaskManager = () => {
           taskName = taskName.substring(0, 20) + "...";
         }
         return (
-          <Card
-            title={
-              <>
-                <Text>
-                  Type :<Text style={{ color: "red" }}>{task.id}</Text>
-                </Text>
-              </>
-            }
-            size="small"
-            bordered={false}
-            style={{
-              marginBottom: 30,
-              scale: "1.15",
-              boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
-              display: "flex",
-              justifyContent: "flex-start",
-              flexDirection: "column",
-              backgroundColor: "transparent",
-              cursor: "pointer",
-            }}
-            key={task.id}
-            className="task-card"
-            draggable
-            onDragStart={(e) => handleDragStart(e, task)}
-            onDoubleClick={() => handleTaskDoubleClick(task)}
-          >
-            <Title level={5} style={{ marginTop: 0, paddingTop: 0 }}>
-              {taskName}
-            </Title>
-          </Card>
+          <Tooltip key={task.id} title="Double click to see more detail">
+            <Card
+              title={
+                <>
+                  <Text>
+                    Type :<Text style={{ color: "red" }}>{task.id}</Text>
+                  </Text>
+                </>
+              }
+              size="small"
+              bordered={false}
+              style={{
+                marginBottom: 30,
+                scale: "1.15",
+                boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
+                display: "flex",
+                justifyContent: "flex-start",
+                flexDirection: "column",
+                backgroundColor: "transparent",
+                cursor: "pointer",
+              }}
+              className="task-card"
+              draggable
+              onDragStart={(e) => handleDragStart(e, task)}
+              onDoubleClick={() => handleTaskDoubleClick(task)}
+            >
+              <Title level={5} style={{ marginTop: 0, paddingTop: 0 }}>
+                {taskName}
+              </Title>
+            </Card>
+          </Tooltip>
         );
       });
   };

@@ -20,17 +20,20 @@ const AddMember = ({ form }) => {
         {...layout}
         form={form}
         // onFinish={handleFormSubmit}
-        style={{
-          maxHeight: 1000,
-          marginTop: "10px",
-          display: "flex",
-          width: "100%",
-        }}
       >
         <Form.Item
           name="member"
           rules={[
             { required: true, message: "Member Name must not be a blank" },
+          ]}
+          style={{ width: "80%", marginRight: 10 }}
+        >
+          <Input placeholder="Input Member Name or Email"></Input>
+        </Form.Item>
+        <Form.Item
+          name="role"
+          rules={[
+            { required: true, message: "role must not be a blank" },
           ]}
           style={{ width: "80%", marginRight: 10 }}
         >

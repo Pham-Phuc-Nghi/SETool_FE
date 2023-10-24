@@ -8,7 +8,6 @@ import {
   Typography,
   Input,
   Tag,
-  DatePicker,
   message,
 } from "antd";
 import { useState } from "react";
@@ -22,7 +21,6 @@ import {
   RiseOutlined,
 } from "@ant-design/icons";
 import Dragger from "antd/es/upload/Dragger";
-import dayjs from "dayjs";
 const EditBacklogs = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
 
@@ -144,65 +142,6 @@ const EditBacklogs = ({ onClose, form }) => {
               },
             ]}
           ></Select>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Start date</Text>}
-          name="startDate"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Please select a start date",
-            },
-          ]}
-        >
-          <DatePicker
-            placeholder="Select start date"
-            style={{ width: "60%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
-        </Form.Item>
-        <Form.Item
-          label={<Text>End date</Text>}
-          name="endDate"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Please select an end date",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                const startDate = getFieldValue("startDate");
-                if (!startDate || !value) {
-                  return Promise.resolve();
-                }
-                const oneWeekLater = dayjs(startDate).add(1, "week");
-                if (dayjs(value).isAfter(oneWeekLater, "day")) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  "End date must be at least 1 week after start date"
-                );
-              },
-            }),
-          ]}
-        >
-          <DatePicker
-            placeholder="Select end date"
-            style={{ width: "60%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
         </Form.Item>
         <Form.Item
           label={<Text>Priority</Text>}

@@ -1,4 +1,4 @@
-import { Avatar, Card, Modal, Tag, Typography } from "antd";
+import { Avatar, Card, Modal, Tag, Tooltip, Typography } from "antd";
 import { useState } from "react";
 const { Title } = Typography;
 import "./dashBoard.css";
@@ -10,7 +10,11 @@ import {
 } from "@ant-design/icons";
 
 const Dashboard = () => {
-  const tasks=[
+  console.log(
+    "ID của project này: ",
+    sessionStorage.getItem("current_project")
+  );
+  const tasks = [
     {
       id: 1,
       name: "Build fe layout for manager",
@@ -166,63 +170,65 @@ const Dashboard = () => {
           taskName = taskName.substring(0, 28) + "...";
         }
         return (
-          <Card
-            title={
-              <>
-                <Title
-                  level={5}
-                  style={{
-                    margin: 0,
-                    padding: 0,
-                    fontWeight: "500",
-                    fontSize: 14,
-                  }}
-                >
-                  {taskName}
-                </Title>
-              </>
-            }
-            size="small"
-            bordered={false}
-            style={{
-              marginBottom: 30,
-              scale: "1.15",
-              boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
-              display: "flex",
-              justifyContent: "flex-start",
-              flexDirection: "column",
-              backgroundColor: "white",
-              cursor: "pointer",
-            }}
-            key={task.id}
-            className="task-card"
-            onDoubleClick={() => handleTaskDoubleClick(task)}
-          >
-            <div
+          <Tooltip key={task.id} title="Double click to see more detail">
+            <Card
+              title={
+                <>
+                  <Title
+                    level={5}
+                    style={{
+                      margin: 0,
+                      padding: 0,
+                      fontWeight: "500",
+                      fontSize: 14,
+                    }}
+                  >
+                    {taskName}
+                  </Title>
+                </>
+              }
+              size="small"
+              bordered={false}
               style={{
+                marginBottom: 30,
+                scale: "1.15",
+                boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
+                flexDirection: "column",
+                backgroundColor: "white",
+                cursor: "pointer",
               }}
+              key={task.id}
+              className="task-card"
+              onDoubleClick={() => handleTaskDoubleClick(task)}
             >
-              <Tag color="yellow" style={{ fontSize: 10 }}>
-                {" "}
-                ID: 1{" "}
-              </Tag>
-              <div>
-                {task.status === "Done" ? (
-                  <CheckOutlined
-                    style={{ fontSize: 12, color: "green", marginRight: 10 }}
-                  />
-                ) : null}
-                <Avatar
-                  style={{ backgroundColor: "red", fontSize: 10 }}
-                  size={"small"}
-                >
-                  A
-                </Avatar>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Tag color="yellow" style={{ fontSize: 10 }}>
+                  {" "}
+                  ID: 1{" "}
+                </Tag>
+                <div>
+                  {task.status === "Done" ? (
+                    <CheckOutlined
+                      style={{ fontSize: 12, color: "green", marginRight: 10 }}
+                    />
+                  ) : null}
+                  <Avatar
+                    style={{ backgroundColor: "red", fontSize: 10 }}
+                    size={"small"}
+                  >
+                    A
+                  </Avatar>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </Tooltip>
         );
       });
   };
@@ -305,7 +311,11 @@ const Dashboard = () => {
     <Avatar
       onClick={() => showModal(index)}
       key={index}
-      style={{ backgroundColor: pastelColors[index], fontSize: 10,cursor:"pointer" }}
+      style={{
+        backgroundColor: pastelColors[index],
+        fontSize: 10,
+        cursor: "pointer",
+      }}
     >
       {initial}
     </Avatar>

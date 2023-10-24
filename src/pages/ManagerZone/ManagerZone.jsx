@@ -36,8 +36,7 @@ const ManagerZone = () => {
     },
   ];
 
-  const onChange = (key) => {
-    console.log(key);
+  const onChange = () => {
   };
 
   return (

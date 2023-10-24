@@ -38,7 +38,6 @@ const handleDangNhap = (newToken) => {
     console.log("🚀 ~ authToken:", authToken)
     AxiosInstance.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     sessionStorage.setItem('AccessToken', authToken);
-    console.log("ALO QQ: ", AxiosInstance.defaults.headers.common['Authorization']);
 }
 
 const handleDangXuat = () => {

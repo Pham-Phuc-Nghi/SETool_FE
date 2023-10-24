@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Button,
   Drawer,
   Form,
@@ -8,54 +7,25 @@ import {
   Modal,
   Popconfirm,
   Skeleton,
+  Spin,
+  Tag,
   Typography,
 } from "antd";
 import {
-  UserOutlined,
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditBacklogs from "./EditBacklogs";
 import AddBacklogs from "./AddBacklogs";
 import Assignee from "./Assignee";
+import { useDispatch, useSelector } from "react-redux";
+import { getDSTask } from "../../Redux/Slices/Backlogs/BacklogsSlice";
+import { getDSTaskAllSelector } from "../../Redux/Selector";
 const { Text } = Typography;
 const Backlogs = () => {
-  const dummyData = [
-    {
-      key: 1,
-      loading: false,
-      name: {
-        last: "Doe",
-      },
-      picture: {
-        large: "https://example.com/avatar1.jpg",
-      },
-    },
-    {
-      key: 2,
-      loading: false,
-      name: {
-        last: "Smith",
-      },
-      picture: {
-        large: "https://example.com/avatar2.jpg",
-      },
-    },
-    {
-      key: 3,
-      loading: false,
-      name: {
-        last: "Johnson",
-      },
-      picture: {
-        large: "https://example.com/avatar3.jpg",
-      },
-    },
-  ];
-
   const [isDrawerAdd, setIsDrawerAdd] = useState(false);
   const [form] = Form.useForm();
 
@@ -66,6 +36,7 @@ const Backlogs = () => {
   const closeAddDrawer = () => {
     setIsDrawerAdd(false);
     form.resetFields();
+    setRefreshTable(!refreshTable);
   };
 
   const [isDrawerEdit, setIsDrawerEdit] = useState(false);
@@ -78,6 +49,7 @@ const Backlogs = () => {
   const closeEditDrawer = () => {
     setIsDrawerEdit(false);
     form1.resetFields();
+    setRefreshTable(!refreshTable);
   };
 
   const [isModalAssignee, setIsModalAssignee] = useState(false);
@@ -91,127 +63,201 @@ const Backlogs = () => {
     setIsModalAssignee(false);
     form2.resetFields();
   };
-
+  const dispatch = useDispatch();
+  const dsTaskAll = useSelector(getDSTaskAllSelector);
+  const [refreshTable, setRefreshTable] = useState(false);
   const [searchText, setSearchText] = useState("");
-  // const [filteredData, setFilteredData] = useState(dsTangCa);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const newFilteredData = dsTangCa.filter((_dsTangCa) => {
-  //     const fullName = `${_dsTangCa.staff.lastName} ${_dsTangCa.staff.firstName}`;
-  //     return fullName.toLowerCase().includes(searchText.toLowerCase());
-  //   });
-  //   setFilteredData(newFilteredData);
-  // }, [searchText, dsTangCa]);
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSTask(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  const [filteredData, setFilteredData] = useState(dsTaskAll);
+
+  useEffect(() => {
+    const newFilteredData = dsTaskAll.data.filter((_dsTaskAll) => {
+      const fullName = `${_dsTaskAll.taskName}`;
+      return fullName.toLowerCase().includes(searchText.toLowerCase());
+    });
+    setFilteredData(newFilteredData);
+  }, [searchText, dsTaskAll]);
 
   const handleSearch = (value) => {
     setSearchText(value);
   };
 
-  const handleDelete = () => {
-  };
+  const handleDelete = () => {};
 
   return (
     <>
-      <div style={{ marginBottom: 40 }}>
-        <Input.Search
-          allowClear
-          placeholder="Input task name"
-          style={{ width: "25%" }}
-          onSearch={handleSearch}
-          onChange={(e) => handleSearch(e.target.value)}
-          value={searchText}
-        />
-        <Button
-          className="custom-btn-add-d"
-          icon={<PlusOutlined />}
-          onClick={showAddDrawer}
-          style={{ float: "right" }}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
         >
-          Add Backlogs
-        </Button>
-      </div>
-      <div>
-        <List
-          className="demo-loadmore-list"
-          itemLayout="horizontal"
-          dataSource={dummyData}
-          renderItem={(item) => (
-            <List.Item
-              actions={[
-                <Button
-                  key="assignee"
-                  className="custom-btn-update"
-                  icon={<UserAddOutlined />}
-                  onClick={showModalAssignee}
-                >
-                  Assignee & review
-                </Button>,
-                <Button
-                  key="edit"
-                  className="custom-btn-watch-report"
-                  icon={<EditOutlined />}
-                  onClick={showDrawerEdit}
-                >
-                  Edit
-                </Button>,
-                <Popconfirm
-                  key="delete"
-                  title="Are you sure you want to delete this item?"
-                  onConfirm={handleDelete}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button className="custom-btn-del" icon={<DeleteOutlined />}>
-                    Delete
-                  </Button>
-                </Popconfirm>,
-              ]}
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <div style={{ marginBottom: 20 }}>
+            <Input.Search
+              allowClear
+              placeholder="Input task name"
+              style={{ width: "25%" }}
+              onSearch={handleSearch}
+              onChange={(e) => handleSearch(e.target.value)}
+              value={searchText}
+            />
+            <Button
+              className="custom-btn-add-d"
+              icon={<PlusOutlined />}
+              onClick={showAddDrawer}
+              style={{ float: "right" }}
             >
-              <Skeleton avatar title={false} loading={item.loading} active>
-                <List.Item.Meta
-                  avatar={
-                    <Avatar icon={<UserOutlined />} src={item.picture.large} />
-                  }
-                  title={<a href="https://ant.design">{item.name?.last}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                />
-                <Text>Reviewer: John</Text>
-              </Skeleton>
-            </List.Item>
-          )}
-        />
-        <Drawer
-          title="Edit backlogs"
-          placement="right"
-          closable={true}
-          visible={isDrawerEdit}
-          onClose={closeEditDrawer}
-          width={700}
-          style={{ top: 42 }}
-        >
-          <EditBacklogs onClose={closeEditDrawer} form={form1}></EditBacklogs>
-        </Drawer>
-        <Drawer
-          title="Add backlogs"
-          placement="right"
-          closable={true}
-          visible={isDrawerAdd}
-          onClose={closeAddDrawer}
-          width={700}
-          style={{ top: 42 }}
-        >
-          <AddBacklogs onClose={closeAddDrawer} form={form}></AddBacklogs>
-        </Drawer>
-        <Modal
-          title="Assignee & review"
-          open={isModalAssignee}
-          footer={null}
-          onCancel={closeAssigneeModal}
-          width={500}
-        >
-          <Assignee form={form2} onClose={closeAssigneeModal}></Assignee>
-        </Modal>
-      </div>
+              Add Backlogs
+            </Button>
+          </div>
+          <div>
+            <List
+              style={{ maxHeight: 500, overflow: "auto" }}
+              className="demo-loadmore-list"
+              itemLayout="horizontal"
+              dataSource={filteredData}
+              renderItem={(item) => (
+                <List.Item
+                  actions={[
+                    <Button
+                      key="assignee"
+                      className="custom-btn-update"
+                      icon={<UserAddOutlined />}
+                      onClick={showModalAssignee}
+                    >
+                      Assignee & review
+                    </Button>,
+                    <Button
+                      key="edit"
+                      className="custom-btn-watch-report"
+                      icon={<EditOutlined />}
+                      onClick={showDrawerEdit}
+                    >
+                      Edit
+                    </Button>,
+                    <Popconfirm
+                      key="delete"
+                      title="Are you sure you want to delete this item?"
+                      onConfirm={handleDelete}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button
+                        className="custom-btn-del"
+                        icon={<DeleteOutlined />}
+                      >
+                        Delete
+                      </Button>
+                    </Popconfirm>,
+                  ]}
+                >
+                  <Skeleton avatar title={false} loading={loading} active>
+                    <List.Item.Meta
+                      title={
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Text>
+                            <Tag color="blue">Taskname </Tag> {item.taskName}{" "}
+                          </Text>
+                          <Text style={{ marginTop: 10 }}>
+                            <Tag color="orange">Sprint {item.sprintNumber}</Tag>
+                          </Text>
+                        </div>
+                      }
+                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Text>
+                        <Tag style={{ fontSize: 14 }} color="purple">
+                          Assignee{" "}
+                        </Tag>
+                        {item.assigneeName}
+                      </Text>
+                      <Text style={{ marginTop: 10 }}>
+                        <Tag style={{ fontSize: 14 }} color="green">
+                          Reviewer{" "}
+                        </Tag>
+                        {item.reporterName}
+                      </Text>
+                    </div>
+                  </Skeleton>
+                </List.Item>
+              )}
+            />
+            <Drawer
+              title="Edit backlogs"
+              placement="right"
+              closable={true}
+              visible={isDrawerEdit}
+              onClose={closeEditDrawer}
+              width={700}
+              style={{ top: 42 }}
+            >
+              <EditBacklogs
+                onClose={closeEditDrawer}
+                form={form1}
+              ></EditBacklogs>
+            </Drawer>
+            <Drawer
+              title="Add backlogs"
+              placement="right"
+              closable={true}
+              visible={isDrawerAdd}
+              onClose={closeAddDrawer}
+              width={700}
+              style={{ top: 42 }}
+            >
+              <AddBacklogs onClose={closeAddDrawer} form={form}></AddBacklogs>
+            </Drawer>
+            <Modal
+              title="Assignee & review"
+              open={isModalAssignee}
+              footer={null}
+              onCancel={closeAssigneeModal}
+              width={500}
+            >
+              <Assignee form={form2} onClose={closeAssigneeModal}></Assignee>
+            </Modal>
+          </div>
+        </>
+      )}
     </>
   );
 };

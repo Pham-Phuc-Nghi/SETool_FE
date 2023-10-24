@@ -12,21 +12,54 @@ import {
   Form,
   Input,
   Row,
+  Spin,
   Typography,
+  message,
 } from "antd";
 import dayjs from "dayjs";
+import { getProjectDetailSelector } from "../../Redux/Selector";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import {
+  editProject,
+  getProjectDetails,
+} from "../../Redux/Slices/ManagerZone/ManagerSlice";
 const { Text } = Typography;
 
 const ProjectController = () => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const [refreshTable, setRefreshTable] = useState(false);
+  const projectDetails = useSelector(getProjectDetailSelector);
 
-  const handleFormSubmit = (values) => {
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getProjectDetails(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  const handleEditProjectDetails = (values) => {
     const data = { ...values };
     console.log(data);
-  };
-
-  const handleCancel = () => {
-    form.resetFields();
+    if (data) {
+      dispatch(editProject(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
+    }
   };
 
   const layout = {
@@ -40,133 +73,177 @@ const ProjectController = () => {
 
   return (
     <>
-      <Card style={{ marginTop: 30 }} bordered  >
-        <Form
-          {...layout}
-          form={form}
-          onFinish={handleFormSubmit}
-          style={{ maxHeight: 600, marginTop: "10px", overflow: "auto" }}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
         >
-          <Form.Item
-            label={
-              <Text>
-                <BarsOutlined /> Project name
-              </Text>
-            }
-            name="name"
-            rules={[
-              {
-                required: "true",
-                message: "Project name must no be a blank",
-              },
-            ]}
-          >
-            <Input
-              style={{ width: "100%" }}
-              placeholder="Input project name"
-            ></Input>
-          </Form.Item>
-          <Form.Item
-            label={
-              <Text>
-                <BarsOutlined /> Total sprint
-              </Text>
-            }
-            name="totalSprint"
-            rules={[
-              {
-                required: "true",
-                type: "number",
-                min: 1,
-                message: "Sprint must be large than one",
-              },
-            ]}
-          >
-            <Input style={{ width: "100%" }} placeholder="Input sprint"></Input>
-          </Form.Item>
-          <Form.Item
-            label={
-              <Text>
-                <CalendarOutlined /> Start date
-              </Text>
-            }
-            name="startDate"
-            rules={[
-              { required: true, message: "startDate must not be a blank" },
-            ]}
-          >
-            <DatePicker
-              style={{ width: "50%" }}
-              disabled
-              disabledDate={(current) => {
-                const currentDate = dayjs(current);
-                const today = dayjs();
-                return currentDate.isBefore(today, "day");
-              }}
-              format="DD/MM/YYYY"
-            ></DatePicker>
-          </Form.Item>
-          <Form.Item
-            label={
-              <Text>
-                <CalendarOutlined /> End date
-              </Text>
-            }
-            name="endDate"
-            rules={[{ required: true, message: "endDate must not be a blank" }]}
-          >
-            <DatePicker
-              style={{ width: "50%" }}
-              disabled
-              disabledDate={(current) => {
-                const currentDate = dayjs(current);
-                const today = dayjs();
-                return currentDate.isBefore(today, "day");
-              }}
-              format="DD/MM/YYYY"
-            ></DatePicker>
-          </Form.Item>
-          <Form.Item
-            label={
-              <Text>
-                <FormOutlined /> Project descriptions
-              </Text>
-            }
-            name="reason"
-            rules={[
-              {
-                required: "true",
-                message: "Description must no be a blank",
-              },
-            ]}
-          >
-            <Input.TextArea placeholder="Input description about the project"></Input.TextArea>
-          </Form.Item>
-          <Row gutter={24} style={{ marginRight: "5px" }}>
-            <Col
-              span={24}
-              style={{ display: "flex", justifyContent: "flex-end" }}
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <Card style={{ marginTop: 30 }} bordered>
+            <Form
+              {...layout}
+              form={form}
+              onFinish={handleEditProjectDetails}
+              style={{ maxHeight: 600, marginTop: "10px", overflow: "auto" }}
             >
-              <Form.Item>
-                <Button
-                  className="custom-btn-close"
-                  onClick={handleCancel}
-                  style={{ marginRight: "10px" }}
-                >
-                  Cancel
-                </Button>
-              </Form.Item>
-              <Button
-                icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
-                className="custom-btn-save-and-add"
-                htmlType="submit"
+              <Form.Item
+                label={
+                  <Text>
+                    <BarsOutlined /> Project name
+                  </Text>
+                }
+                name="projectName"
+                initialValue={projectDetails && projectDetails.projectName}
+                rules={[
+                  {
+                    required: "true",
+                    message: "Project name must no be a blank",
+                  },
+                ]}
               >
-                Edit project
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </Card>
+                <Input
+                  style={{ width: "100%" }}
+                  placeholder="Input project name"
+                ></Input>
+              </Form.Item>
+              <Form.Item
+                label={
+                  <Text>
+                    <BarsOutlined /> Total sprint
+                  </Text>
+                }
+                name="projectTotalSprint"
+                initialValue={
+                  projectDetails && projectDetails.projectTotalSprint
+                }
+                rules={[
+                  {
+                    required: "true",
+                    type: "number",
+                    min: 0,
+                    message: "Sprint must be large than one",
+                  },
+                ]}
+              >
+                <Input
+                  disabled
+                  style={{ width: "100%" }}
+                  placeholder="Input sprint"
+                ></Input>
+              </Form.Item>
+              <Form.Item
+                label={
+                  <Text>
+                    <CalendarOutlined /> Start date
+                  </Text>
+                }
+                name="projectStartDay"
+                initialValue={
+                  projectDetails && dayjs(projectDetails.projectStartDay)
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "projectStartDay must not be a blank",
+                  },
+                ]}
+              >
+                <DatePicker
+                  style={{ width: "50%" }}
+                  disabled
+                  disabledDate={(current) => {
+                    const currentDate = dayjs(current);
+                    const today = dayjs();
+                    return currentDate.isBefore(today, "day");
+                  }}
+                  format="DD/MM/YYYY"
+                ></DatePicker>
+              </Form.Item>
+              <Form.Item
+                label={
+                  <Text>
+                    <CalendarOutlined /> End date
+                  </Text>
+                }
+                name="projectEndDay"
+                initialValue={
+                  projectDetails && dayjs(projectDetails.projectEndDay)
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "projectEndDay must not be a blank",
+                  },
+                ]}
+              >
+                <DatePicker
+                  style={{ width: "50%" }}
+                  disabled
+                  disabledDate={(current) => {
+                    const currentDate = dayjs(current);
+                    const today = dayjs();
+                    return currentDate.isBefore(today, "day");
+                  }}
+                  format="DD/MM/YYYY"
+                ></DatePicker>
+              </Form.Item>
+              <Form.Item
+                label={
+                  <Text>
+                    <FormOutlined /> Project descriptions
+                  </Text>
+                }
+                name="projectDescription"
+                initialValue={
+                  projectDetails && projectDetails.projectDescription
+                }
+                rules={[
+                  {
+                    required: "true",
+                    message: "Description must no be a blank",
+                  },
+                ]}
+              >
+                <Input.TextArea placeholder="Input description about the project"></Input.TextArea>
+              </Form.Item>
+              <Form.Item
+                name="projectDayPerSprint"
+                initialValue={
+                  projectDetails && projectDetails.projectDayPerSprint
+                }
+                style={{ display: "none" }}
+              ></Form.Item>
+              <Row gutter={24} style={{ marginRight: "5px" }}>
+                <Col
+                  span={24}
+                  style={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  <Button
+                    icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
+                    className="custom-btn-save-and-add"
+                    htmlType="submit"
+                  >
+                    Edit project
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </Card>
+        </>
+      )}
     </>
   );
 };

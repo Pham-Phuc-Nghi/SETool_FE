@@ -6,6 +6,7 @@ const initialState = {
   name: "",
   email: "",
   accessToken: "",
+  emailConfirmOtp:null,
   //imageFile: "",
 };
 
@@ -33,8 +34,9 @@ export const login = createAsyncThunk(
         console.log("🚀 ~ Đăng Nhập Thành Công ~ :", res);
         return res.data;
       }
-      if (res.status === 400) {
-        return rejectWithValue(res.error);
+      if (res.response?.status === 400) {
+        const err = res.response.data.error;
+        return rejectWithValue(err);
       }
     } catch (err) {
       return rejectWithValue(err);

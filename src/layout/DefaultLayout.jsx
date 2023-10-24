@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Button, Spin, Tag } from "antd";
 import SidebarMenu from "../components/SidebarMenu/SidebarMenu";
 import PropTypes from "prop-types";
@@ -15,6 +15,9 @@ import { Content } from "antd/es/layout/layout";
 import HeaderMenu from "../components/Header/Header";
 import setImage from "../assets/789.png";
 import setImage2 from "../assets/cdww.png";
+import { useDispatch, useSelector } from "react-redux";
+import { getProjectDetails } from "../Redux/Slices/ManagerZone/ManagerSlice";
+import { getProjectDetailSelector } from "../Redux/Selector";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -43,6 +46,22 @@ const items_for_manager = [
 const DefaultLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const projectDetails = useSelector(getProjectDetailSelector);
+  const refreshTable = false;
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getProjectDetails(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
 
   return (
     <>
@@ -94,7 +113,7 @@ const DefaultLayout = ({ children }) => {
                 style={{
                   padding: 0,
                   background: "white",
-                  boxShadow: "0 4px 2px -2px #ccc"
+                  boxShadow: "0 4px 2px -2px #ccc",
                 }}
               >
                 <div
@@ -142,7 +161,12 @@ const DefaultLayout = ({ children }) => {
                         src={setImage2}
                       />
                     )}
-                    <Tag style={{ fontSize: "16px", fontWeight: "bold" }} color="orange">Bird Management</Tag>
+                    <Tag
+                      style={{ fontSize: "16px", fontWeight: "bold" }}
+                      color="orange"
+                    >
+                      {projectDetails.projectName}
+                    </Tag>
                   </div>
                   <HeaderMenu></HeaderMenu>
                 </div>

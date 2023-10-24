@@ -9,6 +9,7 @@ import {
   Select,
   Tag,
   message,
+  notification,
 } from "antd";
 import { useState } from "react";
 const { Text } = Typography;
@@ -22,9 +23,12 @@ import {
 } from "@ant-design/icons";
 import "dayjs/locale/vi";
 import Dragger from "antd/es/upload/Dragger";
+import { useDispatch } from "react-redux";
+import { createBacklogs } from "../../Redux/Slices/Backlogs/BacklogsSlice";
 
-const AddBacklogs = ({ onClose,form }) => {
+const AddBacklogs = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const layout = {
     labelCol: {
@@ -45,7 +49,7 @@ const AddBacklogs = ({ onClose,form }) => {
     name: "file",
     multiple: true,
     accept: ".png,.jpg",
-    action:'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
@@ -62,24 +66,31 @@ const AddBacklogs = ({ onClose,form }) => {
     },
   };
 
-  const handleFormSubmit = (values) => {
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
+  };
+
+  const handleCreateBacklogs = (values) => {
     const data = { ...values };
-    console.log("backlogs add: ",data);
-    // if (!isEmployee) {
-    //   data.staffID = parseInt(staffID_current);
-    // }
-    // if (data) {
-    //   dispatch(taoDonTangCa(data))
-    //     .unwrap()
-    //     .then((result) => {
-    //       message.success(result);
-    //       form.resetFields();
-    //       onClose();
-    //     })
-    //     .catch((error) => {
-    //       message.error(error);
-    //     });
-    // }
+    if (data) {
+      dispatch(createBacklogs(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          form.resetFields();
+          onClose();
+        })
+        .catch((error) => {
+          error.forEach((errorMessage, index) => {
+            if (errorMessage) {
+              openNotification("error " + (index + 1) + ": ", errorMessage);
+            }
+          });
+        });
+    }
   };
 
   return (
@@ -87,12 +98,12 @@ const AddBacklogs = ({ onClose,form }) => {
       <Form
         {...layout}
         form={form}
-        onFinish={handleFormSubmit}
+        onFinish={handleCreateBacklogs}
         style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
       >
         <Form.Item
           label={<Text>Task name</Text>}
-          name="name"
+          name="taskName"
           style={{ marginRight: 10 }}
           rules={[
             {
@@ -102,22 +113,6 @@ const AddBacklogs = ({ onClose,form }) => {
           ]}
         >
           <Input placeholder="Input Task name" allowClear></Input>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Description</Text>}
-          name="description"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Description must not be a blank",
-            },
-          ]}
-        >
-          <Input.TextArea
-            placeholder="Input description"
-            allowClear
-          ></Input.TextArea>
         </Form.Item>
         <Form.Item
           label={<Text>Task type</Text>}
@@ -147,7 +142,7 @@ const AddBacklogs = ({ onClose,form }) => {
         </Form.Item>
         <Form.Item
           label={<Text>Priority</Text>}
-          name="priority"
+          name="taskPriority"
           style={{ marginRight: 10 }}
           rules={[
             {
@@ -188,6 +183,22 @@ const AddBacklogs = ({ onClose,form }) => {
           ></Select>
         </Form.Item>
         <Form.Item
+          label={<Text>Description</Text>}
+          name="taskDescription"
+          style={{ marginRight: 10 }}
+          rules={[
+            {
+              required: true,
+              message: "Description must not be a blank",
+            },
+          ]}
+        >
+          <Input.TextArea
+            placeholder="Input description"
+            allowClear
+          ></Input.TextArea>
+        </Form.Item>
+        <Form.Item
           label={<Text>imgLink</Text>}
           name="imgLink"
           style={{ marginRight: 10 }}
@@ -220,9 +231,13 @@ const AddBacklogs = ({ onClose,form }) => {
                 Cancel
               </Button>
             </Form.Item>
-              <Button icon={<PlusCircleOutlined style={{marginTop:5}}/>} className="custom-btn-add-d" htmlType="submit">
-                Add
-              </Button>
+            <Button
+              icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
+              className="custom-btn-add-d"
+              htmlType="submit"
+            >
+              Add
+            </Button>
           </Col>
         </Row>
       </Form>
