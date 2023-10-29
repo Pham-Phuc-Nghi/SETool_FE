@@ -10,6 +10,7 @@ import {
   Spin,
   Tag,
   Typography,
+  message,
 } from "antd";
 import {
   PlusOutlined,
@@ -22,7 +23,10 @@ import EditBacklogs from "./EditBacklogs";
 import AddBacklogs from "./AddBacklogs";
 import Assignee from "./Assignee";
 import { useDispatch, useSelector } from "react-redux";
-import { getDSTask } from "../../Redux/Slices/Backlogs/BacklogsSlice";
+import {
+  deleteBacklogs,
+  getDSTask,
+} from "../../Redux/Slices/Backlogs/BacklogsSlice";
 import { getDSTaskAllSelector } from "../../Redux/Selector";
 const { Text } = Typography;
 const Backlogs = () => {
@@ -42,7 +46,8 @@ const Backlogs = () => {
   const [isDrawerEdit, setIsDrawerEdit] = useState(false);
   const [form1] = Form.useForm();
 
-  const showDrawerEdit = () => {
+  const showDrawerEdit = (id) => {
+    form1.setFieldsValue({ id });
     setIsDrawerEdit(true);
   };
 
@@ -63,7 +68,7 @@ const Backlogs = () => {
   const closeAssigneeModal = () => {
     setIsModalAssignee(false);
     form2.resetFields();
-    setRefreshTable(!refreshTable)
+    setRefreshTable(!refreshTable);
   };
 
   const dispatch = useDispatch();
@@ -102,7 +107,20 @@ const Backlogs = () => {
     setSearchText(value);
   };
 
-  const handleDelete = () => {};
+  const handleDelete = (id) => {
+    if (id) {
+      dispatch(deleteBacklogs(id))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          form.resetFields();
+          setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
+    }
+  };
 
   return (
     <>
@@ -165,14 +183,14 @@ const Backlogs = () => {
                       key="edit"
                       className="custom-btn-watch-report"
                       icon={<EditOutlined />}
-                      onClick={showDrawerEdit}
+                      onClick={() => showDrawerEdit(item.id)}
                     >
                       Edit
                     </Button>,
                     <Popconfirm
                       key="delete"
                       title="Are you sure you want to delete this item?"
-                      onConfirm={handleDelete}
+                      onConfirm={() => handleDelete(item.id)}
                       okText="Yes"
                       cancelText="No"
                     >
@@ -261,7 +279,7 @@ const Backlogs = () => {
               width={500}
             >
               <Assignee form={form2} onClose={closeAssigneeModal}></Assignee>
-            </Modal> 
+            </Modal>
           </div>
         </>
       )}

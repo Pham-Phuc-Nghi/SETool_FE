@@ -78,7 +78,7 @@ const SprintController = () => {
   const [loading, setLoading] = useState(true);
   const [refreshTable, setRefreshTable] = useState(false);
   const dsAllSprint = useSelector(getDSAllSprintSelector);
-
+console.log(dsAllSprint)
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSSprint(projectID))

@@ -4,6 +4,7 @@ import { HomePagesSlice } from "./Slices/HonePages/HomePagesSlice";
 import { CollaborationSlice } from "./Slices/Collaboration/CollaborationSlice";
 import { ManagerSlice } from "./Slices/ManagerZone/ManagerSlice";
 import { BacklogsSlice } from "./Slices/Backlogs/BacklogsSlice";
+import { TaskManagerSlice } from "./Slices/TaskManager/TaskManagerSlice";
 
 const Store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const Store = configureStore({
     collaboration: CollaborationSlice.reducer,
     manager: ManagerSlice.reducer,
     backlogs: BacklogsSlice.reducer,
+    task: TaskManagerSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>

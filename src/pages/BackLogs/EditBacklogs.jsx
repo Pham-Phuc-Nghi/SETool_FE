@@ -9,8 +9,9 @@ import {
   Input,
   Tag,
   message,
+  Spin,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const { Text } = Typography;
 import PropTypes from "prop-types";
 import {
@@ -21,8 +22,33 @@ import {
   RiseOutlined,
 } from "@ant-design/icons";
 import Dragger from "antd/es/upload/Dragger";
+import { useDispatch, useSelector } from "react-redux";
+import { getDSTaskByIdSelector } from "../../Redux/Selector";
+import {
+  editBacklogs,
+  getDSTaskById,
+} from "../../Redux/Slices/Backlogs/BacklogsSlice";
 const EditBacklogs = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const dispatch = useDispatch();
+  const taskID = form.getFieldValue("id");
+  const taskByID = useSelector(getDSTaskByIdSelector);
+  const [refreshTable, setRefreshTable] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (taskID) {
+      dispatch(getDSTaskById(taskID))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable]);
 
   const props = {
     name: "file",
@@ -45,24 +71,22 @@ const EditBacklogs = ({ onClose, form }) => {
     },
   };
 
-  const handleFormSubmit = (values) => {
-    const data = { ...values };
+  const handleFormEdit = (values) => {
+    const data = { ...values, taskID };
     console.log("backlogs add: ", data);
-    // if (!isEmployee) {
-    //   data.staffID = parseInt(staffID_current);
-    // }
-    // if (data) {
-    //   dispatch(taoDonTangCa(data))
-    //     .unwrap()
-    //     .then((result) => {
-    //       message.success(result);
-    //       form.resetFields();
-    //       onClose();
-    //     })
-    //     .catch((error) => {
-    //       message.error(error);
-    //     });
-    // }
+    if (data) {
+      dispatch(editBacklogs(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result);
+          form.resetFields();
+          setRefreshTable(!refreshTable);
+          onClose();
+        })
+        .catch((error) => {
+          message.error(error);
+        });
+    }
   };
 
   const layout = {
@@ -82,152 +106,181 @@ const EditBacklogs = ({ onClose, form }) => {
 
   return (
     <>
-      <Form
-        {...layout}
-        form={form}
-        onFinish={handleFormSubmit}
-        style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
-      >
-        <Form.Item
-          label={<Text>Project name</Text>}
-          name="name"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Project name must not be a blank",
-            },
-          ]}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
         >
-          <Input placeholder="Input project name" allowClear></Input>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Description</Text>}
-          name="description"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Description must not be a blank",
-            },
-          ]}
-        >
-          <Input.TextArea
-            placeholder="Input description"
-            allowClear
-          ></Input.TextArea>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Task type</Text>}
-          name="taskType"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Task Type must not be a blank",
-            },
-          ]}
-        >
-          <Select
-            style={{ width: "60%" }}
-            placeholder="Choose task type"
-            options={[
-              {
-                value: 0,
-                label: <Text>DEV</Text>,
-              },
-              {
-                value: 1,
-                label: <Text>QA</Text>,
-              },
-            ]}
-          ></Select>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Priority</Text>}
-          name="priority"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Priority must not be a blank",
-            },
-          ]}
-        >
-          <Select
-            style={{ width: "60%" }}
-            placeholder="Choose task priority"
-            options={[
-              {
-                value: 0,
-                label: (
-                  <Tag color="yellow">
-                    <ArrowDownOutlined /> LOW
-                  </Tag>
-                ),
-              },
-              {
-                value: 1,
-                label: (
-                  <Tag color="green">
-                    <RiseOutlined /> MEDIUM
-                  </Tag>
-                ),
-              },
-              {
-                value: 2,
-                label: (
-                  <Tag color="red">
-                    <IssuesCloseOutlined /> HIGH
-                  </Tag>
-                ),
-              },
-            ]}
-          ></Select>
-        </Form.Item>
-        <Form.Item
-          label={<Text>imgLink</Text>}
-          name="imgLink"
-          style={{ marginRight: 10 }}
-        >
-          <Dragger {...props}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload. Strictly prohibited from
-              uploading company data or other banned files.
-            </p>
-          </Dragger>
-        </Form.Item>
-        <Row gutter={24} style={{ width: "100%" }}>
-          <Col
-            span={24}
-            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <Form
+            {...layout}
+            form={form}
+            onFinish={handleFormEdit}
+            style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
           >
-            <Form.Item>
-              <Button className="custom-btn-close" onClick={handleCancel}>
-                Cancel
-              </Button>
-            </Form.Item>
-            <Button
-              className="custom-btn-watch-report"
-              htmlType="submit"
-              icon={<EditOutlined></EditOutlined>}
+            <Form.Item
+              label={<Text>Project name</Text>}
+              name="taskName"
+              initialValue={taskByID && taskByID.data.taskName}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Project name must not be a blank",
+                },
+              ]}
             >
-              Edit
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-      <Modal
-        visible={isSuccessMessageVisible}
-        onCancel={() => setIsSuccessMessageVisible(false)}
-        onOk={() => setIsSuccessMessageVisible(false)}
-      ></Modal>
+              <Input placeholder="Input project name" allowClear></Input>
+            </Form.Item>
+            <Form.Item
+              label={<Text>Description</Text>}
+              name="taskDescription"
+              initialValue={taskByID && taskByID.data.taskDescription}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Description must not be a blank",
+                },
+              ]}
+            >
+              <Input.TextArea
+                placeholder="Input description"
+                allowClear
+              ></Input.TextArea>
+            </Form.Item>
+            <Form.Item
+              label={<Text>Task type</Text>}
+              name="taskType"
+              initialValue={taskByID && taskByID.data.taskType}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Task Type must not be a blank",
+                },
+              ]}
+            >
+              <Select
+                style={{ width: "60%" }}
+                placeholder="Choose task type"
+                options={[
+                  {
+                    value: 0,
+                    label: <Text>DEV</Text>,
+                  },
+                  {
+                    value: 1,
+                    label: <Text>QA</Text>,
+                  },
+                ]}
+              ></Select>
+            </Form.Item>
+            <Form.Item
+              label={<Text>Priority</Text>}
+              name="taskPriority"
+              initialValue={taskByID && taskByID.data.taskPriority}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Priority must not be a blank",
+                },
+              ]}
+            >
+              <Select
+                style={{ width: "60%" }}
+                placeholder="Choose task priority"
+                options={[
+                  {
+                    value: 0,
+                    label: (
+                      <Tag color="yellow">
+                        <ArrowDownOutlined /> LOW
+                      </Tag>
+                    ),
+                  },
+                  {
+                    value: 1,
+                    label: (
+                      <Tag color="green">
+                        <RiseOutlined /> MEDIUM
+                      </Tag>
+                    ),
+                  },
+                  {
+                    value: 2,
+                    label: (
+                      <Tag color="red">
+                        <IssuesCloseOutlined /> HIGH
+                      </Tag>
+                    ),
+                  },
+                ]}
+              ></Select>
+            </Form.Item>
+            <Form.Item
+              label={<Text>imgLink</Text>}
+              name="imgLink"
+              style={{ marginRight: 10 }}
+            >
+              <Dragger {...props}>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Click or drag file to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Support for a single or bulk upload. Strictly prohibited from
+                  uploading company data or other banned files.
+                </p>
+              </Dragger>
+            </Form.Item>
+            <Row gutter={24} style={{ width: "100%" }}>
+              <Col
+                span={24}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "10px",
+                }}
+              >
+                <Form.Item>
+                  <Button className="custom-btn-close" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                </Form.Item>
+                <Button
+                  className="custom-btn-watch-report"
+                  htmlType="submit"
+                  icon={<EditOutlined></EditOutlined>}
+                >
+                  Edit
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+          <Modal
+            visible={isSuccessMessageVisible}
+            onCancel={() => setIsSuccessMessageVisible(false)}
+            onOk={() => setIsSuccessMessageVisible(false)}
+          ></Modal>
+        </>
+      )}
     </>
   );
 };

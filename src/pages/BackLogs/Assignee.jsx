@@ -15,11 +15,17 @@ const { Text } = Typography;
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { editAssignee } from "../../Redux/Slices/Backlogs/BacklogsSlice";
 import {
-  editAssignee,
-} from "../../Redux/Slices/Backlogs/BacklogsSlice";
-import { getDSAllSprintSelector, getListDevSelector, getListQASelector } from "../../Redux/Selector";
-import { getDSSprint, getListDev, getListQA } from "../../Redux/Slices/ManagerZone/ManagerSlice";
+  getDSAllSprintSelector,
+  getListDevSelector,
+  getListQASelector,
+} from "../../Redux/Selector";
+import {
+  getDSSprint,
+  getListDev,
+  getListQA,
+} from "../../Redux/Slices/ManagerZone/ManagerSlice";
 
 const Assignee = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
@@ -56,8 +62,8 @@ const Assignee = ({ onClose, form }) => {
         });
     }
   };
-  
-//list dev
+
+  //list dev
   const listDev = useSelector(getListDevSelector);
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -70,7 +76,7 @@ const Assignee = ({ onClose, form }) => {
     label: type.name,
   }));
 
-//list QA
+  //list QA
   const listQA = useSelector(getListQASelector);
 
   useEffect(() => {
@@ -85,8 +91,8 @@ const Assignee = ({ onClose, form }) => {
     label: type.name,
   }));
 
-//list sprint
-  const listSprint= useSelector(getDSAllSprintSelector);
+  //list sprint
+  const listSprint = useSelector(getDSAllSprintSelector);
 
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");

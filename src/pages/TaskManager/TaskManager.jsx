@@ -1,9 +1,19 @@
-import { Card, Modal, Select, Tooltip, Typography } from "antd";
-import { useState } from "react";
+import { Card, Modal, Select, Spin, Tooltip, Typography } from "antd";
+import { useEffect, useState } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
 import "./taskManager.css";
 import TaskDetail from "./TaskDetail";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getDSMytask,
+  updateMytask,
+} from "../../Redux/Slices/TaskManager/TaskManagerSlice";
+import {
+  getDSAllSprintSelector,
+  getDSMyTaskSelector,
+} from "../../Redux/Selector";
+import { getDSSprint } from "../../Redux/Slices/ManagerZone/ManagerSlice";
 const TaskManager = () => {
   const [tasks, setTasks] = useState([
     {
@@ -12,7 +22,7 @@ const TaskManager = () => {
       descrip: "Task 1",
       age: "Task 1",
       moths: "Task 1",
-      status: "To Do",
+      status: 1,
     },
     {
       id: 2,
@@ -20,7 +30,7 @@ const TaskManager = () => {
       descrip: "Task 2",
       age: "Task 2",
       moths: "Task 2",
-      status: "In Progress",
+      status: 2,
     },
     {
       id: 3,
@@ -28,7 +38,7 @@ const TaskManager = () => {
       descrip: "Task 3",
       age: "Task 3",
       moths: "Task 3",
-      status: "Testing",
+      status: 3,
     },
     {
       id: 4,
@@ -36,7 +46,7 @@ const TaskManager = () => {
       descrip: "Task 4",
       age: "Task 4",
       moths: "Task 4",
-      status: "Done",
+      status: 4,
     },
   ]);
 
@@ -50,11 +60,15 @@ const TaskManager = () => {
   };
 
   const handleDragStart = (e, task) => {
-    if (task.status === "Done" || task.status === "Testing") {
+    if (task.status === 3 || task.status === 4) {
       e.preventDefault();
     } else {
-      setDraggedTask({ task, status: task.status });
-      e.dataTransfer.setData("task", JSON.stringify(task));
+      const dragData = {
+        id: task.id,
+        status: task.status,
+      };
+      setDraggedTask(dragData);
+      e.dataTransfer.setData("myTask", JSON.stringify(dragData));
     }
   };
 
@@ -69,11 +83,16 @@ const TaskManager = () => {
   };
 
   const handleBeforeDrop = (task, status) => {
-    if (status !== "Testing") return true;
+    if (status === 3) {
+      showConfirmModal();
+      return false;
+    }
+
     if (draggedTask) {
       showConfirmModal();
+      return false;
     }
-    return false;
+    return true;
   };
 
   const handleCancel = () => {
@@ -82,19 +101,26 @@ const TaskManager = () => {
 
   const handleDrop = (e, status) => {
     e.preventDefault();
-    const droppedTask = JSON.parse(e.dataTransfer.getData("task"));
+    const dragData = JSON.parse(e.dataTransfer.getData("myTask"));
 
-    if (handleBeforeDrop(droppedTask, status)) {
-      if (status !== "Done") {
-        const updatedTasks = [...tasks];
+    if (handleBeforeDrop(dragData, status)) {
+      if (status === 3) {
+        setDraggedTask(...myTask.data);
+        showConfirmModal();
+      } else if (status !== 4) {
+        const updatedTasks = [...myTask.data];
         const taskIndex = updatedTasks.findIndex(
-          (task) => task.id === droppedTask.id
+          (task) => task.id === dragData.id
         );
 
         if (taskIndex !== -1) {
           updatedTasks.splice(taskIndex, 1);
-          updatedTasks.unshift({ ...droppedTask, status });
-          setTasks(updatedTasks);
+          updatedTasks.unshift({ taskID: dragData.id, newStatus: status });
+          dispatch(updateMytask(updatedTasks[0]))
+            .unwrap()
+            .then(() => {
+              setRefreshTable(!refreshTable);
+            });
         }
         console.log(updatedTasks[0]);
       }
@@ -103,94 +129,179 @@ const TaskManager = () => {
 
   const handleOk = () => {
     if (draggedTask) {
-      const updatedTasks = tasks.map((task) => {
+      const updatedMyTasks = myTask.data.map((task) => {
         if (task.id === draggedTask.task.id) {
-          return { ...task, status: "Testing" };
+          return { ...task, taskStatus: 3 };
         }
         return task;
       });
-      const updatedTask = updatedTasks.find(
+
+      const updatedTask = updatedMyTasks.find(
         (task) => task.id === draggedTask.task.id
       );
+
       console.log("Updated Task:", updatedTask);
-      setTasks(updatedTasks);
+
+      const updatedMyTask = { data: updatedMyTasks };
+      dispatch(updateMytask(updatedMyTask))
+        .unwrap()
+        .then(() => {
+          setRefreshTable(!refreshTable);
+        });
     }
     setConfirmModalVisible(false);
     setDraggedTask(null);
   };
 
   const renderTasks = (status) => {
-    return tasks
-      .filter((task) => task.status === status)
-      .map((task) => {
-        let taskName = task.name;
-        if (taskName.length > 20) {
-          taskName = taskName.substring(0, 20) + "...";
-        }
-        return (
-          <Tooltip key={task.id} title="Double click to see more detail">
-            <Card
-              title={
-                <>
-                  <Text>
-                    Type :<Text style={{ color: "red" }}>{task.id}</Text>
-                  </Text>
-                </>
-              }
-              size="small"
-              bordered={false}
-              style={{
-                marginBottom: 30,
-                scale: "1.15",
-                boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
-                display: "flex",
-                justifyContent: "flex-start",
-                flexDirection: "column",
-                backgroundColor: "transparent",
-                cursor: "pointer",
-              }}
-              className="task-card"
-              draggable
-              onDragStart={(e) => handleDragStart(e, task)}
-              onDoubleClick={() => handleTaskDoubleClick(task)}
-            >
-              <Title level={5} style={{ marginTop: 0, paddingTop: 0 }}>
-                {taskName}
-              </Title>
-            </Card>
-          </Tooltip>
-        );
-      });
+    if (myTask.data === undefined || myTask.data.length === 0) {
+      return "Chưa có dữ liệu";
+    } else {
+      return myTask.data
+        .filter((task) => task.taskStatus === status)
+        .map((task) => {
+          let taskName = task.taskName;
+          if (taskName.length > 20) {
+            taskName = taskName.substring(0, 20) + "...";
+          }
+          return (
+            <Tooltip key={task.id} title="Double click to see more detail">
+              <Card
+                title={
+                  <>
+                    <Text>
+                      Type :
+                      <Text style={{ color: "red" }}>
+                        {task.taskType === 0 ? "DEV" : "QA"}
+                      </Text>
+                    </Text>
+                  </>
+                }
+                size="small"
+                bordered={false}
+                style={{
+                  marginBottom: 30,
+                  scale: "1.15",
+                  boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  flexDirection: "column",
+                  backgroundColor: "transparent",
+                  cursor: "pointer",
+                }}
+                className="task-card"
+                draggable
+                onDragStart={(e) => handleDragStart(e, task)}
+                onDoubleClick={() => handleTaskDoubleClick(task)}
+              >
+                <Title level={5} style={{ marginTop: 0, paddingTop: 0 }}>
+                  {taskName}
+                </Title>
+              </Card>
+            </Tooltip>
+          );
+        });
+    }
   };
 
-  const statuses = ["To Do", "In Progress", "Testing", "Done"];
-  const shouldShowScrollBar = tasks.length >= 5;
+  const myTask = useSelector(getDSMyTaskSelector);
+
+  const shouldShowScrollBar =
+    myTask.data !== undefined ? myTask.data.length >= 5 : false;
+
+  const statuses = [1, 2, 3, 4];
   const cardHeights = {};
 
   statuses.forEach((status) => {
-    const filteredTasks = tasks.filter((task) => task.status === status);
-    if (filteredTasks.length > 0) {
-      const height = `${filteredTasks.length * 115 + 100}px`;
-      cardHeights[status] = height;
-    } else {
-      cardHeights[status] = "auto";
+    if (myTask.data !== undefined) {
+      const filteredTasks = myTask.data.filter(
+        (task) => task.taskStatus === status
+      );
+      if (filteredTasks.length > 0) {
+        const height = `${filteredTasks.length * 115 + 100}px`;
+        cardHeights[status] = height;
+      } else {
+        cardHeights[status] = "auto";
+      }
     }
   });
 
+  const getStatusName = (status) => {
+    switch (status) {
+      case 1:
+        return "To Do";
+      case 2:
+        return "In Progress";
+      case 3:
+        return "Testing";
+      case 4:
+        return "Done";
+      default:
+        return "";
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
-      case "To Do":
+      case 1:
         return "#F29F05";
-      case "In Progress":
+      case 2:
         return "#F99A9C";
-      case "Testing":
+      case 3:
         return "#F2D98D";
-      case "Done":
+      case 4:
         return "#84D9BA";
       default:
         return "white";
     }
   };
+
+  const dispatch = useDispatch();
+  const listSprint = useSelector(getDSAllSprintSelector);
+
+  const [refreshTable, setRefreshTable] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSSprint(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  let option_list_Sprint;
+  option_list_Sprint = listSprint.map((type) => ({
+    value: type.id,
+    label: "Sprint " + type.sprintNumber,
+  }));
+  const [idTask, setIdTask] = useState(null);
+
+  const handleSelectSprint = (id) => {
+    console.log("id", id);
+    if (id) {
+      setIdTask(id);
+    }
+  };
+
+  useEffect(() => {
+    if (idTask !== null) {
+      dispatch(getDSMytask(idTask))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable, idTask]);
 
   return (
     <div
@@ -201,98 +312,102 @@ const TaskManager = () => {
         height: "80vh",
       }}
     >
-      <Select
-        style={{ width: "20%", marginBottom: 20, textAlign: "center" }}
-        placeholder="Choose sprint"
-        dropdownStyle={{ textAlign: "center" }}
-        defaultValue={1}
-        options={[
-          {
-            value: 1,
-            label: "Sprint 1",
-          },
-          {
-            value: 2,
-            label: "Sprint 2",
-          },
-          {
-            value: 3,
-            label: "Sprint 3",
-          },
-          {
-            value: 4,
-            label: "Sprint 4",
-          },
-        ]}
-      ></Select>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-          height: "auto",
-          overflowX: shouldShowScrollBar ? "auto" : "hidden",
-          minWidth: `${statuses.length * (300 + 10)}px`,
-        }}
-      >
-        {statuses.map((status, index) => (
-          <>
-            <Card
-              key={status}
-              style={{
-                width: "300px",
-                height: cardHeights[status],
-                marginRight: 20,
-                verticalAlign: "top",
-              }}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, status)}
-              title={
-                <Title
-                  className="header"
-                  level={4}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
+        >
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <Select
+            style={{ width: "20%", marginBottom: 20, textAlign: "center" }}
+            placeholder="Choose sprint"
+            dropdownStyle={{ textAlign: "center" }}
+            onChange={handleSelectSprint}
+            options={option_list_Sprint}
+          ></Select>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              height: "auto",
+              overflowX: shouldShowScrollBar ? "auto" : "hidden",
+              minWidth: `${statuses.length * (300 + 10)}px`,
+            }}
+          >
+            {statuses.map((status, index) => (
+              <>
+                <Card
+                  key={status}
                   style={{
-                    color: getStatusColor(status),
-                    border: "1px solid black",
+                    width: "300px",
+                    height: cardHeights[status],
+                    marginRight: 20,
+                    verticalAlign: "top",
                   }}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, status)}
+                  title={
+                    <Title
+                      className="header"
+                      level={4}
+                      style={{
+                        color: getStatusColor(status),
+                        border: "1px solid black",
+                      }}
+                    >
+                      {getStatusName(status)}
+                    </Title>
+                  }
                 >
-                  {status}
-                </Title>
-              }
-            >
-              {renderTasks(status)}
-            </Card>
-            {index !== statuses.length - 1 && (
-              <ArrowRightOutlined
-                style={{
-                  fontSize: 20,
-                  position: "relative",
-                  marginRight: 30,
-                  color: "#FF4500",
-                }}
-              />
-            )}
-          </>
-        ))}
-      </div>
-      <Modal
-        title="Task Details"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={1200}
-        style={{ top: 40 }}
-      >
-        <TaskDetail></TaskDetail>
-      </Modal>
-      <Modal
-        title="Xác nhận"
-        visible={confirmModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>Bạn có chắc chắn muốn chuyển task này vào Testing?</p>
-      </Modal>
+                  {renderTasks(status)}
+                </Card>
+                {index !== statuses.length - 1 && (
+                  <ArrowRightOutlined
+                    style={{
+                      fontSize: 20,
+                      position: "relative",
+                      marginRight: 30,
+                      color: "#FF4500",
+                    }}
+                  />
+                )}
+              </>
+            ))}
+          </div>
+          <Modal
+            title="Task Details"
+            visible={isModalVisible}
+            onCancel={() => setIsModalVisible(false)}
+            footer={null}
+            width={1200}
+            style={{ top: 40 }}
+          >
+            <TaskDetail></TaskDetail>
+          </Modal>
+          <Modal
+            title="Xác nhận"
+            visible={confirmModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+          >
+            <p>Bạn có chắc chắn muốn chuyển task này vào Testing?</p>
+          </Modal>
+        </>
+      )}
     </div>
   );
 };
