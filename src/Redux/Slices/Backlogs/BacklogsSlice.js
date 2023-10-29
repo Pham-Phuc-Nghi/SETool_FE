@@ -9,6 +9,7 @@ import {
 const initialState = {
   dsTask: [],
   dsTaskEdit: {},
+  dsAssignee: {},
   isAddedSuccess: false,
   isDeletedSuccess: false,
 };
@@ -17,12 +18,16 @@ export const BacklogsSlice = createSlice({
   name: "backlogs",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(getDSTask.fulfilled, (state, action) => {
-      state.dsTask = action.payload;
-    });
-    builder.addCase(getDSTaskById.fulfilled, (state, action) => {
-      state.dsTaskEdit = action.payload;
-    });
+    builder
+      .addCase(getDSTask.fulfilled, (state, action) => {
+        state.dsTask = action.payload;
+      })
+      .addCase(getDSTaskById.fulfilled, (state, action) => {
+        state.dsTaskEdit = action.payload;
+      })
+      .addCase(getDSTaskAssignee.fulfilled, (state, action) => {
+        state.dsAssignee = action.payload;
+      });
   },
 });
 
@@ -43,6 +48,23 @@ export const getDSTaskById = createAsyncThunk(
   async (taskID) => {
     try {
       const res = await getRequest(`/Task/backlog/${taskID}`);
+      if (res.status == 200) {
+        return res.data;
+      }
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+);
+
+export const getDSTaskAssignee = createAsyncThunk(
+  "backlogs/getDSTaskAssignee",
+  async (taskID) => {
+    try {
+      const projectID = sessionStorage.getItem("current_project");
+      const res = await getRequest(
+        `/Task/${projectID}/get-assignee-review/${taskID}`
+      );
       return res.data;
     } catch (error) {
       console.log({ error });
@@ -134,7 +156,7 @@ export const deleteBacklogs = createAsyncThunk(
   "backlogs/deleteBacklogs",
   async (taskID, { rejectWithValue, fulfillWithValue }) => {
     try {
-      const res = await deleteRequest(`/Task/${taskID}`)
+      const res = await deleteRequest(`/Task/${taskID}`);
       if (res.status === 200) {
         return fulfillWithValue("Đã delete task thành công");
       }

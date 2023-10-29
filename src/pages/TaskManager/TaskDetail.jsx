@@ -11,8 +11,9 @@ import {
   List,
   Progress,
   Tag,
+  Spin,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const { Title, Text } = Typography;
 const { Item } = List;
 import {
@@ -23,8 +24,34 @@ import {
   PullRequestOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { getDSMytaskDetail } from "../../Redux/Slices/TaskManager/TaskManagerSlice";
+import { getDSMyTaskDetailSelector } from "../../Redux/Selector";
+import dayjs from "dayjs";
+const TaskDetail = ({ idTask }) => {
+  const taskID = idTask.id;
 
-const TaskDetail = () => {
+  const [refreshTable, setRefreshTable] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const taskDetail = useSelector(getDSMyTaskDetailSelector);
+  console.log(taskDetail);
+
+  useEffect(() => {
+    if (taskID) {
+      dispatch(getDSMytaskDetail(taskID))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable, taskID]);
+
   const [comments, setComments] = useState([
     {
       id: 1,
@@ -88,197 +115,232 @@ const TaskDetail = () => {
   ];
 
   const statusColors = {
-    todo: "#F29F05",
-    inProgress: "#F99A9C",
-    testing: "#F2D98D",
-    done: "#84D9BA",
+    1: "#F29F05",
+    2: "#F99A9C",
+    3: "#F2D98D",
+    4: "#84D9BA",
   };
 
   const statusPercentages = {
-    todo: 25,
-    inProgress: 50,
-    testing: 75,
-    done: 100,
+    1: 25,
+    2: 50,
+    3: 75,
+    4: 100,
   };
 
   const statusIcons = {
-    todo: <UnorderedListOutlined />,
-    inProgress: <PullRequestOutlined />,
-    testing: <MonitorOutlined />,
-    done: <CheckSquareOutlined />,
+    1: <UnorderedListOutlined />,
+    2: <PullRequestOutlined />,
+    3: <MonitorOutlined />,
+    4: <CheckSquareOutlined />,
   };
 
   return (
     <>
-      <Row gutter={24} style={{ width: "100%" }}>
-        <Col
-          span={16}
+      {loading ? (
+        <div
           style={{
-            overflow: "auto",
-            maxHeight: "550px",
-            lineHeight: 2.5,
-            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
           }}
         >
-          <Space direction="vertical" style={{ width: "100%" }}>
-            <Text>
-              <Tag color="blue"> Project ABC </Tag>/{" "}
-              <Tag color="yellow"> ID: 1 </Tag>
-            </Text>
-            <Title style={{ marginBottom: 8 }}>Build Task Layout</Title>
-            <Text>
-              Description: Lorem ipsum dolor sit amet, consectetur adipiscing
-              elit.Description: Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit.Description: Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit.Description: Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit.Description: Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit.Description: Lorem ipsum
-              dolor sit amet, consectetur adipiscing elit.Description: Lorem
-              ipsum dolor sit amet, consectetur adipiscing elit.Description:
-              Lorem ipsum dolor sit amet, consectetur adipiscing
-              elit.Description: Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit.Description: Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit.Description: Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit.Description: Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit.
-            </Text>
-            <Divider style={{ border: "1px solid gray" }}></Divider>
-            <Form
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <Row gutter={24} style={{ width: "100%" }}>
+            <Col
+              span={16}
               style={{
-                marginLeft: 8,
-                display: "flex",
-                flexDirection: "column",
+                overflow: "auto",
+                maxHeight: "550px",
+                lineHeight: 2.5,
+                width: "100%",
               }}
             >
-              <Form.Item label={<Avatar>A</Avatar>} style={{ marginBottom: 8 }}>
-                <Input.TextArea
-                  name="comment"
-                  value={comment}
-                  onChange={handleCommentChange}
-                  placeholder="Input your comment"
-                ></Input.TextArea>
-              </Form.Item>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  icon={<PlusOutlined />}
-                  className="custom-btn-add-d"
-                  htmlType="submit"
-                  onClick={handleCommentSubmit}
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Text>
+                  <Tag color="yellow"> task ID: {taskID} </Tag>
+                </Text>
+                <Title style={{ marginBottom: 8 }}>{taskDetail.taskName}</Title>
+                <Text>{taskDetail.taskDescription}</Text>
+                <Divider style={{ border: "1px solid gray" }}></Divider>
+                <Form
+                  style={{
+                    marginLeft: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
                 >
-                  Add Comment
-                </Button>
-              </div>
-            </Form>
-            <List
-              header={<div>Comments</div>}
-              itemLayout="horizontal"
-              dataSource={comments}
-              renderItem={(item) => (
-                <Item>
-                  <Item.Meta
-                    avatar={<Avatar>{item.author.charAt(0)}</Avatar>}
-                    title={`Comment by ${item.author}`}
-                    description={item.text}
-                  />
-                </Item>
-              )}
-            />
-          </Space>
-        </Col>
-        <Col
-          span={8}
-          style={{ overflow: "auto", maxHeight: "600px", lineHeight: 2.5 }}
-        >
-          <Space direction="vertical" style={{ width: "100%" }}>
-            <Row gutter={24}>
-              <Col span={6}>
-                <Tag color="blue">Task Type</Tag>
-              </Col>
-              <Col span={18}>
-                <Text>Feature</Text>
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col span={6}>
-                <Tag color="red">Status</Tag>
-              </Col>
-              <Col span={18}>
-                <Text>In Progress</Text>
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col span={6}>
-                <Tag color="purple">Sprint</Tag>
-              </Col>
-              <Col span={18}>
-                <Text>Sprint 1</Text>
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col span={6}>
-                <Tag color="geekblue">Assignee</Tag>
-              </Col>
-              <Col span={18}>
-                <Text>John Doe</Text>
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col span={6}>
-                <Tag color="magenta">Reporter</Tag>
-              </Col>
-              <Col span={18}>
-                <Text>Jane Smith</Text>
-              </Col>
-            </Row>
-            <List
-              style={{ width: "100%" }}
-              header={
-                <div>
-                  <HistoryOutlined /> History
-                </div>
-              }
-              itemLayout="horizontal"
-              dataSource={historyData}
-              renderItem={(item) => (
-                <Item>
-                  <Item.Meta
-                    avatar={
-                      <Avatar
-                        style={{
-                          backgroundColor: statusColors[item.statusKey],
-                        }}
-                      >
-                        {statusIcons[item.statusKey]}
-                      </Avatar>
-                    }
-                    title={
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Text>{item.time}</Text>
-                        <Text>{item.status}</Text>
-                      </div>
-                    }
-                    description={
-                      <Progress
-                        size="small"
-                        percent={statusPercentages[item.statusKey]}
-                        showInfo={false}
-                        strokeColor={statusColors[item.statusKey]}
+                  <Form.Item
+                    label={<Avatar>A</Avatar>}
+                    style={{ marginBottom: 8 }}
+                  >
+                    <Input.TextArea
+                      name="comment"
+                      value={comment}
+                      onChange={handleCommentChange}
+                      placeholder="Input your comment"
+                    ></Input.TextArea>
+                  </Form.Item>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      icon={<PlusOutlined />}
+                      className="custom-btn-add-d"
+                      htmlType="submit"
+                      onClick={handleCommentSubmit}
+                    >
+                      Add Comment
+                    </Button>
+                  </div>
+                </Form>
+                <List
+                  header={<div>Comments</div>}
+                  itemLayout="horizontal"
+                  dataSource={comments}
+                  renderItem={(item) => (
+                    <Item>
+                      <Item.Meta
+                        avatar={<Avatar>{item.author.charAt(0)}</Avatar>}
+                        title={`Comment by ${item.author}`}
+                        description={item.text}
                       />
-                    }
-                  />
-                </Item>
-              )}
-            />
-          </Space>
-        </Col>
-      </Row>
+                    </Item>
+                  )}
+                />
+              </Space>
+            </Col>
+            <Col
+              span={8}
+              style={{ overflow: "auto", maxHeight: "600px", lineHeight: 2.5 }}
+            >
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Row gutter={24}>
+                  <Col span={6}>
+                    <Tag color="blue">Task Type</Tag>
+                  </Col>
+                  <Col span={18}>
+                    <Text>{taskDetail.taskType !== 1 ? "DEV" : "QA"}</Text>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={6}>
+                    <Tag color="red">Status</Tag>
+                  </Col>
+                  <Col span={18}>
+                    <Text>
+                      {taskDetail.taskStatus === 1
+                        ? "To Do"
+                        : taskDetail.taskStatus === 2
+                        ? "In Progress"
+                        : taskDetail.taskStatus === 3
+                        ? "Testing"
+                        : taskDetail.taskStatus === 4
+                        ? "Done"
+                        : "Unknown"}
+                    </Text>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={6}>
+                    <Tag color="purple">Sprint</Tag>
+                  </Col>
+                  <Col span={18}>
+                    <Text>Sprint {taskDetail.sprintNumber}</Text>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={6}>
+                    <Tag color="geekblue">Assignee</Tag>
+                  </Col>
+                  <Col span={18}>
+                    <Text>{taskDetail.assigneeName}</Text>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={6}>
+                    <Tag color="magenta">Reporter</Tag>
+                  </Col>
+                  <Col span={18}>
+                    <Text>{taskDetail.reporterName}</Text>
+                  </Col>
+                </Row>
+                <List
+                  style={{ width: "100%" }}
+                  header={
+                    <div>
+                      <HistoryOutlined /> History
+                    </div>
+                  }
+                  itemLayout="horizontal"
+                  dataSource={taskDetail.history}
+                  renderItem={(item) => (
+                    <Item>
+                      <Item.Meta
+                        avatar={
+                          <Avatar
+                            style={{
+                              backgroundColor: statusColors[item.taskState],
+                            }}
+                          >
+                            {statusIcons[item.taskState]}
+                          </Avatar>
+                        }
+                        title={
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text>
+                              {item.committer} -{" "}
+                              {dayjs(item.commitDate).format("DD/MM/YYYY")}
+                            </Text>
+                            <Text>
+                              {item.taskState === 1
+                                ? "To Do"
+                                : item.taskState === 2
+                                ? "In Progress"
+                                : item.taskState === 3
+                                ? "Testing"
+                                : item.taskState === 4
+                                ? "Done"
+                                : "Unknown"}
+                            </Text>
+                          </div>
+                        }
+                        description={
+                          <Progress
+                            size="small"
+                            percent={statusPercentages[item.taskState]}
+                            showInfo={false}
+                            strokeColor={statusColors[item.taskState]}
+                          />
+                        }
+                      />
+                    </Item>
+                  )}
+                />
+              </Space>
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   );
+};
+
+TaskDetail.propTypes = {
+  idTask: PropTypes.object.isRequired,
 };
 
 export default TaskDetail;

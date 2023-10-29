@@ -28,49 +28,9 @@ import {
   getDSTask,
 } from "../../Redux/Slices/Backlogs/BacklogsSlice";
 import { getDSTaskAllSelector } from "../../Redux/Selector";
+import { setKeyId } from "../../Redux/Slices/StateChange/StateChangeSlice";
 const { Text } = Typography;
 const Backlogs = () => {
-  const [isDrawerAdd, setIsDrawerAdd] = useState(false);
-  const [form] = Form.useForm();
-
-  const showAddDrawer = () => {
-    setIsDrawerAdd(true);
-  };
-
-  const closeAddDrawer = () => {
-    setIsDrawerAdd(false);
-    form.resetFields();
-    setRefreshTable(!refreshTable);
-  };
-
-  const [isDrawerEdit, setIsDrawerEdit] = useState(false);
-  const [form1] = Form.useForm();
-
-  const showDrawerEdit = (id) => {
-    form1.setFieldsValue({ id });
-    setIsDrawerEdit(true);
-  };
-
-  const closeEditDrawer = () => {
-    setIsDrawerEdit(false);
-    form1.resetFields();
-    setRefreshTable(!refreshTable);
-  };
-
-  const [isModalAssignee, setIsModalAssignee] = useState(false);
-  const [form2] = Form.useForm();
-
-  const showModalAssignee = (id) => {
-    form2.setFieldsValue({ id });
-    setIsModalAssignee(true);
-  };
-
-  const closeAssigneeModal = () => {
-    setIsModalAssignee(false);
-    form2.resetFields();
-    setRefreshTable(!refreshTable);
-  };
-
   const dispatch = useDispatch();
   const dsTaskAll = useSelector(getDSTaskAllSelector);
   const [refreshTable, setRefreshTable] = useState(false);
@@ -120,6 +80,46 @@ const Backlogs = () => {
           message.error(error, 1.5);
         });
     }
+  };
+
+  const [isDrawerAdd, setIsDrawerAdd] = useState(false);
+  const [form] = Form.useForm();
+
+  const showAddDrawer = () => {
+    setIsDrawerAdd(true);
+  };
+
+  const closeAddDrawer = () => {
+    setIsDrawerAdd(false);
+    form.resetFields();
+    setRefreshTable(!refreshTable);
+  };
+
+  const [isDrawerEdit, setIsDrawerEdit] = useState(false);
+  const [form1] = Form.useForm();
+
+  const showDrawerEdit = () => {
+    setIsDrawerEdit(true);
+  };
+
+  const closeEditDrawer = () => {
+    dispatch(setKeyId(null));
+    // form1.resetFields();
+    setIsDrawerEdit(false);
+    setRefreshTable(!refreshTable);
+  };
+
+  const [isModalAssignee, setIsModalAssignee] = useState(false);
+  const [form2] = Form.useForm();
+
+  const showModalAssignee = () => {
+    setIsModalAssignee(true);
+  };
+
+  const closeAssigneeModal = () => {
+    setIsModalAssignee(false);
+    form2.resetFields();
+    setRefreshTable(!refreshTable);
   };
 
   return (
@@ -175,7 +175,10 @@ const Backlogs = () => {
                       key="assignee"
                       className="custom-btn-update"
                       icon={<UserAddOutlined />}
-                      onClick={() => showModalAssignee(item.id)}
+                      onClick={() => {
+                        dispatch(setKeyId(item.id));
+                        showModalAssignee();
+                      }}
                     >
                       Assignee & review
                     </Button>,
@@ -183,7 +186,10 @@ const Backlogs = () => {
                       key="edit"
                       className="custom-btn-watch-report"
                       icon={<EditOutlined />}
-                      onClick={() => showDrawerEdit(item.id)}
+                      onClick={() => {
+                        dispatch(setKeyId(item.id));
+                        showDrawerEdit();
+                      }}
                     >
                       Edit
                     </Button>,
@@ -251,13 +257,13 @@ const Backlogs = () => {
               placement="right"
               closable={true}
               visible={isDrawerEdit}
-              onClose={closeEditDrawer}
+              onClose={()=>closeEditDrawer()}
               width={700}
               style={{ top: 42 }}
             >
               <EditBacklogs
                 onClose={closeEditDrawer}
-                form={form1}
+                form1={form1}
               ></EditBacklogs>
             </Drawer>
             <Drawer

@@ -7,6 +7,7 @@ import {
   Modal,
   Row,
   Select,
+  Spin,
   Typography,
   message,
 } from "antd";
@@ -15,9 +16,14 @@ const { Text } = Typography;
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editAssignee } from "../../Redux/Slices/Backlogs/BacklogsSlice";
+import {
+  editAssignee,
+  getDSTaskAssignee,
+} from "../../Redux/Slices/Backlogs/BacklogsSlice";
 import {
   getDSAllSprintSelector,
+  getDSTaskAssigneeSelector,
+  getKeyIdSelector,
   getListDevSelector,
   getListQASelector,
 } from "../../Redux/Selector";
@@ -29,8 +35,26 @@ import {
 
 const Assignee = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
-  const taskID = form.getFieldValue("id");
   const dispatch = useDispatch();
+  const dsAssignee = useSelector(getDSTaskAssigneeSelector);
+  const taskID = useSelector(getKeyIdSelector);
+
+  const [refreshTable,setRefreshTable] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (taskID) {
+      dispatch(getDSTaskAssignee(taskID))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable]);
 
   const layout = {
     labelCol: {
@@ -43,6 +67,7 @@ const Assignee = ({ onClose, form }) => {
 
   const handleCancel = () => {
     form.resetFields();
+    setRefreshTable(!refreshTable)
     setIsSuccessMessageVisible(false);
     onClose();
   };
@@ -108,136 +133,162 @@ const Assignee = ({ onClose, form }) => {
 
   return (
     <>
-      <Form
-        {...layout}
-        form={form}
-        onFinish={handleFormSubmit}
-        style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
-      >
-        <Form.Item
-          label={<Text>Assignee</Text>}
-          name="assigneeID"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Assignee must not be a blank",
-            },
-          ]}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
         >
-          <Select
-            style={{ width: "60%" }}
-            placeholder="Choose Assignee"
-            options={option_list_Dev}
-          ></Select>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Reviewer</Text>}
-          name="reporterID"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Reviewer must not be a blank",
-            },
-          ]}
-        >
-          <Select
-            style={{ width: "60%" }}
-            placeholder="Choose Reviewer"
-            options={option_list_QA}
-          ></Select>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Sprint</Text>}
-          name="sprintID"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Sprint must not be a blank",
-            },
-          ]}
-        >
-          <Select
-            style={{ width: "60%" }}
-            placeholder="Choose Sprint"
-            options={option_list_Sprint}
-          ></Select>
-        </Form.Item>
-        <Form.Item
-          label={<Text>Start date</Text>}
-          name="taskStartDay"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Please select a start date",
-            },
-          ]}
-        >
-          <DatePicker
-            placeholder="Select start date"
-            style={{ width: "60%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
-        </Form.Item>
-        <Form.Item
-          label={<Text>End date</Text>}
-          name="taskEndDay"
-          style={{ marginRight: 10 }}
-          rules={[
-            {
-              required: true,
-              message: "Please select an end date",
-            },
-          ]}
-        >
-          <DatePicker
-            placeholder="Select end date"
-            style={{ width: "60%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
-        </Form.Item>
-        <Row gutter={24} style={{ marginRight: "5px" }}>
-          <Col
-            span={24}
-            style={{ display: "flex", justifyContent: "flex-end" }}
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <Form
+            {...layout}
+            form={form}
+            onFinish={handleFormSubmit}
+            style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
           >
-            <Form.Item>
-              <Button
-                className="custom-btn-close"
-                onClick={handleCancel}
-                style={{ marginRight: "10px" }}
-              >
-                Cancel
-              </Button>
-            </Form.Item>
-            <Button
-              icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
-              className="custom-btn-save-and-add"
-              htmlType="submit"
+            <Form.Item
+              label={<Text>Assignee</Text>}
+              name="assigneeID"
+              initialValue={dsAssignee && dsAssignee.assigneeID}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Assignee must not be a blank",
+                },
+              ]}
             >
-              Submit
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-      <Modal
-        visible={isSuccessMessageVisible}
-        onCancel={() => setIsSuccessMessageVisible(false)}
-        onOk={() => setIsSuccessMessageVisible(false)}
-      ></Modal>
+              <Select
+                style={{ width: "60%" }}
+                placeholder="Choose Assignee"
+                options={option_list_Dev}
+              ></Select>
+            </Form.Item>
+            <Form.Item
+              label={<Text>Reviewer</Text>}
+              name="reporterID"
+              initialValue={dsAssignee && dsAssignee.reporterID}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Reviewer must not be a blank",
+                },
+              ]}
+            >
+              <Select
+                style={{ width: "60%" }}
+                placeholder="Choose Reviewer"
+                options={option_list_QA}
+              ></Select>
+            </Form.Item>
+            <Form.Item
+              label={<Text>Sprint</Text>}
+              name="sprintID"
+              style={{ marginRight: 10 }}
+              initialValue={dsAssignee && dsAssignee.sprintID}
+              rules={[
+                {
+                  required: true,
+                  message: "Sprint must not be a blank",
+                },
+              ]}
+            >
+              <Select
+                style={{ width: "60%" }}
+                placeholder="Choose Sprint"
+                options={option_list_Sprint}
+              ></Select>
+            </Form.Item>
+            <Form.Item
+              label={<Text>Start date</Text>}
+              name="taskStartDay"
+              initialValue={dsAssignee && dayjs(dsAssignee.taskStartDay)}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Please select a start date",
+                },
+              ]}
+            >
+              <DatePicker
+                placeholder="Select start date"
+                style={{ width: "60%" }}
+                disabledDate={(current) => {
+                  const currentDate = dayjs(current);
+                  const today = dayjs();
+                  return currentDate.isBefore(today, "day");
+                }}
+                format="DD/MM/YYYY"
+              ></DatePicker>
+            </Form.Item>
+            <Form.Item
+              label={<Text>End date</Text>}
+              name="taskEndDay"
+              initialValue={dsAssignee && dayjs(dsAssignee.taskEndDay)}
+              style={{ marginRight: 10 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an end date",
+                },
+              ]}
+            >
+              <DatePicker
+                placeholder="Select end date"
+                style={{ width: "60%" }}
+                disabledDate={(current) => {
+                  const currentDate = dayjs(current);
+                  const today = dayjs();
+                  return currentDate.isBefore(today, "day");
+                }}
+                format="DD/MM/YYYY"
+              ></DatePicker>
+            </Form.Item>
+            <Row gutter={24} style={{ marginRight: "5px" }}>
+              <Col
+                span={24}
+                style={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Form.Item>
+                  <Button
+                    className="custom-btn-close"
+                    onClick={handleCancel}
+                    style={{ marginRight: "10px" }}
+                  >
+                    Cancel
+                  </Button>
+                </Form.Item>
+                <Button
+                  icon={<PlusCircleOutlined style={{ marginTop: 5 }} />}
+                  className="custom-btn-save-and-add"
+                  htmlType="submit"
+                >
+                  Submit
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+          <Modal
+            visible={isSuccessMessageVisible}
+            onCancel={() => setIsSuccessMessageVisible(false)}
+            onOk={() => setIsSuccessMessageVisible(false)}
+          ></Modal>
+        </>
+      )}
     </>
   );
 };

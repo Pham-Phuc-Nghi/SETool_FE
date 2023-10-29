@@ -1,4 +1,4 @@
-import { Card, Modal, Select, Spin, Tooltip, Typography } from "antd";
+import { Card, Modal, Select, Spin, Tooltip, Typography, message } from "antd";
 import { useEffect, useState } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
@@ -15,41 +15,6 @@ import {
 } from "../../Redux/Selector";
 import { getDSSprint } from "../../Redux/Slices/ManagerZone/ManagerSlice";
 const TaskManager = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      name: "Build fe layout for manager",
-      descrip: "Task 1",
-      age: "Task 1",
-      moths: "Task 1",
-      status: 1,
-    },
-    {
-      id: 2,
-      name: "Build fe layout ",
-      descrip: "Task 2",
-      age: "Task 2",
-      moths: "Task 2",
-      status: 2,
-    },
-    {
-      id: 3,
-      name: "Build BE API",
-      descrip: "Task 3",
-      age: "Task 3",
-      moths: "Task 3",
-      status: 3,
-    },
-    {
-      id: 4,
-      name: "Task 4",
-      descrip: "Task 4",
-      age: "Task 4",
-      moths: "Task 4",
-      status: 4,
-    },
-  ]);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
@@ -60,16 +25,12 @@ const TaskManager = () => {
   };
 
   const handleDragStart = (e, task) => {
-    if (task.status === 3 || task.status === 4) {
-      e.preventDefault();
-    } else {
-      const dragData = {
-        id: task.id,
-        status: task.status,
-      };
-      setDraggedTask(dragData);
-      e.dataTransfer.setData("myTask", JSON.stringify(dragData));
-    }
+    const dragData = {
+      id: task.id,
+      status: task.status,
+    };
+    setDraggedTask(dragData);
+    e.dataTransfer.setData("myTask", JSON.stringify(dragData));
   };
 
   const handleDragOver = (e) => {
@@ -89,8 +50,7 @@ const TaskManager = () => {
     }
 
     if (draggedTask) {
-      showConfirmModal();
-      return false;
+      return true;
     }
     return true;
   };
@@ -104,25 +64,23 @@ const TaskManager = () => {
     const dragData = JSON.parse(e.dataTransfer.getData("myTask"));
 
     if (handleBeforeDrop(dragData, status)) {
-      if (status === 3) {
-        setDraggedTask(...myTask.data);
-        showConfirmModal();
-      } else if (status !== 4) {
-        const updatedTasks = [...myTask.data];
-        const taskIndex = updatedTasks.findIndex(
-          (task) => task.id === dragData.id
-        );
+      const updatedTasks = [...myTask.data];
+      const taskIndex = updatedTasks.findIndex(
+        (task) => task.id === dragData.id
+      );
 
-        if (taskIndex !== -1) {
-          updatedTasks.splice(taskIndex, 1);
-          updatedTasks.unshift({ taskID: dragData.id, newStatus: status });
-          dispatch(updateMytask(updatedTasks[0]))
-            .unwrap()
-            .then(() => {
-              setRefreshTable(!refreshTable);
-            });
-        }
-        console.log(updatedTasks[0]);
+      if (taskIndex !== -1) {
+        updatedTasks.splice(taskIndex, 1);
+        updatedTasks.unshift({ taskID: dragData.id, newStatus: status });
+        dispatch(updateMytask(updatedTasks[0]))
+          .unwrap()
+          .then((result) => {
+            message.success(result);
+            setRefreshTable(!refreshTable);
+          })
+          .catch((error) => {
+            message.error(error, 1.5);
+          });
       }
     }
   };
@@ -130,23 +88,24 @@ const TaskManager = () => {
   const handleOk = () => {
     if (draggedTask) {
       const updatedMyTasks = myTask.data.map((task) => {
-        if (task.id === draggedTask.task.id) {
+        if (task.id === draggedTask.id) {
           return { ...task, taskStatus: 3 };
         }
         return task;
       });
 
       const updatedTask = updatedMyTasks.find(
-        (task) => task.id === draggedTask.task.id
+        (task) => task.id === draggedTask.id
       );
-
-      console.log("Updated Task:", updatedTask);
-
-      const updatedMyTask = { data: updatedMyTasks };
+      const updatedMyTask = { taskID: updatedTask.id, newStatus: 3 };
       dispatch(updateMytask(updatedMyTask))
         .unwrap()
-        .then(() => {
+        .then((result) => {
+          message.success(result);
           setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
         });
     }
     setConfirmModalVisible(false);
@@ -394,9 +353,9 @@ const TaskManager = () => {
             onCancel={() => setIsModalVisible(false)}
             footer={null}
             width={1200}
-            style={{ top: 40 }}
+            style={{ top: 30 }}
           >
-            <TaskDetail></TaskDetail>
+            <TaskDetail idTask={selectedTask}></TaskDetail>
           </Modal>
           <Modal
             title="Xác nhận"

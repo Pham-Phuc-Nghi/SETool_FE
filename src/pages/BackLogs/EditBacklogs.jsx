@@ -23,21 +23,24 @@ import {
 } from "@ant-design/icons";
 import Dragger from "antd/es/upload/Dragger";
 import { useDispatch, useSelector } from "react-redux";
-import { getDSTaskByIdSelector } from "../../Redux/Selector";
+import { getDSTaskByIdSelector, getKeyIdSelector } from "../../Redux/Selector";
 import {
   editBacklogs,
   getDSTaskById,
 } from "../../Redux/Slices/Backlogs/BacklogsSlice";
-const EditBacklogs = ({ onClose, form }) => {
-  const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+import { setKeyId } from "../../Redux/Slices/StateChange/StateChangeSlice";
+
+const EditBacklogs = ({ onClose, form1 }) => {
   const dispatch = useDispatch();
-  const taskID = form.getFieldValue("id");
   const taskByID = useSelector(getDSTaskByIdSelector);
   const [refreshTable, setRefreshTable] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const taskID = useSelector(getKeyIdSelector);
 
   useEffect(() => {
-    if (taskID) {
+    if (taskID !== null) {
+      setLoading(true);
       dispatch(getDSTaskById(taskID))
         .unwrap()
         .then(() => {
@@ -48,7 +51,7 @@ const EditBacklogs = ({ onClose, form }) => {
           console.error("Error fetching data: ", error);
         });
     }
-  }, [refreshTable]);
+  }, [refreshTable,taskID,dispatch]);
 
   const props = {
     name: "file",
@@ -79,8 +82,9 @@ const EditBacklogs = ({ onClose, form }) => {
         .unwrap()
         .then((result) => {
           message.success(result);
-          form.resetFields();
+          form1.resetFields();
           setRefreshTable(!refreshTable);
+          dispatch(setKeyId(null));
           onClose();
         })
         .catch((error) => {
@@ -99,7 +103,8 @@ const EditBacklogs = ({ onClose, form }) => {
   };
 
   const handleCancel = () => {
-    form.resetFields();
+    form1.resetFields();
+    setRefreshTable(!refreshTable);
     setIsSuccessMessageVisible(false);
     onClose();
   };
@@ -127,7 +132,7 @@ const EditBacklogs = ({ onClose, form }) => {
         <>
           <Form
             {...layout}
-            form={form}
+            form={form1}
             onFinish={handleFormEdit}
             style={{ maxHeight: 598, marginTop: "10px", overflow: "auto" }}
           >
@@ -287,7 +292,7 @@ const EditBacklogs = ({ onClose, form }) => {
 
 EditBacklogs.propTypes = {
   onClose: PropTypes.func.isRequired,
-  form: PropTypes.object,
+  form1: PropTypes.object,
 };
 
 export default EditBacklogs;

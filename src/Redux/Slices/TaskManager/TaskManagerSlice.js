@@ -3,6 +3,7 @@ import { getRequest, patchRequest } from "../../../Services/HttpMethods";
 
 const initialState = {
   dsMyTask: [],
+  dsMyTaskDetail: {},
   isAddedSuccess: false,
   isDeletedSuccess: false,
 };
@@ -13,6 +14,8 @@ export const TaskManagerSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getDSMytask.fulfilled, (state, action) => {
       state.dsMyTask = action.payload;
+    }); builder.addCase(getDSMytaskDetail.fulfilled, (state, action) => {
+      state.dsMyTaskDetail = action.payload;
     });
   },
 });
@@ -30,6 +33,18 @@ export const getDSMytask = createAsyncThunk(
   }
 );
 
+export const getDSMytaskDetail = createAsyncThunk(
+  "task/getDSMytaskDetail",
+  async (taskID) => {
+    try {
+      const res = await getRequest(`/Task/get-task-detail/${taskID}`);
+      return res.data;
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+);
+
 export const updateMytask = createAsyncThunk(
   "task/updateMytask",
   async (values, { rejectWithValue, fulfillWithValue }) => {
@@ -39,11 +54,10 @@ export const updateMytask = createAsyncThunk(
         `/Task/change-task-status/${taskID}/${newStatus}`
       );
       if (res.status === 200) {
-        return fulfillWithValue("Đã chuyển task thành công");
+        return fulfillWithValue(res.data.message[0]);
       }
       if (res.response?.status === 400) {
-        const err = res.response.data.error;
-        return rejectWithValue(err);
+        return rejectWithValue(res.response.data.message[0]);
       }
     } catch (error) {
       return rejectWithValue("Chuyển task thất bại!");
