@@ -39,11 +39,12 @@ const Assignee = ({ onClose, form }) => {
   const dsAssignee = useSelector(getDSTaskAssigneeSelector);
   const taskID = useSelector(getKeyIdSelector);
 
-  const [refreshTable,setRefreshTable] = useState(false);
+  const [refreshTable, setRefreshTable] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (taskID) {
+      form.resetFields();
       dispatch(getDSTaskAssignee(taskID))
         .unwrap()
         .then(() => {
@@ -215,7 +216,11 @@ const Assignee = ({ onClose, form }) => {
             <Form.Item
               label={<Text>Start date</Text>}
               name="taskStartDay"
-              initialValue={dsAssignee && dayjs(dsAssignee.taskStartDay)}
+              initialValue={
+                dsAssignee && dsAssignee.taskStartDay
+                  ? dayjs(dsAssignee.taskStartDay)
+                  : dayjs()
+              }
               style={{ marginRight: 10 }}
               rules={[
                 {
@@ -238,7 +243,11 @@ const Assignee = ({ onClose, form }) => {
             <Form.Item
               label={<Text>End date</Text>}
               name="taskEndDay"
-              initialValue={dsAssignee && dayjs(dsAssignee.taskEndDay)}
+              initialValue={
+                dsAssignee && dsAssignee.taskEndDay
+                  ? dayjs(dsAssignee.taskEndDay)
+                  : dayjs()
+              }
               style={{ marginRight: 10 }}
               rules={[
                 {
