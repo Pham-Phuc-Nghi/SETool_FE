@@ -31,8 +31,7 @@ import { getDSMyTaskDetailSelector } from "../../Redux/Selector";
 import dayjs from "dayjs";
 const TaskDetail = ({ idTask }) => {
   const taskID = idTask.id;
-
-  const [refreshTable, setRefreshTable] = useState(false);
+  const refreshTable = false;
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const taskDetail = useSelector(getDSMyTaskDetailSelector);
@@ -50,7 +49,7 @@ const TaskDetail = ({ idTask }) => {
           console.error("Error fetching data: ", error);
         });
     }
-  }, [refreshTable, taskID]);
+  }, [refreshTable, taskID, dispatch]);
 
   const [comments, setComments] = useState([
     {
@@ -64,6 +63,7 @@ const TaskDetail = ({ idTask }) => {
       text: "This is another comment.",
     },
   ]);
+
   const [comment, setComment] = useState("");
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -81,38 +81,6 @@ const TaskDetail = ({ idTask }) => {
     }
   };
 
-  const historyData = [
-    {
-      time: "2023-10-01",
-      status: "To Do",
-      statusKey: "todo",
-    },
-    {
-      time: "2023-10-02",
-      status: "In Progress",
-      statusKey: "inProgress",
-    },
-    {
-      time: "2023-10-03",
-      status: "Testing",
-      statusKey: "testing",
-    },
-    {
-      time: "2023-10-02",
-      status: "In Progress",
-      statusKey: "inProgress",
-    },
-    {
-      time: "2023-10-03",
-      status: "Testing",
-      statusKey: "testing",
-    },
-    {
-      time: "2023-10-04",
-      status: "Done",
-      statusKey: "done",
-    },
-  ];
 
   const statusColors = {
     1: "#F29F05",
@@ -205,13 +173,13 @@ const TaskDetail = ({ idTask }) => {
                 <List
                   header={<div>Comments</div>}
                   itemLayout="horizontal"
-                  dataSource={comments}
+                  dataSource={taskDetail.comment}
                   renderItem={(item) => (
                     <Item>
                       <Item.Meta
-                        avatar={<Avatar>{item.author.charAt(0)}</Avatar>}
-                        title={`Comment by ${item.author}`}
-                        description={item.text}
+                        avatar={<Avatar>{item.userName.charAt(0)}</Avatar>}
+                        title={item.userName}
+                        description={item.commentContent}
                       />
                     </Item>
                   )}

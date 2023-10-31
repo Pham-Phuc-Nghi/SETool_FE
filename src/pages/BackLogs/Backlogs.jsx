@@ -98,13 +98,16 @@ const Backlogs = () => {
   const [isDrawerEdit, setIsDrawerEdit] = useState(false);
   const [form1] = Form.useForm();
 
-  const showDrawerEdit = () => {
-    setIsDrawerEdit(true);
+  const showDrawerEdit = (id) => {
+    if (id) {
+      dispatch(setKeyId(id));
+      setIsDrawerEdit(true);
+    }
   };
 
   const closeEditDrawer = () => {
+    form1.resetFields();
     dispatch(setKeyId(null));
-    // form1.resetFields();
     setIsDrawerEdit(false);
     setRefreshTable(!refreshTable);
   };
@@ -112,12 +115,16 @@ const Backlogs = () => {
   const [isModalAssignee, setIsModalAssignee] = useState(false);
   const [form2] = Form.useForm();
 
-  const showModalAssignee = () => {
-    setIsModalAssignee(true);
+  const showModalAssignee = (id) => {
+    if (id) {
+      dispatch(setKeyId(id));
+      setIsModalAssignee(true);
+    }
   };
 
   const closeAssigneeModal = () => {
     setIsModalAssignee(false);
+    dispatch(setKeyId(null));
     form2.resetFields();
     setRefreshTable(!refreshTable);
   };
@@ -176,8 +183,7 @@ const Backlogs = () => {
                       className="custom-btn-update"
                       icon={<UserAddOutlined />}
                       onClick={() => {
-                        dispatch(setKeyId(item.id));
-                        showModalAssignee();
+                        showModalAssignee(item.id);
                       }}
                     >
                       Assignee & review
@@ -187,8 +193,7 @@ const Backlogs = () => {
                       className="custom-btn-watch-report"
                       icon={<EditOutlined />}
                       onClick={() => {
-                        dispatch(setKeyId(item.id));
-                        showDrawerEdit();
+                        showDrawerEdit(item.id);
                       }}
                     >
                       Edit
@@ -257,7 +262,7 @@ const Backlogs = () => {
               placement="right"
               closable={true}
               visible={isDrawerEdit}
-              onClose={()=>closeEditDrawer()}
+              onClose={closeEditDrawer}
               width={700}
               style={{ top: 42 }}
             >

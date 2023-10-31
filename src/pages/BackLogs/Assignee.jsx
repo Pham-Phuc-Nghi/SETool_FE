@@ -37,13 +37,17 @@ const Assignee = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
   const dispatch = useDispatch();
   const dsAssignee = useSelector(getDSTaskAssigneeSelector);
+  const refreshTable = false;
+  const [loading, setLoading] = useState(true);
   const taskID = useSelector(getKeyIdSelector);
 
-  const [refreshTable,setRefreshTable] = useState(false);
-  const [loading, setLoading] = useState(true);
+console.log("ID: ",taskID)
+console.log("data: ",dsAssignee)
 
   useEffect(() => {
-    if (taskID) {
+    if (taskID !== null) {
+      setLoading(true);
+      form.resetFields();
       dispatch(getDSTaskAssignee(taskID))
         .unwrap()
         .then(() => {
@@ -54,7 +58,7 @@ const Assignee = ({ onClose, form }) => {
           console.error("Error fetching data: ", error);
         });
     }
-  }, [refreshTable]);
+  }, [refreshTable, taskID, dispatch,form]);
 
   const layout = {
     labelCol: {
@@ -67,7 +71,6 @@ const Assignee = ({ onClose, form }) => {
 
   const handleCancel = () => {
     form.resetFields();
-    setRefreshTable(!refreshTable)
     setIsSuccessMessageVisible(false);
     onClose();
   };
