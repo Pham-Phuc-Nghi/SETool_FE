@@ -33,7 +33,7 @@ import { setKeyId } from "../../Redux/Slices/StateChange/StateChangeSlice";
 const EditBacklogs = ({ onClose, form1 }) => {
   const dispatch = useDispatch();
   const taskByID = useSelector(getDSTaskByIdSelector);
-  const [refreshTable, setRefreshTable] = useState(false);
+  const refreshTable = false;
   const [loading, setLoading] = useState(true);
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
   const taskID = useSelector(getKeyIdSelector);
@@ -41,6 +41,7 @@ const EditBacklogs = ({ onClose, form1 }) => {
   useEffect(() => {
     if (taskID !== null) {
       setLoading(true);
+      form1.resetFields();
       dispatch(getDSTaskById(taskID))
         .unwrap()
         .then(() => {
@@ -51,7 +52,7 @@ const EditBacklogs = ({ onClose, form1 }) => {
           console.error("Error fetching data: ", error);
         });
     }
-  }, [refreshTable,taskID,dispatch]);
+  }, [refreshTable, taskID, dispatch]);
 
   const props = {
     name: "file",
@@ -83,7 +84,6 @@ const EditBacklogs = ({ onClose, form1 }) => {
         .then((result) => {
           message.success(result);
           form1.resetFields();
-          setRefreshTable(!refreshTable);
           dispatch(setKeyId(null));
           onClose();
         })
@@ -104,7 +104,6 @@ const EditBacklogs = ({ onClose, form1 }) => {
 
   const handleCancel = () => {
     form1.resetFields();
-    setRefreshTable(!refreshTable);
     setIsSuccessMessageVisible(false);
     onClose();
   };

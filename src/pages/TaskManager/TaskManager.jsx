@@ -350,7 +350,10 @@ const TaskManager = () => {
           <Modal
             title="Task Details"
             visible={isModalVisible}
-            onCancel={() => setIsModalVisible(false)}
+            onCancel={() => {
+              setIsModalVisible(false);
+              setRefreshTable(!refreshTable);
+            }}
             footer={null}
             width={1200}
             style={{ top: 30 }}
