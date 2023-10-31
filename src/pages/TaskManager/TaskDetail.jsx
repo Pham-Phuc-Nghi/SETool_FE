@@ -12,6 +12,7 @@ import {
   Progress,
   Tag,
   Spin,
+  message,
 } from "antd";
 import { useEffect, useState } from "react";
 const { Title, Text } = Typography;
@@ -26,17 +27,18 @@ import {
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { getDSMytaskDetail } from "../../Redux/Slices/TaskManager/TaskManagerSlice";
+import {
+  createComment,
+  getDSMytaskDetail,
+} from "../../Redux/Slices/TaskManager/TaskManagerSlice";
 import { getDSMyTaskDetailSelector } from "../../Redux/Selector";
 import dayjs from "dayjs";
 const TaskDetail = ({ idTask }) => {
-  const taskID = idTask.id;
-  const refreshTable = false;
+  const taskID = idTask;
+  const [refreshTable, setRefreshTable] = useState(false);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const taskDetail = useSelector(getDSMyTaskDetailSelector);
-  console.log(taskDetail);
-
   useEffect(() => {
     if (taskID) {
       dispatch(getDSMytaskDetail(taskID))
@@ -51,36 +53,21 @@ const TaskDetail = ({ idTask }) => {
     }
   }, [refreshTable, taskID, dispatch]);
 
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "User1",
-      text: "This is the first comment.",
-    },
-    {
-      id: 2,
-      author: "User2",
-      text: "This is another comment.",
-    },
-  ]);
-
-  const [comment, setComment] = useState("");
-  const handleCommentChange = (e) => {
-    setComment(e.target.value);
-  };
-
-  const handleCommentSubmit = () => {
-    if (comment.trim() !== "") {
-      const newComment = {
-        id: comments.length + 1,
-        author: "UserX",
-        text: comment,
-      };
-      setComments([...comments, newComment]);
-      setComment("");
+  const handleFormSubmitComment = (values) => {
+    const data = { ...values, taskID };
+    if (data) {
+      dispatch(createComment(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          form.resetFields();
+          setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
     }
   };
-
 
   const statusColors = {
     1: "#F29F05",
@@ -102,6 +89,7 @@ const TaskDetail = ({ idTask }) => {
     3: <MonitorOutlined />,
     4: <CheckSquareOutlined />,
   };
+  const [form] = Form.useForm();
 
   return (
     <>
@@ -142,6 +130,8 @@ const TaskDetail = ({ idTask }) => {
                 <Text>{taskDetail.taskDescription}</Text>
                 <Divider style={{ border: "1px solid gray" }}></Divider>
                 <Form
+                  form={form}
+                  onFinish={handleFormSubmitComment}
                   style={{
                     marginLeft: 8,
                     display: "flex",
@@ -150,21 +140,16 @@ const TaskDetail = ({ idTask }) => {
                 >
                   <Form.Item
                     label={<Avatar>A</Avatar>}
+                    name="commentContent"
                     style={{ marginBottom: 8 }}
                   >
-                    <Input.TextArea
-                      name="comment"
-                      value={comment}
-                      onChange={handleCommentChange}
-                      placeholder="Input your comment"
-                    ></Input.TextArea>
+                    <Input.TextArea placeholder="Input your comment"></Input.TextArea>
                   </Form.Item>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button
                       icon={<PlusOutlined />}
                       className="custom-btn-add-d"
                       htmlType="submit"
-                      onClick={handleCommentSubmit}
                     >
                       Add Comment
                     </Button>
@@ -178,7 +163,12 @@ const TaskDetail = ({ idTask }) => {
                     <Item>
                       <Item.Meta
                         avatar={<Avatar>{item.userName.charAt(0)}</Avatar>}
-                        title={item.userName}
+                        title={
+                          <Text>
+                            {item.userName} -{" "}
+                            {dayjs(item.commentDate).format("HH:mm - DD/MM/YYYY")}
+                          </Text>
+                        }
                         description={item.commentContent}
                       />
                     </Item>

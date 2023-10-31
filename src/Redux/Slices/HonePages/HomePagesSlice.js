@@ -38,19 +38,16 @@ export const createProject = createAsyncThunk(
         projectName,
         projectDescription,
         projectStartDay,
-        projectEndDay,
         projectTotalSprint,
         projectDayPerSprint,
       } = values;
       projectStartDay = dayjs(projectStartDay).format(
         "YYYY-MM-DDTHH:mm:ss.SSSZ"
       );
-      projectEndDay = dayjs(projectEndDay).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
       const res = await postRequest(`projects/create-project`, {
         projectName,
         projectDescription,
         projectStartDay,
-        projectEndDay,
         projectPriority: 1,
         projectTotalSprint,
         projectDayPerSprint,

@@ -14,6 +14,7 @@ const Dashboard = () => {
     "ID của project này: ",
     sessionStorage.getItem("current_project")
   );
+
   const tasks = [
     {
       id: 1,
@@ -392,7 +393,7 @@ const Dashboard = () => {
         width={1200}
         style={{ top: 40 }}
       >
-        <TaskDetail></TaskDetail>
+        <TaskDetail idTask={selectedTask}></TaskDetail>
       </Modal>
       <Modal
         open={visibleModal !== undefined}

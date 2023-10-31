@@ -6,9 +6,11 @@ import {
   List,
   Modal,
   Popconfirm,
+  Select,
   Skeleton,
   Spin,
   Tag,
+  Tooltip,
   Typography,
   message,
 } from "antd";
@@ -27,8 +29,15 @@ import {
   deleteBacklogs,
   getDSTask,
 } from "../../Redux/Slices/Backlogs/BacklogsSlice";
-import { getDSTaskAllSelector } from "../../Redux/Selector";
+import {
+  getDSAllSprintSelector,
+  getDSMemberAllSelector,
+  getDSTaskAllSelector,
+} from "../../Redux/Selector";
 import { setKeyId } from "../../Redux/Slices/StateChange/StateChangeSlice";
+import TaskDetail from "../TaskManager/TaskDetail";
+import { getDSSprint } from "../../Redux/Slices/ManagerZone/ManagerSlice";
+import { getDSMember } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 const { Text } = Typography;
 const Backlogs = () => {
   const dispatch = useDispatch();
@@ -36,6 +45,14 @@ const Backlogs = () => {
   const [refreshTable, setRefreshTable] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const handleTaskDoubleClick = (task) => {
+    setSelectedTask(task);
+    setIsModalVisible(true);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -51,17 +68,100 @@ const Backlogs = () => {
       });
   }, [refreshTable]);
 
-  const [filteredData, setFilteredData] = useState(dsTaskAll);
+  //sprint
 
+  const listSprint = useSelector(getDSAllSprintSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSSprint(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  let option_list_Sprint;
+  option_list_Sprint = listSprint.map((type) => ({
+    value: type.id,
+    label: "Sprint " + type.sprintNumber,
+  }));
+
+  const [sprintNumberFilter, setSprintNumberFilter] = useState();
+
+  const handleSelectSprint = (id) => {
+    const selectedSprint = listSprint.find((sprint) => sprint.id === id);
+    if (selectedSprint) {
+      const sprintNumber = selectedSprint.sprintNumber;
+      // console.log("Selected Sprint Number:", sprintNumber);
+      setSprintNumberFilter(sprintNumber);
+    } else {
+      // Xóa dữ liệu filter khi nút xóa được ấn
+      setSprintNumberFilter(undefined);
+    }
+  };
+
+  //member
+
+  const listMember = useSelector(getDSMemberAllSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSMember(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  let option_list_Member;
+  option_list_Member = listMember.map((type) => ({
+    value: type.id,
+    label: type.name,
+  }));
+
+  const [memberFilter, setMemberFilter] = useState();
+
+  const handleSelectMember = (id) => {
+    const selectedMember = listMember.find((sprint) => sprint.id === id);
+    if (selectedMember) {
+      const Member = selectedMember.name;
+      // console.log("Selected Sprint Number:", sprintNumber);
+      setMemberFilter(Member);
+    } else {
+      setMemberFilter(undefined);
+    }
+  };
+
+  const [filteredData, setFilteredData] = useState(dsTaskAll);
+  console.log(dsTaskAll);
   useEffect(() => {
     if (dsTaskAll.data !== undefined) {
       const newFilteredData = dsTaskAll.data.filter((_dsTaskAll) => {
         const fullName = `${_dsTaskAll.taskName}`;
-        return fullName.toLowerCase().includes(searchText.toLowerCase());
+        const sprintNumber =
+          !sprintNumberFilter || _dsTaskAll.sprintNumber === sprintNumberFilter;
+        const memberName =
+          !memberFilter ||
+          _dsTaskAll.assigneeName === memberFilter ||
+          _dsTaskAll.reporterName === memberFilter;
+        return (
+          fullName.toLowerCase().includes(searchText.toLowerCase()) &&
+          sprintNumber &&
+          memberName
+        );
       });
       setFilteredData(newFilteredData);
     }
-  }, [searchText, dsTaskAll]);
+  }, [searchText, sprintNumberFilter, memberFilter, dsTaskAll]);
 
   const handleSearch = (value) => {
     setSearchText(value);
@@ -159,6 +259,34 @@ const Backlogs = () => {
               onChange={(e) => handleSearch(e.target.value)}
               value={searchText}
             />
+            <Select
+              style={{
+                width: "20%",
+                marginBottom: 20,
+                textAlign: "center",
+                marginLeft: 10,
+              }}
+              placeholder="Choose sprint"
+              dropdownStyle={{ textAlign: "center" }}
+              onChange={handleSelectSprint}
+              value={sprintNumberFilter ? `Sprint ${sprintNumberFilter}` : null}
+              allowClear
+              options={option_list_Sprint}
+            ></Select>
+            <Select
+              style={{
+                width: "20%",
+                marginBottom: 20,
+                textAlign: "center",
+                marginLeft: 10,
+              }}
+              placeholder="Choose member name"
+              dropdownStyle={{ textAlign: "center" }}
+              onChange={handleSelectMember}
+              value={memberFilter ? memberFilter : null}
+              allowClear
+              options={option_list_Member}
+            ></Select>
             <Button
               className="custom-btn-add-d"
               icon={<PlusOutlined />}
@@ -224,7 +352,12 @@ const Backlogs = () => {
                           }}
                         >
                           <Text>
-                            <Tag color="blue">Taskname </Tag> {item.taskName}{" "}
+                            <Tag color="blue">Task Name </Tag>{" "}
+                            <Tooltip title="Click to see Task Detail">
+                              <a onClick={() => handleTaskDoubleClick(item.id)}>
+                                {item.taskName}
+                              </a>
+                            </Tooltip>
                           </Text>
                           <Text style={{ marginTop: 10 }}>
                             <Tag color="orange">Sprint {item.sprintNumber}</Tag>
@@ -290,6 +423,16 @@ const Backlogs = () => {
               width={500}
             >
               <Assignee form={form2} onClose={closeAssigneeModal}></Assignee>
+            </Modal>
+            <Modal
+              title="Task Details"
+              visible={isModalVisible}
+              onCancel={() => setIsModalVisible(false)}
+              footer={null}
+              width={1200}
+              style={{ top: 30 }}
+            >
+              <TaskDetail idTask={selectedTask}></TaskDetail>
             </Modal>
           </div>
         </>

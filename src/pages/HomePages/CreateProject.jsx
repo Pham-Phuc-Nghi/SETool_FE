@@ -140,25 +140,6 @@ const CreateProject = ({ onClose }) => {
         <Form.Item
           label={
             <Text>
-              <CalendarOutlined /> End date:
-            </Text>
-          }
-          name="projectEndDay"
-          rules={[{ required: true, message: "endDate must not be a blank" }]}
-        >
-          <DatePicker
-            style={{ width: "50%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
-        </Form.Item>
-        <Form.Item
-          label={
-            <Text>
               <BarsOutlined /> Total day per sprint
             </Text>
           }

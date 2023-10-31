@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getRequest, patchRequest } from "../../../Services/HttpMethods";
+import {
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "../../../Services/HttpMethods";
 
 const initialState = {
   dsMyTask: [],
@@ -14,7 +18,8 @@ export const TaskManagerSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getDSMytask.fulfilled, (state, action) => {
       state.dsMyTask = action.payload;
-    }); builder.addCase(getDSMytaskDetail.fulfilled, (state, action) => {
+    });
+    builder.addCase(getDSMytaskDetail.fulfilled, (state, action) => {
       state.dsMyTaskDetail = action.payload;
     });
   },
@@ -61,6 +66,26 @@ export const updateMytask = createAsyncThunk(
       }
     } catch (error) {
       return rejectWithValue("Chuyển task thất bại!");
+    }
+  }
+);
+export const createComment = createAsyncThunk(
+  "task/createComment",
+  async (values, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      let { taskID, commentContent } = values;
+      const res = await postRequest(`/Comment/create-comment/${taskID}`, {
+        commentContent,
+      });
+      console.log(res);
+      if (res.status === 200) {
+        return fulfillWithValue(res.data);
+      }
+      if (res.response?.status === 400) {
+        return rejectWithValue(res.response.data.message[0]);
+      }
+    } catch (error) {
+      return rejectWithValue("Add comment thất bại!");
     }
   }
 );

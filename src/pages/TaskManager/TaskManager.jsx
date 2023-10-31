@@ -10,17 +10,21 @@ import {
   updateMytask,
 } from "../../Redux/Slices/TaskManager/TaskManagerSlice";
 import {
+  getCurrentSprintSelector,
   getDSAllSprintSelector,
   getDSMyTaskSelector,
 } from "../../Redux/Selector";
-import { getDSSprint } from "../../Redux/Slices/ManagerZone/ManagerSlice";
+import {
+  getCurrentSprint,
+  getDSSprint,
+} from "../../Redux/Slices/ManagerZone/ManagerSlice";
 const TaskManager = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
 
   const handleTaskDoubleClick = (task) => {
-    setSelectedTask(task);
+    setSelectedTask(task.id);
     setIsModalVisible(true);
   };
 
@@ -217,9 +221,11 @@ const TaskManager = () => {
 
   const dispatch = useDispatch();
   const listSprint = useSelector(getDSAllSprintSelector);
-
+  const currentSprint = useSelector(getCurrentSprintSelector);
   const [refreshTable, setRefreshTable] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  console.log("current: ", currentSprint);
 
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -242,11 +248,25 @@ const TaskManager = () => {
   const [idTask, setIdTask] = useState(null);
 
   const handleSelectSprint = (id) => {
-    console.log("id", id);
     if (id) {
       setIdTask(id);
     }
   };
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    if (projectID !== null) {
+      dispatch(getCurrentSprint(projectID))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable]);
 
   useEffect(() => {
     if (idTask !== null) {

@@ -11,6 +11,7 @@ const initialState = {
   projectDetails: {},
   dsDev: [],
   dsQA: [],
+  currenSprint:{},
   isAddedSuccess: false,
   isDeletedSuccess: false,
 };
@@ -30,6 +31,9 @@ export const ManagerSlice = createSlice({
     });
     builder.addCase(getListQA.fulfilled, (state, action) => {
       state.dsQA = action.payload;
+    });
+    builder.addCase(getCurrentSprint.fulfilled, (state, action) => {
+      state.currenSprint = action.payload;
     });
   },
 });
@@ -81,6 +85,18 @@ export const getProjectDetails = createAsyncThunk(
   async (projectID) => {
     try {
       const res = await getRequest(`/projects/get-project-detail/${projectID}`);
+      return res.data;
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+);
+
+export const getCurrentSprint = createAsyncThunk(
+  "manager/getCurrentSprint",
+  async (projectID) => {
+    try {
+      const res = await getRequest(`/sprints/get-current-sprint/${projectID}`);
       return res.data;
     } catch (error) {
       console.log({ error });
