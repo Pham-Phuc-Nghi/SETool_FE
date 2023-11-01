@@ -1,253 +1,211 @@
-import { Avatar, Card, Modal, Tag, Tooltip, Typography } from "antd";
-import { useState } from "react";
+import {
+  Avatar,
+  Button,
+  Card,
+  Modal,
+  Spin,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
+import { useEffect, useState } from "react";
 const { Title } = Typography;
 import "./dashBoard.css";
 import TaskDetail from "../TaskManager/TaskDetail";
 import {
   CheckOutlined,
   FieldTimeOutlined,
+  FilterOutlined,
   ThunderboltFilled,
 } from "@ant-design/icons";
+import { getCurrentSprint } from "../../Redux/Slices/ManagerZone/ManagerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCurrentSprintSelector,
+  getDSMemberAllSelector,
+  getDashboardSelector,
+} from "../../Redux/Selector";
+import { getDashboard } from "../../Redux/Slices/Dashboard/DashboardSlice";
+import { getDSMember } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 
 const Dashboard = () => {
-  console.log(
-    "ID của project này: ",
-    sessionStorage.getItem("current_project")
-  );
-
-  const tasks = [
-    {
-      id: 1,
-      name: "Build fe layout for manager",
-      descrip: "Task 1",
-      age: "Task 1",
-      moths: "Task 1",
-      status: "To Do",
-    },
-    {
-      id: 2,
-      name: "Build fe layout ",
-      descrip: "Task 2",
-      age: "Task 2",
-      moths: "Task 2",
-      status: "In Progress",
-    },
-    {
-      id: 3,
-      name: "Build BE API",
-      descrip: "Task 3",
-      age: "Task 3",
-      moths: "Task 3",
-      status: "Testing",
-    },
-    {
-      id: 4,
-      name: "Task 4",
-      descrip: "Task 4",
-      age: "Task 4",
-      moths: "Task 4",
-      status: "Done",
-    },
-    {
-      id: 5,
-      name: "Build fe layout for manager",
-      descrip: "Task 5",
-      age: "Task 5",
-      moths: "Task 5",
-      status: "To Do",
-    },
-    {
-      id: 6,
-      name: "Build fe layout for manager",
-      descrip: "Task 6",
-      age: "Task 6",
-      moths: "Task 6",
-      status: "To Do",
-    },
-    {
-      id: 7,
-      name: "Build fe layout for manager",
-      descrip: "Task 7",
-      age: "Task 7",
-      moths: "Task 7",
-      status: "To Do",
-    },
-    {
-      id: 8,
-      name: "Build fe layout ",
-      descrip: "Task 8",
-      age: "Task 8",
-      moths: "Task 8",
-      status: "In Progress",
-    },
-    {
-      id: 9,
-      name: "Build fe layout ",
-      descrip: "Task 9",
-      age: "Task 9",
-      moths: "Task 9",
-      status: "In Progress",
-    },
-    {
-      id: 10,
-      name: "Build fe layout for manager",
-      descrip: "Task 10",
-      age: "Task 10",
-      moths: "Task 10",
-      status: "To Do",
-    },
-    {
-      id: 11,
-      name: "final",
-      descrip: "Task 11",
-      age: "Task 11",
-      moths: "Task 11",
-      status: "To Do",
-    },
-    {
-      id: 12,
-      name: "final",
-      descrip: "Task 12",
-      age: "Task 12",
-      moths: "Task 12",
-      status: "To Do",
-    },
-    {
-      id: 12,
-      name: "final",
-      descrip: "Task 12",
-      age: "Task 12",
-      moths: "Task 12",
-      status: "To Do",
-    },
-    {
-      id: 12,
-      name: "final",
-      descrip: "Task 12",
-      age: "Task 12",
-      moths: "Task 12",
-      status: "To Do",
-    },
-    {
-      id: 12,
-      name: "final",
-      descrip: "Task 12",
-      age: "Task 12",
-      moths: "Task 12",
-      status: "To Do",
-    },
-    {
-      id: 12,
-      name: "final",
-      descrip: "Task 12",
-      age: "Task 12",
-      moths: "Task 12",
-      status: "To Do",
-    },
-    {
-      id: 12,
-      name: "final",
-      descrip: "Task 12",
-      age: "Task 12",
-      moths: "Task 12",
-      status: "To Do",
-    },
-  ];
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
   const handleTaskDoubleClick = (task) => {
-    setSelectedTask(task);
+    setSelectedTask(task.id);
     setIsModalVisible(true);
   };
+  const dashboard = useSelector(getDashboardSelector);
+  const [filteredData, setFilteredData] = useState(dashboard);
 
-  const renderTasks = (status) => {
-    return tasks
-      .filter((task) => task.status === status)
-      .map((task) => {
-        let taskName = task.name;
-        if (taskName.length > 28) {
-          taskName = taskName.substring(0, 28) + "...";
-        }
-        return (
-          <Tooltip key={task.id} title="Double click to see more detail">
-            <Card
-              title={
-                <>
-                  <Title
-                    level={5}
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      fontWeight: "500",
-                      fontSize: 14,
-                    }}
-                  >
-                    {taskName}
-                  </Title>
-                </>
-              }
-              size="small"
-              bordered={false}
-              style={{
-                marginBottom: 30,
-                scale: "1.15",
-                boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
-                display: "flex",
-                justifyContent: "flex-start",
-                flexDirection: "column",
-                backgroundColor: "white",
-                cursor: "pointer",
-              }}
-              key={task.id}
-              className="task-card"
-              onDoubleClick={() => handleTaskDoubleClick(task)}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Tag color="yellow" style={{ fontSize: 10 }}>
-                  {" "}
-                  ID: 1{" "}
-                </Tag>
-                <div>
-                  {task.status === "Done" ? (
-                    <CheckOutlined
-                      style={{ fontSize: 12, color: "green", marginRight: 10 }}
-                    />
-                  ) : null}
-                  <Avatar
-                    style={{ backgroundColor: "red", fontSize: 10 }}
-                    size={"small"}
-                  >
-                    A
-                  </Avatar>
-                </div>
-              </div>
-            </Card>
-          </Tooltip>
-        );
-      });
+  const dispatch = useDispatch();
+  const refreshTable = false;
+  const [loading, setLoading] = useState(true);
+  const currentSprint = useSelector(getCurrentSprintSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    if (projectID !== null) {
+      dispatch(getCurrentSprint(projectID))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable]);
+
+  const [memberName, setMemberName] = useState(null);
+
+  const handleAvatarClick = (name) => {
+    setMemberName(name);
   };
 
-  const statuses = ["To Do", "In Progress", "Testing", "Done"];
-  const shouldShowScrollBar = tasks.length >= 5;
+  useEffect(() => {
+    if (dashboard.data !== undefined) {
+      const newFilteredData = dashboard.data.filter((_dashboard) => {
+        const memberNamefilter =
+          !memberName ||
+          _dashboard.assigneeName === memberName ||
+          _dashboard.reporterName === memberName;
+        return memberNamefilter;
+      });
+      setFilteredData(newFilteredData);
+    }
+  }, [memberName, dashboard]);
+
+  const renderTasks = (status) => {
+    if (filteredData === undefined || filteredData.length === 0) {
+      return "Chưa có dữ liệu";
+    } else {
+      return filteredData
+        .filter((task) => task.taskStatus === status)
+        .map((task) => {
+          let taskName = task.taskName;
+          if (taskName.length > 28) {
+            taskName = taskName.substring(0, 28) + "...";
+          }
+          return (
+            <Tooltip key={task.id} title="Double click to see more detail">
+              <Card
+                title={
+                  <>
+                    <Title
+                      level={5}
+                      style={{
+                        margin: 0,
+                        padding: 0,
+                        fontWeight: "500",
+                        fontSize: 14,
+                      }}
+                    >
+                      {taskName}
+                    </Title>
+                  </>
+                }
+                size="small"
+                bordered={false}
+                style={{
+                  marginBottom: 30,
+                  scale: "1.15",
+                  boxShadow: "rgba(149, 157, 165, 0.3) 0px 8px 24px",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  flexDirection: "column",
+                  backgroundColor: "white",
+                  cursor: "pointer",
+                }}
+                key={task.id}
+                className="task-card"
+                onDoubleClick={() => handleTaskDoubleClick(task)}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Tag color="yellow" style={{ fontSize: 10 }}>
+                    {" "}
+                    Sprint: {task.sprintNumber}{" "}
+                  </Tag>
+                  <div>
+                    {task.status === "Done" ? (
+                      <CheckOutlined
+                        style={{
+                          fontSize: 12,
+                          color: "green",
+                          marginRight: 10,
+                        }}
+                      />
+                    ) : null}
+                    <Avatar
+                      style={{ backgroundColor: "red", fontSize: 10 }}
+                      size={"small"}
+                    >
+                      A
+                    </Avatar>
+                  </div>
+                </div>
+              </Card>
+            </Tooltip>
+          );
+        });
+    }
+  };
+
+  const currentSprintId = currentSprint.id;
+
+  useEffect(() => {
+    if (currentSprintId !== undefined) {
+      dispatch(getDashboard(currentSprintId))
+        .unwrap()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error fetching data: ", error);
+        });
+    }
+  }, [refreshTable, currentSprintId]);
+
+  const dsMemberAll = useSelector(getDSMemberAllSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSMember(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  const statuses = [1, 2, 3, 4];
+  const shouldShowScrollBar =
+    filteredData !== undefined ? filteredData.length >= 5 : false;
 
   const cardHeights = {};
 
-  // Lặp qua các status và thiết lập chiều cao cho từng status
   statuses.forEach((status) => {
-    const filteredTasks = tasks.filter((task) => task.status === status);
-    if (filteredTasks.length > 0) {
-      // Tính toán chiều cao dựa trên số lượng task trong status
-      const height = `${filteredTasks.length * 115 + 100}px`;
-      cardHeights[status] = height;
-    } else {
-      cardHeights[status] = "auto"; // Nếu không có task, set chiều cao là "auto"
+    if (filteredData !== undefined) {
+      const filteredTasks = filteredData.filter(
+        (task) => task.taskStatus === status
+      );
+      if (filteredTasks.length > 0) {
+        const height = `${filteredTasks.length * 115 + 100}px`;
+        cardHeights[status] = height;
+      } else {
+        cardHeights[status] = "auto";
+      }
     }
   });
 
@@ -263,64 +221,54 @@ const Dashboard = () => {
     "#ABEBC8",
   ];
 
-  const dummyData = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
-  const avatarModals = [
-    {
-      title: "Avatar 1",
-      content: "Nội dung modal 1",
-    },
-    {
-      title: "Avatar 2",
-      content: "Nội dung modal 2",
-    },
-    {
-      title: "Avatar 3",
-      content: "Nội dung modal 3",
-    },
-    {
-      title: "Avatar 4",
-      content: "Nội dung modal 4",
-    },
-    {
-      title: "Avatar 5",
-      content: "Nội dung modal 5",
-    },
-    {
-      title: "Avatar 6",
-      content: "Nội dung modal 6",
-    },
-    {
-      title: "Avatar 7",
-      content: "Nội dung modal 7",
-    },
-    {
-      title: "Avatar 8",
-      content: "Nội dung modal 8",
-    },
-    {
-      title: "Avatar 9",
-      content: "Nội dung modal 9",
-    },
-  ];
+  const avatars = dsMemberAll.slice(0, 9).map((member, index) => (
+    <Tooltip key={index} title={member.name}>
+      <Avatar
+        onClick={() => handleAvatarClick(member.name)}
+        style={{
+          backgroundColor: pastelColors[index],
+          fontSize: 10,
+          cursor: "pointer",
+        }}
+      >
+        {member.name}
+      </Avatar>
+    </Tooltip>
+  ));
 
-  const showModal = (index) => {
-    setVisibleModal(avatarModals[index]);
+  const getStatusName = (status) => {
+    switch (status) {
+      case 1:
+        return "To Do";
+      case 2:
+        return "In Progress";
+      case 3:
+        return "Testing";
+      case 4:
+        return "Done";
+      default:
+        return "";
+    }
   };
 
-  const [visibleModal, setVisibleModal] = useState();
-  const avatars = dummyData.slice(0, 9).map((initial, index) => (
-    <Avatar
-      onClick={() => showModal(index)}
-      key={index}
-      style={{
-        backgroundColor: pastelColors[index],
-        fontSize: 10,
-        cursor: "pointer",
-      }}
-    >
-      {initial}
-    </Avatar>
-  ));
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 1:
+        return "#F29F05";
+      case 2:
+        return "#F99A9C";
+      case 3:
+        return "#F2D98D";
+      case 4:
+        return "#84D9BA";
+      default:
+        return "white";
+    }
+  };
+  const handleResetFilter = () => {
+    setMemberName(null);
+    // Thực hiện các xử lý khác nếu cần
+  };
 
   return (
     <div
@@ -331,77 +279,101 @@ const Dashboard = () => {
         height: "80vh",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Avatar.Group maxCount={7} style={{ marginBottom: 20 }}>
-          {avatars}
-        </Avatar.Group>
-        <div>
-          <ThunderboltFilled
-            style={{ fontSize: 20, marginRight: 10, color: "#FF4500" }}
-          />
-          <Tag color="red" style={{ fontSize: 17 }}>
-            <FieldTimeOutlined /> 4 days remaining
-          </Tag>
-          <Tag color="cyan" style={{ fontSize: 17 }}>
-            Current Sprint : 1
-          </Tag>
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
+          }}
+        >
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-          height: "100%",
-          overflowX: shouldShowScrollBar ? "auto" : "hidden",
-          minWidth: `${statuses.length * (300 + 10)}px`,
-        }}
-      >
-        {statuses.map((status) => (
-          <>
-            <Card
-              key={status}
-              style={{
-                width: "300px",
-                height: cardHeights[status],
-                marginRight: 30,
-                verticalAlign: "top",
-                backgroundColor: "#F4F5F7",
-              }}
-              title={
-                <Title
-                  className="header"
-                  level={4}
+      ) : (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "left" }}>
+              <Avatar.Group maxCount={7} style={{ marginBottom: 20 }}>
+                {avatars}{" "}
+              </Avatar.Group>
+              <Button
+                icon={<FilterOutlined />}
+                onClick={handleResetFilter}
+                style={{ marginLeft: 20 }}
+              >
+                Reset Filter
+              </Button>
+            </div>
+            <div>
+              <ThunderboltFilled
+                style={{ fontSize: 20, marginRight: 10, color: "#FF4500" }}
+              />
+              <Tag color="red" style={{ fontSize: 17 }}>
+                <FieldTimeOutlined /> 4 days remaining
+              </Tag>
+              <Tag color="cyan" style={{ fontSize: 17 }}>
+                Current Sprint : Sprint {currentSprint.sprintNumber}
+              </Tag>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              height: "100%",
+              overflowX: shouldShowScrollBar ? "auto" : "hidden",
+              minWidth: `${statuses.length * (300 + 10)}px`,
+            }}
+          >
+            {statuses.map((status) => (
+              <>
+                <Card
+                  key={status}
                   style={{
-                    border: "1px solid black",
+                    width: "300px",
+                    height: cardHeights[status],
+                    marginRight: 30,
+                    verticalAlign: "top",
+                    backgroundColor: "#F4F5F7",
                   }}
+                  title={
+                    <Title
+                      className="header"
+                      level={4}
+                      style={{
+                        color: getStatusColor(status),
+                        border: "1px solid black",
+                      }}
+                    >
+                      {getStatusName(status)}
+                    </Title>
+                  }
                 >
-                  {status}
-                </Title>
-              }
-            >
-              {renderTasks(status)}
-            </Card>
-          </>
-        ))}
-      </div>
-      <Modal
-        title="Task Details"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={1200}
-        style={{ top: 40 }}
-      >
-        <TaskDetail idTask={selectedTask}></TaskDetail>
-      </Modal>
-      <Modal
-        open={visibleModal !== undefined}
-        title={visibleModal?.title}
-        onCancel={() => setVisibleModal(undefined)}
-      >
-        {visibleModal?.content}
-      </Modal>
+                  {renderTasks(status)}
+                </Card>
+              </>
+            ))}
+          </div>
+          <Modal
+            title="Task Details"
+            visible={isModalVisible}
+            onCancel={() => setIsModalVisible(false)}
+            footer={null}
+            width={1200}
+            style={{ top: 40 }}
+          >
+            <TaskDetail idTask={selectedTask}></TaskDetail>
+          </Modal>
+        </>
+      )}
     </div>
   );
 };

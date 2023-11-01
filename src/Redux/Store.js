@@ -6,6 +6,7 @@ import { ManagerSlice } from "./Slices/ManagerZone/ManagerSlice";
 import { BacklogsSlice } from "./Slices/Backlogs/BacklogsSlice";
 import { TaskManagerSlice } from "./Slices/TaskManager/TaskManagerSlice";
 import StateChangeSlice from "./Slices/StateChange/StateChangeSlice";
+import { DashboardSlice } from "./Slices/Dashboard/DashboardSlice";
 
 const Store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const Store = configureStore({
     backlogs: BacklogsSlice.reducer,
     task: TaskManagerSlice.reducer,
     key: StateChangeSlice.reducer,
+    dashboard: DashboardSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>

@@ -1,5 +1,5 @@
 import { Button, Form, Input, Modal } from "antd";
-import {  useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { PlusOutlined } from "@ant-design/icons";
 
@@ -22,29 +22,24 @@ const AddMember = ({ form }) => {
         form={form}
         // onFinish={handleFormSubmit}
       >
-        <Form.Item
-          name="member"
-          rules={[
-            { required: true, message: "Member Name must not be a blank" },
-          ]}
-          style={{ width: "80%", marginRight: 10 }}
-        >
-          <Input placeholder="Input Member Name or Email"></Input>
-        </Form.Item>
-        <Form.Item
-          name="role"
-          rules={[{ required: true, message: "role must not be a blank" }]}
-          style={{ width: "80%", marginRight: 10 }}
-        >
-          <Input placeholder="Input Member Name or Email"></Input>
-        </Form.Item>
-        <Button
-          icon={<PlusOutlined style={{ marginTop: 5 }} />}
-          className="custom-btn-add-d"
-          htmlType="submit"
-        >
-          Add member
-        </Button>
+        <div style={{display:"flex"}}>
+          <Form.Item
+            name="member"
+            rules={[
+              { required: true, message: "Member Name must not be a blank" },
+            ]}
+            style={{ width: "80%", marginRight: 10 }}
+          >
+            <Input placeholder="Input Member Name or Email"></Input>
+          </Form.Item>
+          <Button
+            icon={<PlusOutlined style={{ marginTop: 5 }} />}
+            className="custom-btn-add-d"
+            htmlType="submit"
+          >
+            Add member
+          </Button>
+        </div>
       </Form>
       <Modal
         visible={isSuccessMessageVisible}

@@ -4,6 +4,9 @@ export const getAccessTokenSelector = (state) => state.dang_nhap.accessToken;
 //project
 export const getDSProjectSelector = (state) => state.homepage.dsProject;
 
+//dashboard
+export const getDashboardSelector = (state) => state.dashboard.dashboard;
+
 //collaboration
 export const getDSMemberAllSelector = (state) => state.collaboration.dsMember;
 export const getDSMemberListSelector = (state) =>

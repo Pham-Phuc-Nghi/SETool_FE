@@ -29,7 +29,6 @@ export const getDSMember = createAsyncThunk(
   "collaboration/getDSMember",
   async (projectID) => {
     try {
-      console.log("ProjectID current: ", projectID);
       const res = await getRequest(
         `projects/get-all-users-in-project/${projectID}`
       );

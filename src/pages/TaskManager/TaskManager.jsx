@@ -224,9 +224,9 @@ const TaskManager = () => {
   const currentSprint = useSelector(getCurrentSprintSelector);
   const [refreshTable, setRefreshTable] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  console.log("current: ", currentSprint);
-
+  const currentSprintId = currentSprint.id;
+  
+  console.log("ID :", currentSprintId);
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSSprint(projectID))
@@ -239,19 +239,6 @@ const TaskManager = () => {
         console.error("Error fetching data: ", error);
       });
   }, [refreshTable]);
-
-  let option_list_Sprint;
-  option_list_Sprint = listSprint.map((type) => ({
-    value: type.id,
-    label: "Sprint " + type.sprintNumber,
-  }));
-  const [idTask, setIdTask] = useState(null);
-
-  const handleSelectSprint = (id) => {
-    if (id) {
-      setIdTask(id);
-    }
-  };
 
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -268,8 +255,27 @@ const TaskManager = () => {
     }
   }, [refreshTable]);
 
+  let option_list_Sprint;
+  option_list_Sprint = listSprint.map((type) => ({
+    value: type.id,
+    label: "Sprint " + type.sprintNumber,
+  }));
+
+  const [idTask, setIdTask] = useState(currentSprintId);
+
+  const handleSelectSprint = (id) => {
+    if (id !== null) {
+      setIdTask(id);
+    }
+  };
   useEffect(() => {
-    if (idTask !== null) {
+    if (currentSprintId !== undefined) {
+      setIdTask(currentSprintId);
+    }
+  }, [currentSprintId]);
+  
+  useEffect(() => {
+    if (idTask !== undefined) {
       dispatch(getDSMytask(idTask))
         .unwrap()
         .then(() => {
@@ -315,6 +321,7 @@ const TaskManager = () => {
             placeholder="Choose sprint"
             dropdownStyle={{ textAlign: "center" }}
             onChange={handleSelectSprint}
+            value={idTask}
             options={option_list_Sprint}
           ></Select>
           <div

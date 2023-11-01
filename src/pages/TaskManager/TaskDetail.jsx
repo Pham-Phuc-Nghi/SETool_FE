@@ -166,7 +166,9 @@ const TaskDetail = ({ idTask }) => {
                         title={
                           <Text>
                             {item.userName} -{" "}
-                            {dayjs(item.commentDate).format("HH:mm - DD/MM/YYYY")}
+                            {dayjs(item.commentDate).format(
+                              "HH:mm - DD/MM/YYYY"
+                            )}
                           </Text>
                         }
                         description={item.commentContent}
@@ -220,7 +222,11 @@ const TaskDetail = ({ idTask }) => {
                     <Tag color="geekblue">Assignee</Tag>
                   </Col>
                   <Col span={18}>
-                    <Text>{taskDetail.assigneeName}</Text>
+                    <Text>
+                      {taskDetail.assigneeName
+                        ? taskDetail.assigneeName
+                        : "NO ASSIGNEE CURRENT"}
+                    </Text>
                   </Col>
                 </Row>
                 <Row gutter={24}>
@@ -228,7 +234,11 @@ const TaskDetail = ({ idTask }) => {
                     <Tag color="magenta">Reporter</Tag>
                   </Col>
                   <Col span={18}>
-                    <Text>{taskDetail.reporterName}</Text>
+                    <Text>
+                      {taskDetail.reporterName
+                        ? taskDetail.reporterName
+                        : "NO REPORTER CURRENT"}
+                    </Text>
                   </Col>
                 </Row>
                 <List
