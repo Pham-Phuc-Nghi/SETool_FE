@@ -30,3 +30,4 @@ export const getDSMyTaskDetailSelector = (state) => state.task.dsMyTaskDetail;
 
 //state
 export const getKeyIdSelector = (state) => state.key.keyId;
+export const getShowForm2Selector = (state) => state.key.showForm2;

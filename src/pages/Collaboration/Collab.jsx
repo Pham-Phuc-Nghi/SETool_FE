@@ -25,11 +25,13 @@ import {
   editRole,
   getDSMember,
 } from "../../Redux/Slices/Collaboration/CollaborationSlice";
+import { setShowForm2 } from "../../Redux/Slices/StateChange/StateChangeSlice";
 
 const Collab = () => {
   const [loading, setLoading] = useState(true);
   const [isModalAdd, setIsModalAdd] = useState(false);
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const dispatch = useDispatch();
   const dsMemberAll = useSelector(getDSMemberAllSelector);
   const [refreshTable, setRefreshTable] = useState(false);
@@ -41,6 +43,8 @@ const Collab = () => {
   const closeAddModal = () => {
     setIsModalAdd(false);
     form.resetFields();
+    form2.resetFields();
+    dispatch(setShowForm2(false));
     setRefreshTable(!refreshTable);
   };
 
@@ -276,9 +280,9 @@ const Collab = () => {
             footer={null}
             onCancel={closeAddModal}
             title="Add member"
-            width={600}
+            width={700}
           >
-            <AddMember form={form}></AddMember>
+            <AddMember form={form} form2={form2}></AddMember>
           </Modal>
         </>
       )}

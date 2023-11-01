@@ -36,6 +36,7 @@ const Dashboard = () => {
     setSelectedTask(task.id);
     setIsModalVisible(true);
   };
+
   const dashboard = useSelector(getDashboardSelector);
   const [filteredData, setFilteredData] = useState(dashboard);
 
@@ -196,7 +197,7 @@ const Dashboard = () => {
   const cardHeights = {};
 
   statuses.forEach((status) => {
-    if (filteredData !== undefined) {
+    if (Array.isArray(filteredData)) {
       const filteredTasks = filteredData.filter(
         (task) => task.taskStatus === status
       );
@@ -208,7 +209,7 @@ const Dashboard = () => {
       }
     }
   });
-
+console.log(filteredData)
   const pastelColors = [
     "#B2A0E2",
     "#FFD6BA",
