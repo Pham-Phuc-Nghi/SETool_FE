@@ -65,7 +65,24 @@ const AddMember = ({ form, form2 }) => {
               <Text>email: </Text>
             </Form.Item>
             <Form.Item name="role" style={{ width: "50%", marginRight: 10 }}>
-              <Select></Select>
+              <Select
+                placeholder="Choose role"
+                mode="tags"
+                options={[
+                  {
+                    value: 2,
+                    label: "Manager",
+                  },
+                  {
+                    value: 3,
+                    label: "Dev",
+                  },
+                  {
+                    value: 4,
+                    label: "Tester",
+                  },
+                ]}
+              ></Select>
             </Form.Item>
           </div>
           <Row gutter={24} style={{ marginRight: "5px" }}>
