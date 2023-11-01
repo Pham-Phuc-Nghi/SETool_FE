@@ -14,8 +14,8 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/homepage" element={<HomePages />} />
       <Route path="project/*" element={<ManagerRouter />} />
-      <Route path="/verify/email" element={<VerifyEmail />} />
-      <Route path="/verify/invite" element={<Invite />} />
+      <Route path="/verify/account/:username/:email/:otp" element={<VerifyEmail />} />
+      <Route path="/invite/member/:inviter/:inviterEmail/:guest/:guestID" element={<Invite />} />
     </Routes>
   );
 }

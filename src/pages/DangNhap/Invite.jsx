@@ -2,7 +2,11 @@ import "./login.css";
 import { Typography, Button } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
+import { useParams } from "react-router-dom";
 const Invite = () => {
+  const { inviter, inviterEmail, guest, guestID } = useParams();
+  console.log("Param: ", inviter, inviterEmail, guest, guestID);
+
   return (
     <div className="container">
       <div className="text-container">
@@ -33,7 +37,7 @@ const Invite = () => {
           }}
         >
           <Text style={{ color: "white", fontSize: 20, marginBottom: 16 }}>
-            Hello <Text style={{ color: "#BEADFA", fontSize: 20}}>user2</Text>,
+            Hello <Text style={{ color: "#BEADFA", fontSize: 20 }}>user2</Text>,
           </Text>
           <Text style={{ color: "white", fontSize: 16 }}>
             <Text style={{ color: "violet", fontSize: 16 }}>User1</Text>{" "}
