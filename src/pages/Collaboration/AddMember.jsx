@@ -64,10 +64,11 @@ const AddMember = ({ form, form2 }) => {
             <Form.Item name="email" style={{ width: "80%", marginRight: 10 }}>
               <Text>email: </Text>
             </Form.Item>
-            <Form.Item name="role" style={{ width: "50%", marginRight: 10 }}>
+            <Form.Item name="role" style={{ width: "70%", marginRight: 10 }}>
               <Select
                 placeholder="Choose role"
                 mode="tags"
+                maxTagCount={1}
                 options={[
                   {
                     value: 2,
