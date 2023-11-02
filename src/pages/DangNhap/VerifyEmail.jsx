@@ -1,12 +1,47 @@
 import "./login.css";
-import { Typography, Button } from "antd";
+import { Typography, Button, message } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getAccessTokenSelector, getUserNameSelector } from "../../Redux/Selector";
+import { verifyVsLogin } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import { useEffect } from "react";
+import { handleDangNhap } from "../../config/AxiosInstance";
 
 const VerifyEmail = () => {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
   const { username, email, otp } = useParams();
-  console.log("Param: ", username, email, otp);
+
+  const usernameCurrent = useSelector(getUserNameSelector);
+  const accessTokenCurrent = useSelector(getAccessTokenSelector);
+
+  useEffect(() => {
+    if (
+      accessTokenCurrent !== null &&
+      accessTokenCurrent !== "" &&
+      accessTokenCurrent !== undefined
+    ) {
+      handleDangNhap(accessTokenCurrent);
+      sessionStorage.setItem("name_current", usernameCurrent);
+    }
+  }, [usernameCurrent, accessTokenCurrent, dispatch]);
+
+  const handleClickSubmit = () => {
+    if (email !== null && otp !== null) {
+      const data = { email: email, otp: otp };
+      dispatch(verifyVsLogin(data))
+        .unwrap()
+        .then((value) => {
+          message.success(value);
+          nav("/homepage");
+        })
+        .catch((err) => {
+          message.error(err);
+        })
+    }
+  }
 
   return (
     <div className="container">
@@ -46,7 +81,7 @@ const VerifyEmail = () => {
           </Text>
         </div>
         <div className="button-container">
-          <Button className="btn-grad" style={{ color: "white", margin: 26, marginTop: 20 }}>
+          <Button className="btn-grad" style={{ color: "white", margin: 26, marginTop: 20 }} onClick={handleClickSubmit}>
             Click to verify - OTP: {otp}
           </Button>
         </div>
