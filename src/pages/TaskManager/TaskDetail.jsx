@@ -24,6 +24,9 @@ import {
   MonitorOutlined,
   PullRequestOutlined,
   HistoryOutlined,
+  ArrowDownOutlined,
+  RiseOutlined,
+  IssuesCloseOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
@@ -90,7 +93,7 @@ const TaskDetail = ({ idTask }) => {
     4: <CheckSquareOutlined />,
   };
   const [form] = Form.useForm();
-
+  console.log(taskDetail);
   return (
     <>
       {loading ? (
@@ -124,8 +127,9 @@ const TaskDetail = ({ idTask }) => {
             >
               <Space direction="vertical" style={{ width: "100%" }}>
                 <Text>
-                  <Tag color="yellow"> task ID: {taskID} </Tag> 
-                  from: {dayjs(taskDetail.taskStartDay).format("DD/MM/YYYY")} - to: {""}
+                  <Tag color="yellow"> task ID: {taskID} </Tag>
+                  from: {dayjs(taskDetail.taskStartDay).format("DD/MM/YYYY")} -
+                  to: {""}
                   {dayjs(taskDetail.taskEndDay).format("DD/MM/YYYY")}
                 </Text>
                 <Title style={{ marginBottom: 8 }}>{taskDetail.taskName}</Title>
@@ -208,6 +212,30 @@ const TaskDetail = ({ idTask }) => {
                         : taskDetail.taskStatus === 4
                         ? "Done"
                         : "Unknown"}
+                    </Text>
+                  </Col>
+                </Row>
+                <Row gutter={24}>
+                  <Col span={6}>
+                    <Tag color="blue">Task Priortity</Tag>
+                  </Col>
+                  <Col span={18}>
+                    <Text>
+                      {taskDetail.taskPriority === 0 ? (
+                        <Tag color="yellow">
+                          <ArrowDownOutlined /> LOW
+                        </Tag>
+                      ) : taskDetail.taskPriority === 1 ? (
+                        <Tag color="green">
+                          <RiseOutlined /> MEDIUM
+                        </Tag>
+                      ) : taskDetail.taskPriority === 2 ? (
+                        <Tag color="red">
+                          <IssuesCloseOutlined /> HIGH
+                        </Tag>
+                      ) : (
+                        "Unknown"
+                      )}
                     </Text>
                   </Col>
                 </Row>

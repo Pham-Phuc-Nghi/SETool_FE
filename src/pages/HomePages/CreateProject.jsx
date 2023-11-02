@@ -121,25 +121,6 @@ const CreateProject = ({ onClose }) => {
         <Form.Item
           label={
             <Text>
-              <CalendarOutlined /> Start date:
-            </Text>
-          }
-          name="projectStartDay"
-          rules={[{ required: true, message: "startDate must not be a blank" }]}
-        >
-          <DatePicker
-            style={{ width: "50%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
-        </Form.Item>
-        <Form.Item
-          label={
-            <Text>
               <BarsOutlined /> Total day per sprint
             </Text>
           }
@@ -157,6 +138,25 @@ const CreateProject = ({ onClose }) => {
             style={{ width: "50%" }}
             placeholder="Input number of day per sprint"
           ></InputNumber>
+        </Form.Item>
+        <Form.Item
+          label={
+            <Text>
+              <CalendarOutlined /> Start date:
+            </Text>
+          }
+          name="projectStartDay"
+          rules={[{ required: true, message: "startDate must not be a blank" }]}
+        >
+          <DatePicker
+            style={{ width: "50%" }}
+            disabledDate={(current) => {
+              const currentDate = dayjs(current);
+              const today = dayjs();
+              return currentDate.isBefore(today, "day");
+            }}
+            format="DD/MM/YYYY"
+          ></DatePicker>
         </Form.Item>
         <Form.Item
           label={

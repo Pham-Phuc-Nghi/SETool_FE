@@ -1,6 +1,6 @@
-import { Card, Modal, Select, Spin, Tooltip, Typography, message } from "antd";
+import { Card, Modal, Select, Spin, Tag, Tooltip, Typography, message } from "antd";
 import { useEffect, useState } from "react";
-import { ArrowRightOutlined } from "@ant-design/icons";
+import { ArrowDownOutlined, ArrowRightOutlined, IssuesCloseOutlined, RiseOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
 import "./taskManager.css";
 import TaskDetail from "./TaskDetail";
@@ -137,7 +137,23 @@ const TaskManager = () => {
                       <Text style={{ color: "red" }}>
                         {task.taskType === 0 ? "DEV" : "QA"}
                       </Text>
-                    </Text>
+                    </Text>{" "}
+                    - {" "}
+                    {task.taskPriority === 0 ? (
+                      <Tag color="yellow">
+                        <ArrowDownOutlined /> LOW
+                      </Tag>
+                    ) : task.taskPriority === 1 ? (
+                      <Tag color="green">
+                        <RiseOutlined /> MEDIUM
+                      </Tag>
+                    ) : task.taskPriority === 2 ? (
+                      <Tag color="red">
+                        <IssuesCloseOutlined /> HIGH
+                      </Tag>
+                    ) : (
+                      "Unknown"
+                    )}
                   </>
                 }
                 size="small"
