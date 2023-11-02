@@ -50,6 +50,9 @@ const Invite = () => {
         </div>
         <div className="button-container">
           <Button className="btn-grad" style={{ color: "white", margin: 30 }}>
+            Decline
+          </Button>
+          <Button className="btn-grad" style={{ color: "white", margin: 30 }}>
             Click to join
           </Button>
         </div>
