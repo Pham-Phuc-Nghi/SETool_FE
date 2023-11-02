@@ -75,7 +75,6 @@ const AddBacklogs = ({ onClose, form }) => {
 
   const handleCreateBacklogs = (values) => {
     const data = { ...values };
-    console.log(data)
     if (data) {
       dispatch(createBacklogs(data))
         .unwrap()

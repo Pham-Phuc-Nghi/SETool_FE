@@ -85,7 +85,7 @@ export const createBacklogs = createAsyncThunk(
         taskDescription,
       });
       if (res.status === 200) {
-        return fulfillWithValue("Đã tạo task thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
@@ -110,7 +110,7 @@ export const editBacklogs = createAsyncThunk(
         taskDescription,
       });
       if (res.status === 200) {
-        return fulfillWithValue("Đã edit task thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
@@ -140,7 +140,7 @@ export const editAssignee = createAsyncThunk(
         { sprintID, assigneeID, reporterID, taskStartDay, taskEndDay }
       );
       if (res.status === 200) {
-        return fulfillWithValue("Edit assignee thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data;
@@ -158,7 +158,7 @@ export const deleteBacklogs = createAsyncThunk(
     try {
       const res = await deleteRequest(`/Task/${taskID}`);
       if (res.status === 200) {
-        return fulfillWithValue("Đã delete task thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;

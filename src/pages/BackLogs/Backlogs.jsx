@@ -142,7 +142,6 @@ const Backlogs = () => {
   };
 
   const [filteredData, setFilteredData] = useState(dsTaskAll);
-  console.log(dsTaskAll);
   useEffect(() => {
     if (dsTaskAll.data !== undefined) {
       const newFilteredData = dsTaskAll.data.filter((_dsTaskAll) => {

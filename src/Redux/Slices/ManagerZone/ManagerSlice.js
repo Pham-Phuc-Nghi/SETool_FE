@@ -126,7 +126,7 @@ export const editProject = createAsyncThunk(
         projectDayPerSprint,
       });
       if (res.status === 200) {
-        return fulfillWithValue("Edit project thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data;
@@ -144,7 +144,7 @@ export const deleteProject = createAsyncThunk(
     try {
       const res = await deleteRequest(`/projects/delete-project/${projectID}`);
       if (res.status === 200) {
-        return fulfillWithValue("Đã delete project thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
@@ -162,7 +162,7 @@ export const createSprint = createAsyncThunk(
     try {
       const res = await postRequest(`/sprints/create-sprint/${projectID}`);
       if (res.status === 200) {
-        return fulfillWithValue("Đã tạo sprint thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
@@ -184,7 +184,7 @@ export const editSprint = createAsyncThunk(
         sprintDescription,
       });
       if (res.status === 200) {
-        return fulfillWithValue("Edit sprint thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data;

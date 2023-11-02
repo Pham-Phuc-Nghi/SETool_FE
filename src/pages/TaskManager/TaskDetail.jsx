@@ -42,6 +42,8 @@ const TaskDetail = ({ idTask }) => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const taskDetail = useSelector(getDSMyTaskDetailSelector);
+  const [form] = Form.useForm();
+
   useEffect(() => {
     if (taskID) {
       dispatch(getDSMytaskDetail(taskID))
@@ -92,8 +94,7 @@ const TaskDetail = ({ idTask }) => {
     3: <MonitorOutlined />,
     4: <CheckSquareOutlined />,
   };
-  const [form] = Form.useForm();
-  console.log(taskDetail);
+  
   return (
     <>
       {loading ? (

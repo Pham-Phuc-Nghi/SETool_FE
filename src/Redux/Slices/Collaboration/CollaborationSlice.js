@@ -64,7 +64,7 @@ export const editRole = createAsyncThunk(
         role
       );
       if (res.status === 200) {
-        return fulfillWithValue("Edit role thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data;
@@ -85,7 +85,7 @@ export const deleteMember = createAsyncThunk(
         `/projects/remove-user-from-project/${projectID}/${removeID}`
       );
       if (res.status === 200) {
-        return fulfillWithValue("Delete member thành công");
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data;
