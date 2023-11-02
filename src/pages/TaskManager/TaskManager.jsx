@@ -225,7 +225,7 @@ const TaskManager = () => {
   const [refreshTable, setRefreshTable] = useState(false);
   const [loading, setLoading] = useState(true);
   const currentSprintId = currentSprint.id;
-  
+
   console.log("ID :", currentSprintId);
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -273,7 +273,7 @@ const TaskManager = () => {
       setIdTask(currentSprintId);
     }
   }, [currentSprintId]);
-  
+
   useEffect(() => {
     if (idTask !== undefined) {
       dispatch(getDSMytask(idTask))

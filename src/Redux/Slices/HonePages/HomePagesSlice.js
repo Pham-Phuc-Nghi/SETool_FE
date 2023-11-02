@@ -48,10 +48,10 @@ export const createProject = createAsyncThunk(
         projectName,
         projectDescription,
         projectStartDay,
-        projectPriority: 1,
         projectTotalSprint,
         projectDayPerSprint,
       });
+      console.log(res.data)
       if (res.status === 200) {
         return fulfillWithValue("Đã tạo project thành công");
       }
