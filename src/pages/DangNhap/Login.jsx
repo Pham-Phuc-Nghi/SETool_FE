@@ -19,7 +19,7 @@ import "./login.css";
 import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { create, login, otp } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import { create, login } from "../../Redux/Slices/DangNhap/DangNhapSlice";
 import {
   getAccessTokenSelector,
   getUserNameSelector,
@@ -33,7 +33,6 @@ const Login = () => {
   const [currentForm, setCurrentForm] = useState("userLogin");
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
-  const [form3] = Form.useForm();
 
   const username = useSelector(getUserNameSelector);
   const accessToken = useSelector(getAccessTokenSelector);
@@ -86,7 +85,7 @@ const Login = () => {
       .unwrap()
       .then((result) => {
         message.success(result, 1.5);
-        setCurrentForm("otp");
+        setCurrentForm("userLogin");
       })
       .catch((error) => {
         error.forEach((errorMessage, index) => {
@@ -95,41 +94,6 @@ const Login = () => {
           }
         });
       });
-  };
-
-  //otp
-  const handleOTP = (values) => {
-    dispatch(otp(values))
-      .unwrap()
-      .then((result) => {
-        nav("/login");
-        message.success(result, 1.5);
-      })
-      .catch((error) => {
-        message.error(error);
-      });
-  };
-
-  const [digits, setDigits] = useState(["", "", "", "", "", ""]);
-  const handleChange = (e, index) => {
-    const value = e.target.value;
-    if (/^[0-9]*$/.test(value) || value === "") {
-      const newDigits = [...digits];
-      newDigits[index] = value;
-      setDigits(newDigits);
-      if (value === "") {
-        if (index > 0) {
-          document.getElementById(`digit${index}`).focus();
-        }
-      } else if (index < 5) {
-        document.getElementById(`digit${index + 2}`).focus();
-      }
-    }
-  };
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && index > 0 && digits[index] === "") {
-      document.getElementById(`digit${index}`).focus();
-    }
   };
 
   return (
@@ -512,110 +476,6 @@ const Login = () => {
                     Login
                   </a>
                 </Text>
-              </Form>
-            )}
-            {currentForm === "otp" && (
-              <Form
-                form={form3}
-                name="otp"
-                key="otp"
-                // style={{
-                //   maxWidth: 1000,
-                //   height: "70%",
-                //   width: "70%",
-                // }}
-                // initialValues={{
-                //   remember: true,
-                // }}
-                // autoComplete="off"
-                onFinish={handleOTP}
-                className="login-select-container position-relative"
-                style={{ background: "white" }}
-              >
-                <Title></Title>
-                <br></br>
-                <main
-                  className="login position-absolute top-50 start-50 translate-middle password-blur"
-                  style={{ height: "310px" }}
-                >
-                  <Title
-                    className="text-center fw-bold"
-                    style={{
-                      marginBottom: 40,
-                      textAlign: "center",
-                      fontSize: 35,
-                      fontFamily: "sans-serif",
-                      color: "black",
-                    }}
-                  >
-                    OTP Verification
-                  </Title>
-                  <br></br>
-                  <div className="mb-3">
-                    <Form.Item
-                      style={{
-                        marginLeft: 10,
-                        textAlignLast: "center",
-                      }}
-                      name="otp"
-                      rules={[
-                        {
-                          pattern: /^[0-9]*$/,
-                          message: "OTP không hợp lệ",
-                        },
-                      ]}
-                    >
-                      {digits.map((digit, index) => (
-                        <Input
-                          key={index}
-                          type="text"
-                          id={`digit${index + 1}`}
-                          className="digit-input"
-                          maxLength="1"
-                          value={digit}
-                          onChange={(e) => handleChange(e, index)}
-                          onKeyDown={(e) => handleKeyDown(e, index)}
-                        />
-                      ))}
-                    </Form.Item>
-                  </div>
-                  <Form.Item
-                    wrapperCol={24}
-                    style={{ width: "100%", textAlign: "center" }}
-                  >
-                    <Text
-                      style={{
-                        color: "green",
-                        fontSize: "13px",
-                        fontStyle: "italic",
-                        textAlign: "center",
-                        width: "100%",
-                        fontWeight: 900,
-                      }}
-                    >
-                      Mã OTP đã được gửi đến email: danh
-                    </Text>
-                  </Form.Item>
-                  <Form.Item className="text-center">
-                    <Button
-                      htmlType="submit"
-                      type="primary"
-                      style={{
-                        fontWeight: 500,
-                        backgroundColor: "#FF4500",
-                        fontSize: 18,
-                        height: "auto",
-                        fontFamily: "sans-serif",
-                        marginTop: 10,
-                        marginLeft: 10,
-                      }}
-                      className="task-card"
-                      block
-                    >
-                      Xác nhận
-                    </Button>
-                  </Form.Item>
-                </main>
               </Form>
             )}
           </div>
