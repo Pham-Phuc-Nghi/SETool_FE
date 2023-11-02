@@ -96,19 +96,3 @@ export const create = createAsyncThunk(
     }
   }
 );
-
-export const otp = createAsyncThunk(
-  "dang_nhap/otp",
-  async (values, { rejectWithValue, fulfillWithValue }) => {
-    try {
-      let { email, otp } = values;
-      const res = await postRequest(`User/verify-email/${email}/${otp}`);
-      console.log("Status api: ", res.data);
-      if (res.data?.status === 200) {
-        return fulfillWithValue("Đăng ký thành công", 1.5);
-      }
-    } catch (error) {
-      return rejectWithValue("Đăng ký không thành công!", 1.5);
-    }
-  }
-);

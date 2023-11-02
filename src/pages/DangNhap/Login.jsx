@@ -86,6 +86,7 @@ const Login = () => {
       .then((result) => {
         message.success(result, 1.5);
         setCurrentForm("userLogin");
+        form2.resetFields();
       })
       .catch((error) => {
         error.forEach((errorMessage, index) => {
