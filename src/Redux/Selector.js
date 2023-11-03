@@ -9,8 +9,11 @@ export const getDashboardSelector = (state) => state.dashboard.dashboard;
 
 //collaboration
 export const getDSMemberAllSelector = (state) => state.collaboration.dsMember;
-export const getDSMemberListSelector = (state) =>
-  state.collaboration.dsMemberList;
+export const getDSMemberListSelector = (state) => state.collaboration.dsMemberList;
+
+export const getUserInfoID = (state) => state.collaboration.userInfoID;
+export const getUserInfoName = (state) => state.collaboration.userInfoName;
+export const getUserInfoEmail = (state) => state.collaboration.userInfoEmail;
 
 //backlogs
 export const getDSTaskAllSelector = (state) => state.backlogs.dsTask;

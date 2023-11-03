@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   deleteRequest,
   getRequest,
+  postRequest,
   putRequest,
 } from "../../../Services/HttpMethods";
 
@@ -10,6 +11,9 @@ const initialState = {
   dsMemberList: [],
   isAddedSuccess: false,
   isDeletedSuccess: false,
+  userInfoID: "",
+  userInfoName: "",
+  userInfoEmail: "",
 };
 
 export const CollaborationSlice = createSlice({
@@ -22,8 +26,54 @@ export const CollaborationSlice = createSlice({
     builder.addCase(getDSAllMember.fulfilled, (state, action) => {
       state.dsMemberList = action.payload;
     });
+    builder.addCase(searchUserInfo.fulfilled, (state, action) => {
+      // console.log("🚀 ~ file: CollaborationSlice.js:30 ~ builder.addCase ~ payload:", action.payload)
+      state.userInfoID = action.payload.id;
+      state.userInfoName = action.payload.name;
+      state.userInfoEmail = action.payload.email;
+    });
   },
 });
+
+export const addMemberToProject = createAsyncThunk(
+  "collaboration/addMemberToProject",
+  async (data, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { projectID, newUserID, role } = data;
+      const res = await postRequest(
+        `projects/add-member-to-project/${projectID}/${newUserID}/${role}`
+      );
+      if (res.status == 200) {
+        return fulfillWithValue(res.data.message);
+      }
+      if (res.response.status === 400) {
+        return rejectWithValue(res.response.data.message);
+      }
+    } catch (error) {
+      return rejectWithValue("Something went wrong.");
+    }
+  }
+);
+
+export const searchUserInfo = createAsyncThunk(
+  "collaboration/searchUserInfo",
+  async (data, { rejectWithValue }) => {
+    try {
+      const { projectID, inviterInfo } = data;
+      const res = await getRequest(
+        `projects/get-info/${projectID}/${inviterInfo}`
+      );
+      if (res.status == 200) {
+        return res.data;
+      }
+      if (res.response.status === 400) {
+        return rejectWithValue(res.response.data.message);
+      }
+    } catch (error) {
+      return rejectWithValue("Something went wrong.");
+    }
+  }
+);
 
 export const getDSMember = createAsyncThunk(
   "collaboration/getDSMember",

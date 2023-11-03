@@ -1,22 +1,62 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Typography } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Select, Typography, message } from "antd";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getShowForm2Selector } from "../../Redux/Selector";
+import { getShowForm2Selector, getUserInfoEmail, getUserInfoID, getUserInfoName } from "../../Redux/Selector";
 import { setShowForm2 } from "../../Redux/Slices/StateChange/StateChangeSlice";
+import { addMemberToProject, searchUserInfo } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 const { Text } = Typography;
 
-const AddMember = ({ form, form2 }) => {
+const AddMember = ({ form, form2, onClose }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
   const dispatch = useDispatch();
   const showForm2 = useSelector(getShowForm2Selector);
 
-  const handleFormCheck = () => {
-    dispatch(setShowForm2(true));
+  const userInfoID = useSelector(getUserInfoID);
+  const userInfoName = useSelector(getUserInfoName);
+  const userInfoEmail = useSelector(getUserInfoEmail);
+
+  const handleFormCheck = (value) => {
+    const projectID = sessionStorage.getItem("current_project");
+    const inviterInfo = value.member;
+    const data = {
+      projectID: projectID,
+      inviterInfo: inviterInfo
+    }
+    dispatch(searchUserInfo(data))
+      .unwrap()
+      .then(() => {
+        message.success("Found successfully.");
+      })
+      .catch((err) => {
+        message.error(err);
+      })
+      .finally(() => {
+        dispatch(setShowForm2(true));
+      })
   };
 
-  const handleFormAdd = () => {};
+  const handleFormAdd = (value) => {
+    const projectID = sessionStorage.getItem("current_project");
+    if (userInfoID !== null || userInfoID !== "") {
+      const data = {
+        projectID: projectID,
+        newUserID: userInfoID,
+        role: value.role[0]
+      };
+      console.log("Data to add: ", data);
+      dispatch(addMemberToProject(data))
+        .unwrap()
+        .then((value) => {
+          message.success(value);
+          onClose();
+        })
+        .catch((err) => {
+          message.error(err);
+        })
+    }
+  };
 
   const layout = {
     labelCol: {
@@ -52,19 +92,26 @@ const AddMember = ({ form, form2 }) => {
         <Form {...layout} form={form2} onFinish={handleFormAdd}>
           <div style={{ display: "flex", justifyContent: "left" }}>
             <Form.Item
+              initialValue={userInfoID}
               name="UserID"
               style={{ width: "80%", marginRight: 10, display: "none" }}
             ></Form.Item>
             <Form.Item
+              initialValue={userInfoName}
               name="username"
               style={{ width: "80%", marginRight: 10 }}
             >
-              <Text>username: </Text>
+              <Text>username: {userInfoName}</Text>
             </Form.Item>
-            <Form.Item name="email" style={{ width: "80%", marginRight: 10 }}>
-              <Text>email: </Text>
+            <Form.Item initialValue={userInfoEmail} name="email" style={{ width: "80%", marginRight: 10 }}>
+              <Text>email: {userInfoEmail}</Text>
             </Form.Item>
-            <Form.Item name="role" style={{ width: "70%", marginRight: 10 }}>
+            <Form.Item name="role" style={{ width: "70%", marginRight: 10 }} rules={[
+              {
+                required: true,
+                message: "Rules must not be a blank",
+              },
+            ]}>
               <Select
                 placeholder="Choose role"
                 mode="tags"

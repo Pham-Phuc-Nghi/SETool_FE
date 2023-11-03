@@ -49,16 +49,16 @@ const Collab = () => {
   };
 
   useEffect(() => {
-      const projectID = sessionStorage.getItem("current_project");
-      dispatch(getDSMember(projectID))
-        .unwrap()
-        .then(() => {
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.error("Error fetching data: ", error);
-        });
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getDSMember(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
   }, [refreshTable]);
 
   const [searchText, setSearchText] = useState("");
@@ -282,7 +282,7 @@ const Collab = () => {
             title="Add member"
             width={700}
           >
-            <AddMember form={form} form2={form2}></AddMember>
+            <AddMember form={form} form2={form2} onClose={closeAddModal}></AddMember>
           </Modal>
         </>
       )}
