@@ -94,7 +94,7 @@ const TaskDetail = ({ idTask }) => {
     3: <MonitorOutlined />,
     4: <CheckSquareOutlined />,
   };
-  
+
   return (
     <>
       {loading ? (
@@ -256,7 +256,7 @@ const TaskDetail = ({ idTask }) => {
                     <Text>
                       {taskDetail.assigneeName
                         ? taskDetail.assigneeName
-                        : "NO ASSIGNEE CURRENT"}
+                        : "_____"}
                     </Text>
                   </Col>
                 </Row>
@@ -268,7 +268,7 @@ const TaskDetail = ({ idTask }) => {
                     <Text>
                       {taskDetail.reporterName
                         ? taskDetail.reporterName
-                        : "NO REPORTER CURRENT"}
+                        : "_____"}
                     </Text>
                   </Col>
                 </Row>

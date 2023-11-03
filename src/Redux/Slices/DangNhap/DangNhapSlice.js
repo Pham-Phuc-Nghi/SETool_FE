@@ -84,7 +84,7 @@ export const create = createAsyncThunk(
       });
       console.log("Status api: ", res);
       if (res.data?.status === 200) {
-        return fulfillWithValue("Đăng ký thành công", 1.5);
+        return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
@@ -92,7 +92,7 @@ export const create = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Đăng ký không thành công!", 1.5);
+      return rejectWithValue("Đăng ký không thành công!");
     }
   }
 );

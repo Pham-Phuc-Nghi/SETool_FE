@@ -120,6 +120,10 @@ export const editRole = createAsyncThunk(
         const err = res.response.data;
         return rejectWithValue(err);
       }
+      if (res.response?.status === 403) {
+        const err = res.response.data;
+        return rejectWithValue(err);
+      }
     } catch (error) {
       return rejectWithValue("Edit role thất bại!");
     }
@@ -138,6 +142,10 @@ export const deleteMember = createAsyncThunk(
         return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
+        const err = res.response.data;
+        return rejectWithValue(err);
+      }
+      if (res.response?.status === 403) {
         const err = res.response.data;
         return rejectWithValue(err);
       }

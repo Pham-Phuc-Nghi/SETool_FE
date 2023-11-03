@@ -1,11 +1,29 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Typography, message } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Typography,
+  message,
+} from "antd";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getShowForm2Selector, getUserInfoEmail, getUserInfoID, getUserInfoName } from "../../Redux/Selector";
+import {
+  getShowForm2Selector,
+  getUserInfoEmail,
+  getUserInfoID,
+  getUserInfoName,
+} from "../../Redux/Selector";
 import { setShowForm2 } from "../../Redux/Slices/StateChange/StateChangeSlice";
-import { addMemberToProject, searchUserInfo } from "../../Redux/Slices/Collaboration/CollaborationSlice";
+import {
+  addMemberToProject,
+  searchUserInfo,
+} from "../../Redux/Slices/Collaboration/CollaborationSlice";
 const { Text } = Typography;
 
 const AddMember = ({ form, form2, onClose }) => {
@@ -22,8 +40,8 @@ const AddMember = ({ form, form2, onClose }) => {
     const inviterInfo = value.member;
     const data = {
       projectID: projectID,
-      inviterInfo: inviterInfo
-    }
+      inviterInfo: inviterInfo,
+    };
     dispatch(searchUserInfo(data))
       .unwrap()
       .then(() => {
@@ -34,7 +52,7 @@ const AddMember = ({ form, form2, onClose }) => {
       })
       .finally(() => {
         dispatch(setShowForm2(true));
-      })
+      });
   };
 
   const handleFormAdd = (value) => {
@@ -43,7 +61,7 @@ const AddMember = ({ form, form2, onClose }) => {
       const data = {
         projectID: projectID,
         newUserID: userInfoID,
-        role: value.role[0]
+        role: value.role[0],
       };
       console.log("Data to add: ", data);
       dispatch(addMemberToProject(data))
@@ -54,7 +72,7 @@ const AddMember = ({ form, form2, onClose }) => {
         })
         .catch((err) => {
           message.error(err);
-        })
+        });
     }
   };
 
@@ -96,42 +114,66 @@ const AddMember = ({ form, form2, onClose }) => {
               name="UserID"
               style={{ width: "80%", marginRight: 10, display: "none" }}
             ></Form.Item>
-            <Form.Item
-              initialValue={userInfoName}
-              name="username"
-              style={{ width: "80%", marginRight: 10 }}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
             >
-              <Text>username: {userInfoName}</Text>
-            </Form.Item>
-            <Form.Item initialValue={userInfoEmail} name="email" style={{ width: "80%", marginRight: 10 }}>
-              <Text>email: {userInfoEmail}</Text>
-            </Form.Item>
-            <Form.Item name="role" style={{ width: "70%", marginRight: 10 }} rules={[
-              {
-                required: true,
-                message: "Rules must not be a blank",
-              },
-            ]}>
-              <Select
-                placeholder="Choose role"
-                mode="tags"
-                maxTagCount={1}
-                options={[
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  width: "100%",
+                }}
+              >
+                <Form.Item
+                  initialValue={userInfoName}
+                  name="username"
+                  style={{ width: "80%" }}
+                >
+                  <Text>username: {userInfoName}</Text>
+                </Form.Item>
+                <Form.Item
+                  initialValue={userInfoEmail}
+                  name="email"
+                  style={{ width: "80%" }}
+                >
+                  <Text>email: {userInfoEmail}</Text>
+                </Form.Item>
+              </div>
+              <Form.Item
+                name="role"
+                style={{ width: "70%" }}
+                rules={[
                   {
-                    value: 2,
-                    label: "Manager",
-                  },
-                  {
-                    value: 3,
-                    label: "Dev",
-                  },
-                  {
-                    value: 4,
-                    label: "Tester",
+                    required: true,
+                    message: "Rules must not be a blank",
                   },
                 ]}
-              ></Select>
-            </Form.Item>
+              >
+                <Select
+                  placeholder="Choose role"
+                  options={[
+                    {
+                      value: 2,
+                      label: "Manager",
+                    },
+                    {
+                      value: 3,
+                      label: "Dev",
+                    },
+                    {
+                      value: 4,
+                      label: "Tester",
+                    },
+                  ]}
+                ></Select>
+              </Form.Item>
+            </div>
           </div>
           <Row gutter={24} style={{ marginRight: "5px" }}>
             <Col
@@ -163,6 +205,7 @@ const AddMember = ({ form, form2, onClose }) => {
 AddMember.propTypes = {
   form: PropTypes.object.isRequired,
   form2: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default AddMember;

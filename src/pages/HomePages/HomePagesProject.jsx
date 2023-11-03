@@ -15,10 +15,37 @@ const { Text, Title } = Typography;
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import CreateProject from "./CreateProject";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDSProjectSelector } from "../../Redux/Selector";
 import { getDSProject } from "../../Redux/Slices/HonePages/HomePagesSlice";
+import imageUrl1 from "../../assets/1.svg";
+import imageUrl2 from "../../assets/2.svg";
+import imageUrl3 from "../../assets/3.svg";
+import imageUrl4 from "../../assets/4.svg";
+import imageUrl5 from "../../assets/5.svg";
+import imageUrl6 from "../../assets/6.svg";
+import imageUrl7 from "../../assets/7.svg";
+import projectBackground1 from "../../assets/1.png";
+import projectBackground2 from "../../assets/2.png";
+import projectBackground3 from "../../assets/3.png";
+import projectBackground4 from "../../assets/4.png";
+import projectBackground5 from "../../assets/5.png";
+import projectBackground6 from "../../assets/6.png";
+import projectBackground7 from "../../assets/7.png";
+import projectBackground8 from "../../assets/8.png";
+import projectBackground9 from "../../assets/9.png";
+import projectBackground10 from "../../assets/10.png";
+import projectBackground11 from "../../assets/11.png";
+import projectBackground12 from "../../assets/12.png";
+import projectBackground13 from "../../assets/13.png";
+import projectBackground14 from "../../assets/14.png";
+import projectBackground15 from "../../assets/15.png";
+import projectBackground16 from "../../assets/16.png";
+import projectBackground17 from "../../assets/17.png";
+import projectBackground18 from "../../assets/18.png";
+import projectBackground19 from "../../assets/19.png";
+import projectBackground20 from "../../assets/20.png";
 
 const HomePagesProject = () => {
   const dispatch = useDispatch();
@@ -65,23 +92,44 @@ const HomePagesProject = () => {
     setSearchText(value);
   };
 
-  const contentStyle = {
-    height: "200px",
-    color: "#fff", 
-    lineHeight: "160px",
-    textAlign: "center",
-    alignItems: "center",
-    background: "#364d79",
-  };
-
   const [hoveredCard, setHoveredCard] = useState(null);
-  
+
   const handleCardClick = (id, projectName) => {
     console.log("Clicked Card ID:", id);
     console.log("Clicked Card Project Name:", projectName);
-    sessionStorage.setItem('current_project', id);
-    navigate(`/project/dashboard`); 
-  };  
+    sessionStorage.setItem("current_project", id);
+    navigate(`/project/dashboard`);
+  };
+
+  const contentStyle = {
+    height: "310px",
+    objectFit: "cover",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
+
+  const projectBackgrounds = [
+    projectBackground1,
+    projectBackground2,
+    projectBackground3,
+    projectBackground4,
+    projectBackground5,
+    projectBackground6,
+    projectBackground7,
+    projectBackground8,
+    projectBackground9,
+    projectBackground10,
+    projectBackground11,
+    projectBackground12,
+    projectBackground13,
+    projectBackground14,
+    projectBackground15,
+    projectBackground16,
+    projectBackground17,
+    projectBackground18,
+    projectBackground19,
+    projectBackground20,
+  ];
 
   return (
     <>
@@ -118,16 +166,60 @@ const HomePagesProject = () => {
               <Space direction="vertical" style={{ width: "100%" }}>
                 <Carousel autoplay style={{ margin: "0 auto", width: "90%" }}>
                   <div>
-                    <h3 style={contentStyle}>1</h3>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl1}) center/contain no-repeat`,
+                      }}
+                    ></h3>
                   </div>
                   <div>
-                    <h3 style={contentStyle}>2</h3>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl2}) center/contain no-repeat`,
+                      }}
+                    ></h3>
                   </div>
                   <div>
-                    <h3 style={contentStyle}>3</h3>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl3}) center/contain no-repeat`,
+                      }}
+                    ></h3>
                   </div>
                   <div>
-                    <h3 style={contentStyle}>4</h3>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl4}) center/contain no-repeat`,
+                      }}
+                    ></h3>
+                  </div>
+                  <div>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl5}) center/contain no-repeat`,
+                      }}
+                    ></h3>
+                  </div>
+                  <div>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl6}) center/contain no-repeat`,
+                      }}
+                    ></h3>
+                  </div>
+                  <div>
+                    <h3
+                      style={{
+                        ...contentStyle,
+                        background: `url(${imageUrl7}) center/contain no-repeat`,
+                      }}
+                    ></h3>
                   </div>
                 </Carousel>
                 <div
@@ -169,6 +261,8 @@ const HomePagesProject = () => {
                         }}
                       >
                         <Input.Search
+                          style={{ width: 500 }}
+                          size="large"
                           allowClear
                           placeholder="Search Project"
                           onSearch={handleSearch}
@@ -212,7 +306,11 @@ const HomePagesProject = () => {
                                 marginBottom: 12,
                                 marginLeft: 20,
                                 color: "#F4F5F6",
-                                backgroundColor: "#FF4500",
+                                background: `url(${
+                                  projectBackgrounds[
+                                    index % projectBackgrounds.length
+                                  ]
+                                }) center/cover no-repeat`,
                                 textAlign: "center",
                                 cursor: "pointer",
                                 height: 140,
