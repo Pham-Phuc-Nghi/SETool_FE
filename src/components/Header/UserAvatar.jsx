@@ -1,4 +1,9 @@
-import { LockOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  LogoutOutlined,
+  PlusOutlined,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
 import {
   Avatar,
   Button,
@@ -8,6 +13,7 @@ import {
   Input,
   Menu,
   Typography,
+  Upload,
 } from "antd";
 import { useState } from "react";
 import { handleDangXuat } from "../../config/AxiosInstance";
@@ -18,10 +24,15 @@ const UserAvatar = () => {
   const nav = useNavigate();
   const username_current = sessionStorage.getItem("name_current");
   const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
+  const [isChangeUserInfoVisible, setIsChangeUserInfoVisible] = useState(false);
   const [form] = Form.useForm();
+  const [form1] = Form.useForm();
 
   const showChangePasswordDrawer = () => {
     setIsChangePasswordVisible(true);
+  };
+  const showChangeUserInfoDrawer = () => {
+    setIsChangeUserInfoVisible(true);
   };
 
   const menu = (
@@ -33,14 +44,23 @@ const UserAvatar = () => {
       >
         Đổi mật khẩu
       </Menu.Item>
-      {/* <Link to={"/"} onClick={handleDangXuat}> */}
-      <Menu.Item key="2" icon={<LogoutOutlined />} onClick={() => {
-        handleDangXuat();
-        nav("/");
-      }}>
+      <Menu.Item
+        key="2"
+        icon={<UserSwitchOutlined />}
+        onClick={showChangeUserInfoDrawer}
+      >
+        Thông tin cá nhân
+      </Menu.Item>
+      <Menu.Item
+        key="3"
+        icon={<LogoutOutlined />}
+        onClick={() => {
+          handleDangXuat();
+          nav("/");
+        }}
+      >
         Đăng xuất
       </Menu.Item>
-      {/* </Link> */}
     </Menu>
   );
 
@@ -54,6 +74,22 @@ const UserAvatar = () => {
   };
 
   const submitChangePassword = (values) => {
+    const data = { ...values };
+    console.log(data);
+    // if (data) {
+    //   dispatch(changePassword(data))
+    //     .unwrap()
+    //     .then((result) => {
+    //       message.success(result);
+    //       setIsChangePasswordVisible(false);
+    //       form.resetFields();
+    //     })
+    //     .catch((error) => {
+    //       message.error(error);
+    //     });
+    // }
+  };
+  const submitChangeUserInfo = (values) => {
     const data = { ...values };
     console.log(data);
     // if (data) {
@@ -132,9 +168,69 @@ const UserAvatar = () => {
     </Form>
   );
 
+  const normFile = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
+
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
+
+  const changeUserInfoContent = (
+    <Form {...layout} form={form1} onFinish={submitChangeUserInfo}>
+      <Form.Item
+        labelCol={6}
+        wrapperCol={18}
+        style={{ alignItems: "center", textAlign: "center" }}
+        name="avatar"
+        valuePropName="fileList"
+        getValueFromEvent={normFile}
+      >
+        <Upload
+        disabled
+          listType="picture-card"
+          maxCount={1}
+          beforeUpload={() => false}
+        >
+          {uploadButton}
+        </Upload>
+      </Form.Item>
+      <Form.Item
+        label={<Text>Username </Text>}
+        name="username"
+      >
+        <Text disabled allowClear placeholder="Nhập username mới" />
+      </Form.Item>
+      <Form.Item
+        label={<Text>Email </Text>}
+        name="email"
+        
+      >
+        <Text disabled allowClear placeholder="Nhập email mới" />
+      </Form.Item>
+    </Form>
+  );
+
   const closeChangePasswordDrawer = () => {
     setIsChangePasswordVisible(false);
     form.resetFields();
+  };
+
+  const closeChangeUserInfoDrawer = () => {
+    setIsChangeUserInfoVisible(false);
+    form1.resetFields();
   };
 
   return (
@@ -172,6 +268,16 @@ const UserAvatar = () => {
         width={650}
       >
         {changePasswordContent}
+      </Drawer>
+      <Drawer
+        title="Thông tin người dùng"
+        placement="right"
+        closable={true}
+        onClose={closeChangeUserInfoDrawer}
+        visible={isChangeUserInfoVisible}
+        width={650}
+      >
+        {changeUserInfoContent}
       </Drawer>
     </div>
   );
