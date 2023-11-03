@@ -350,10 +350,10 @@ const Backlogs = () => {
                             flexDirection: "column",
                           }}
                         >
-                          <Text style={{ marginTop: 10 }}>
+                          <Text>
                             <Tag color="orange">Sprint {item.sprintNumber}</Tag>
                           </Text>
-                          <Text>
+                          <Text style={{ marginTop: 10 }}>
                             <Tag color="blue">Task Name </Tag>{" "}
                             <Tooltip title="Click to see Task Detail">
                               <a onClick={() => handleTaskDoubleClick(item.id)}>
