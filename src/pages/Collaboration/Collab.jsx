@@ -184,6 +184,7 @@ const Collab = () => {
               icon={<EditOutlined style={{ marginTop: 5 }} />}
               className="custom-btn-save-and-add"
               htmlType="submit"
+              disabled={record.role === 1}
             >
               EDIT
             </Button>
@@ -202,6 +203,7 @@ const Collab = () => {
             className="custom-btn-del"
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.key)}
+            disabled={record.role === 1}
           >
             DELETE
           </Button>
