@@ -50,6 +50,7 @@ const TaskDetail = ({ idTask }) => {
         .unwrap()
         .then(() => {
           setLoading(false);
+          setRefreshTable(!refreshTable)
         })
         .catch((error) => {
           setLoading(false);
