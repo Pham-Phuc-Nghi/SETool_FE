@@ -350,6 +350,9 @@ const Backlogs = () => {
                             flexDirection: "column",
                           }}
                         >
+                          <Text style={{ marginTop: 10 }}>
+                            <Tag color="orange">Sprint {item.sprintNumber}</Tag>
+                          </Text>
                           <Text>
                             <Tag color="blue">Task Name </Tag>{" "}
                             <Tooltip title="Click to see Task Detail">
@@ -357,9 +360,6 @@ const Backlogs = () => {
                                 {item.taskName}
                               </a>
                             </Tooltip>
-                          </Text>
-                          <Text style={{ marginTop: 10 }}>
-                            <Tag color="orange">Sprint {item.sprintNumber}</Tag>
                           </Text>
                         </div>
                       }
