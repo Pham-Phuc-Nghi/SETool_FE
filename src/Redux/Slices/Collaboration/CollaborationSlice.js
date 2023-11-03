@@ -138,7 +138,7 @@ export const deleteMember = createAsyncThunk(
         return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
-        const err = res.response.data;
+        const err = res.response.data.message;
         return rejectWithValue(err);
       }
     } catch (error) {
