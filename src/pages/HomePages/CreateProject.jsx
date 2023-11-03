@@ -1,14 +1,12 @@
 import { useState } from "react";
 import {
   BarsOutlined,
-  CalendarOutlined,
   FormOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import {
   Button,
   Col,
-  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -19,7 +17,6 @@ import {
   notification,
 } from "antd";
 import PropTypes from "prop-types";
-import dayjs from "dayjs";
 import { useDispatch } from "react-redux";
 import { createProject } from "../../Redux/Slices/HonePages/HomePagesSlice";
 const { Text } = Typography;
@@ -138,25 +135,6 @@ const CreateProject = ({ onClose }) => {
             style={{ width: "50%" }}
             placeholder="Input number of day per sprint"
           ></InputNumber>
-        </Form.Item>
-        <Form.Item
-          label={
-            <Text>
-              <CalendarOutlined /> Start date:
-            </Text>
-          }
-          name="projectStartDay"
-          rules={[{ required: true, message: "startDate must not be a blank" }]}
-        >
-          <DatePicker
-            style={{ width: "50%" }}
-            disabledDate={(current) => {
-              const currentDate = dayjs(current);
-              const today = dayjs();
-              return currentDate.isBefore(today, "day");
-            }}
-            format="DD/MM/YYYY"
-          ></DatePicker>
         </Form.Item>
         <Form.Item
           label={

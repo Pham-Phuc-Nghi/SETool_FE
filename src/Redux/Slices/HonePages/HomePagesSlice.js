@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../../Services/HttpMethods";
-import dayjs from "dayjs";
 
 const initialState = {
   dsProject: [],
@@ -37,21 +36,16 @@ export const createProject = createAsyncThunk(
       let {
         projectName,
         projectDescription,
-        projectStartDay,
         projectTotalSprint,
         projectDayPerSprint,
       } = values;
-      projectStartDay = dayjs(projectStartDay).format(
-        "YYYY-MM-DDTHH:mm:ss.SSSZ"
-      );
       const res = await postRequest(`projects/create-project`, {
         projectName,
         projectDescription,
-        projectStartDay,
         projectTotalSprint,
         projectDayPerSprint,
       });
-      console.log(res.data)
+      console.log(res.data);
       if (res.status === 200) {
         return fulfillWithValue("Đã tạo project thành công");
       }
