@@ -9,7 +9,8 @@ import {
 const initialState = {
   dsMember: [],
   dsMemberList: [],
-  isAdmin:{},
+  isAdmin: {},
+  roleMember: {},
   isAddedSuccess: false,
   isDeletedSuccess: false,
   userInfoID: "",
@@ -29,6 +30,9 @@ export const CollaborationSlice = createSlice({
     });
     builder.addCase(isAdminOfProject.fulfilled, (state, action) => {
       state.isAdmin = action.payload;
+    });
+    builder.addCase(getRole.fulfilled, (state, action) => {
+      state.roleMember = action.payload;
     });
     builder.addCase(searchUserInfo.fulfilled, (state, action) => {
       state.userInfoID = action.payload.id;
@@ -96,9 +100,19 @@ export const isAdminOfProject = createAsyncThunk(
   "collaboration/isAdminOfProject",
   async (projectID) => {
     try {
-      const res = await getRequest(
-        `/projects/is-admin/${projectID}`
-      );
+      const res = await getRequest(`/projects/is-admin/${projectID}`);
+      return res.data;
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+);
+
+export const getRole = createAsyncThunk(
+  "collaboration/getRole",
+  async (projectID) => {
+    try {
+      const res = await getRequest(`/projects/get-role/${projectID}`);
       return res.data;
     } catch (error) {
       console.log({ error });

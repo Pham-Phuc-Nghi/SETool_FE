@@ -20,11 +20,16 @@ import {
 } from "antd";
 import AddMember from "./AddMember";
 import { useDispatch, useSelector } from "react-redux";
-import { getDSMemberAllSelector, isAdminSelector } from "../../Redux/Selector";
+import {
+  getDSMemberAllSelector,
+  isAdminSelector,
+  roleSelector,
+} from "../../Redux/Selector";
 import {
   deleteMember,
   editRole,
   getDSMember,
+  getRole,
   isAdminOfProject,
 } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 import { setShowForm2 } from "../../Redux/Slices/StateChange/StateChangeSlice";
@@ -39,8 +44,7 @@ const Collab = () => {
   const dsMemberAll = useSelector(getDSMemberAllSelector);
   const [refreshTable, setRefreshTable] = useState(false);
   const isAdmin = useSelector(isAdminSelector);
-
-  console.log(isAdmin.isAdmin);
+  const roleM = useSelector(roleSelector);
 
   const showModalTaoDon = () => {
     setIsModalAdd(true);
@@ -57,6 +61,19 @@ const Collab = () => {
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSMember(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getRole(projectID))
       .unwrap()
       .then(() => {
         setLoading(false);
@@ -185,6 +202,7 @@ const Collab = () => {
                     {
                       value: 2,
                       label: "Manager",
+                      disabled: roleM.result.includes("manager") ? true : false,
                     },
                     {
                       value: 3,
@@ -228,7 +246,12 @@ const Collab = () => {
             className="custom-btn-del"
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.key)}
-            style={{ display: record.role.includes(0) ? "none" : "" }}
+            style={{
+              display:
+                record.role.includes(0) || roleM.result.includes("manager")
+                  ? "none"
+                  : "",
+            }}
           >
             DELETE
           </Button>
@@ -273,6 +296,12 @@ const Collab = () => {
               onClick={showModalTaoDon}
               style={{
                 float: "right",
+                display:
+                  isAdmin.isAdmin !== true
+                    ? "none"
+                    : roleM.result.includes("manager")
+                    ? "none"
+                    : "",
               }}
             >
               Add members
@@ -280,7 +309,13 @@ const Collab = () => {
           </div>
           <Table
             scroll={{ x: 600 }}
-            columns={isAdmin.isAdmin !== true ? column.slice(0, 3) : column}
+            columns={
+              isAdmin.isAdmin !== true
+                ? column.slice(0, 3)
+                : roleM.result.includes("manager")
+                ? column.slice(0, 3)
+                : column
+            }
             dataSource={
               filteredData &&
               Array.isArray(filteredData) &&
