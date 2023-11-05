@@ -130,7 +130,6 @@ const Collab = () => {
 
   const handleFormEditRole = (values, changeeID) => {
     const data = { ...values, changeeID };
-    console.log("role", data);
     if (data) {
       dispatch(editRole(data))
         .unwrap()
@@ -192,7 +191,7 @@ const Collab = () => {
               name="role"
               style={{ flex: 1, marginRight: 10, marginBottom: 0 }}
             >
-              {!record.role.includes(0) ? (
+              {record.role && !record.role.includes(0) ? (
                 <Select
                   placeholder="Choose role"
                   mode="tags"
@@ -202,7 +201,10 @@ const Collab = () => {
                     {
                       value: 2,
                       label: "Manager",
-                      disabled: roleM.result.includes("manager") ? true : false,
+                      disabled:
+                        roleM.result && roleM.result.includes("manager")
+                          ? true
+                          : false,
                     },
                     {
                       value: 3,
@@ -220,7 +222,7 @@ const Collab = () => {
             </Form.Item>
             {isAdmin.isAdmin !== true ? (
               ""
-            ) : !record.role.includes(0) ? (
+            ) : record.role && !record.role.includes(0) ? (
               <Button
                 icon={<EditOutlined style={{ marginTop: 5 }} />}
                 className="custom-btn-save-and-add"
@@ -248,7 +250,8 @@ const Collab = () => {
             onClick={() => handleDelete(record.key)}
             style={{
               display:
-                record.role.includes(0) || roleM.result.includes("manager")
+                (record.role && record.role.includes(0)) ||
+                ( roleM.result && roleM.result.includes("manager"))
                   ? "none"
                   : "",
             }}
@@ -299,7 +302,7 @@ const Collab = () => {
                 display:
                   isAdmin.isAdmin !== true
                     ? "none"
-                    : roleM.result.includes("manager")
+                    : roleM.result && roleM.result.includes("manager")
                     ? "none"
                     : "",
               }}
@@ -312,7 +315,7 @@ const Collab = () => {
             columns={
               isAdmin.isAdmin !== true
                 ? column.slice(0, 3)
-                : roleM.result.includes("manager")
+                : roleM.result && roleM.result.includes("manager")
                 ? column.slice(0, 3)
                 : column
             }
