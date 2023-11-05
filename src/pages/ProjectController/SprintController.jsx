@@ -32,7 +32,6 @@ const SprintController = () => {
 
   const handleFormEdit = (values) => {
     const data = { ...values };
-    console.log(data);
     if (data) {
       dispatch(editSprint(data))
         .unwrap()
@@ -48,7 +47,6 @@ const SprintController = () => {
 
   const handleCreateSprint = () => {
     const projectID = sessionStorage.getItem("current_project");
-    console.log("ID: ",projectID)
     if (projectID) {
       dispatch(createSprint(projectID))
         .unwrap()
@@ -78,7 +76,7 @@ const SprintController = () => {
   const [loading, setLoading] = useState(true);
   const [refreshTable, setRefreshTable] = useState(false);
   const dsAllSprint = useSelector(getDSAllSprintSelector);
-console.log(dsAllSprint)
+
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSSprint(projectID))

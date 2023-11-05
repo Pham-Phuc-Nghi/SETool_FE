@@ -209,7 +209,7 @@ const Dashboard = () => {
       }
     }
   });
-console.log(filteredData)
+
   const pastelColors = [
     "#B2A0E2",
     "#FFD6BA",

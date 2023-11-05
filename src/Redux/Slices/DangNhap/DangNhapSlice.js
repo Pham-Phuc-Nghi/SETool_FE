@@ -82,13 +82,13 @@ export const create = createAsyncThunk(
         password,
         confirmPassword,
       });
-      console.log("Status api: ", res);
+      // console.log("Status api: ", res);
       if (res.data?.status === 200) {
         return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
-        console.log("loi", err);
+        // console.log("loi", err);
         return rejectWithValue(err);
       }
     } catch (error) {

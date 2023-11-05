@@ -122,7 +122,7 @@ const TaskDetail = ({ idTask }) => {
               span={16}
               style={{
                 overflow: "auto",
-                maxHeight: "550px",
+                maxHeight: "580px",
                 lineHeight: 2.5,
                 width: "100%",
               }}
@@ -340,7 +340,7 @@ const TaskDetail = ({ idTask }) => {
 };
 
 TaskDetail.propTypes = {
-  idTask: PropTypes.object.isRequired,
+  idTask: PropTypes.string.isRequired,
 };
 
 export default TaskDetail;

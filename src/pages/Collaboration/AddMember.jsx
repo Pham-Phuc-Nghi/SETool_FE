@@ -61,7 +61,6 @@ const AddMember = ({ form, form2, onClose }) => {
         newUserID: userInfoID,
         role: value.role[0],
       };
-      console.log("Data to add: ", data);
       dispatch(addMemberToProject(data))
         .unwrap()
         .then((value) => {

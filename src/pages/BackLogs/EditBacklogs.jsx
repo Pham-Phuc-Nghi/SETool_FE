@@ -77,7 +77,6 @@ const EditBacklogs = ({ onClose, form1 }) => {
 
   const handleFormEdit = (values) => {
     const data = { ...values, taskID };
-    console.log("backlogs add: ", data);
     if (data) {
       dispatch(editBacklogs(data))
         .unwrap()

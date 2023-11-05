@@ -94,9 +94,7 @@ const HomePagesProject = () => {
 
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const handleCardClick = (id, projectName) => {
-    console.log("Clicked Card ID:", id);
-    console.log("Clicked Card Project Name:", projectName);
+  const handleCardClick = (id) => {
     sessionStorage.setItem("current_project", id);
     navigate(`/project/dashboard`);
   };
@@ -299,7 +297,7 @@ const HomePagesProject = () => {
                               onMouseEnter={() => setHoveredCard(index)}
                               onMouseLeave={() => setHoveredCard(null)}
                               onClick={() =>
-                                handleCardClick(project.id, project.projectName)
+                                handleCardClick(project.id)
                               }
                               style={{
                                 width: "100%",

@@ -242,7 +242,6 @@ const TaskManager = () => {
   const [loading, setLoading] = useState(true);
   const currentSprintId = currentSprint.id;
 
-  console.log("ID :", currentSprintId);
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSSprint(projectID))

@@ -97,10 +97,8 @@ const Backlogs = () => {
     const selectedSprint = listSprint.find((sprint) => sprint.id === id);
     if (selectedSprint) {
       const sprintNumber = selectedSprint.sprintNumber;
-      // console.log("Selected Sprint Number:", sprintNumber);
       setSprintNumberFilter(sprintNumber);
     } else {
-      // Xóa dữ liệu filter khi nút xóa được ấn
       setSprintNumberFilter(undefined);
     }
   };
@@ -134,7 +132,6 @@ const Backlogs = () => {
     const selectedMember = listMember.find((sprint) => sprint.id === id);
     if (selectedMember) {
       const Member = selectedMember.name;
-      // console.log("Selected Sprint Number:", sprintNumber);
       setMemberFilter(Member);
     } else {
       setMemberFilter(undefined);

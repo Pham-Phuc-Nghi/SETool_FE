@@ -77,7 +77,6 @@ export const createComment = createAsyncThunk(
       const res = await postRequest(`/Comment/create-comment/${taskID}`, {
         commentContent,
       });
-      console.log(res);
       if (res.status === 200) {
         return fulfillWithValue(res.data);
       }

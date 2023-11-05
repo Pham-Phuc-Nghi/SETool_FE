@@ -41,9 +41,6 @@ const Assignee = ({ onClose, form }) => {
   const [loading, setLoading] = useState(true);
   const taskID = useSelector(getKeyIdSelector);
 
-console.log("ID: ",taskID)
-console.log("data: ",dsAssignee)
-
   useEffect(() => {
     if (taskID !== null) {
       setLoading(true);

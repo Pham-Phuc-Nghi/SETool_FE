@@ -53,7 +53,7 @@ const ProjectController = () => {
 
   const handleEditProjectDetails = (values) => {
     const data = { ...values };
-    console.log(data);
+
     if (data) {
       dispatch(editProject(data))
         .unwrap()

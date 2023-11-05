@@ -80,7 +80,6 @@ const Login = () => {
 
   //sign up
   const handleSignUp = (values) => {
-    console.log(values);
     dispatch(create(values))
       .unwrap()
       .then((result) => {
