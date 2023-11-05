@@ -9,6 +9,7 @@ import {
 const initialState = {
   dsMember: [],
   dsMemberList: [],
+  isAdmin:{},
   isAddedSuccess: false,
   isDeletedSuccess: false,
   userInfoID: "",
@@ -26,8 +27,10 @@ export const CollaborationSlice = createSlice({
     builder.addCase(getDSAllMember.fulfilled, (state, action) => {
       state.dsMemberList = action.payload;
     });
+    builder.addCase(isAdminOfProject.fulfilled, (state, action) => {
+      state.isAdmin = action.payload;
+    });
     builder.addCase(searchUserInfo.fulfilled, (state, action) => {
-      // console.log("🚀 ~ file: CollaborationSlice.js:30 ~ builder.addCase ~ payload:", action.payload)
       state.userInfoID = action.payload.id;
       state.userInfoName = action.payload.name;
       state.userInfoEmail = action.payload.email;
@@ -81,6 +84,20 @@ export const getDSMember = createAsyncThunk(
     try {
       const res = await getRequest(
         `projects/get-all-users-in-project/${projectID}`
+      );
+      return res.data;
+    } catch (error) {
+      console.log({ error });
+    }
+  }
+);
+
+export const isAdminOfProject = createAsyncThunk(
+  "collaboration/isAdminOfProject",
+  async (projectID) => {
+    try {
+      const res = await getRequest(
+        `/projects/is-admin/${projectID}`
       );
       return res.data;
     } catch (error) {

@@ -16,16 +16,19 @@ import {
   Modal,
   Form,
   message,
+  Typography,
 } from "antd";
 import AddMember from "./AddMember";
 import { useDispatch, useSelector } from "react-redux";
-import { getDSMemberAllSelector } from "../../Redux/Selector";
+import { getDSMemberAllSelector, isAdminSelector } from "../../Redux/Selector";
 import {
   deleteMember,
   editRole,
   getDSMember,
+  isAdminOfProject,
 } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 import { setShowForm2 } from "../../Redux/Slices/StateChange/StateChangeSlice";
+const { Text } = Typography;
 
 const Collab = () => {
   const [loading, setLoading] = useState(true);
@@ -35,6 +38,9 @@ const Collab = () => {
   const dispatch = useDispatch();
   const dsMemberAll = useSelector(getDSMemberAllSelector);
   const [refreshTable, setRefreshTable] = useState(false);
+  const isAdmin = useSelector(isAdminSelector);
+
+  console.log(isAdmin.isAdmin);
 
   const showModalTaoDon = () => {
     setIsModalAdd(true);
@@ -51,6 +57,19 @@ const Collab = () => {
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
     dispatch(getDSMember(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(isAdminOfProject(projectID))
       .unwrap()
       .then(() => {
         setLoading(false);
@@ -156,38 +175,44 @@ const Collab = () => {
               name="role"
               style={{ flex: 1, marginRight: 10, marginBottom: 0 }}
             >
-              <Select
-                placeholder="Choose role"
-                mode="tags"
-                options={[
-                  {
-                    value: 1,
-                    label: "Owner",
-                    disabled: true,
-                  },
-                  {
-                    value: 2,
-                    label: "Manager",
-                  },
-                  {
-                    value: 3,
-                    label: "Dev",
-                  },
-                  {
-                    value: 4,
-                    label: "Tester",
-                  },
-                ]}
-              ></Select>
+              {!record.role.includes(0) ? (
+                <Select
+                  placeholder="Choose role"
+                  mode="tags"
+                  disabled={isAdmin.isAdmin !== true}
+                  options={[
+                    { value: 1, label: "Owner", disabled: true },
+                    {
+                      value: 2,
+                      label: "Manager",
+                    },
+                    {
+                      value: 3,
+                      label: "Dev",
+                    },
+                    {
+                      value: 4,
+                      label: "Tester",
+                    },
+                  ]}
+                ></Select>
+              ) : (
+                <Text>Pending</Text>
+              )}
             </Form.Item>
-            <Button
-              icon={<EditOutlined style={{ marginTop: 5 }} />}
-              className="custom-btn-save-and-add"
-              htmlType="submit"
-              disabled={record.role === 1}
-            >
-              EDIT
-            </Button>
+            {isAdmin.isAdmin !== true ? (
+              ""
+            ) : !record.role.includes(0) ? (
+              <Button
+                icon={<EditOutlined style={{ marginTop: 5 }} />}
+                className="custom-btn-save-and-add"
+                htmlType="submit"
+              >
+                EDIT
+              </Button>
+            ) : (
+              ""
+            )}
           </Form>
         </div>
       ),
@@ -203,7 +228,7 @@ const Collab = () => {
             className="custom-btn-del"
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.key)}
-            disabled={record.role === 1}
+            style={{ display: record.role.includes(0) ? "none" : "" }}
           >
             DELETE
           </Button>
@@ -255,7 +280,7 @@ const Collab = () => {
           </div>
           <Table
             scroll={{ x: 600 }}
-            columns={column}
+            columns={isAdmin.isAdmin !== true ? column.slice(0, 3) : column}
             dataSource={
               filteredData &&
               Array.isArray(filteredData) &&
@@ -284,7 +309,11 @@ const Collab = () => {
             title="Add member"
             width={700}
           >
-            <AddMember form={form} form2={form2} onClose={closeAddModal}></AddMember>
+            <AddMember
+              form={form}
+              form2={form2}
+              onClose={closeAddModal}
+            ></AddMember>
           </Modal>
         </>
       )}

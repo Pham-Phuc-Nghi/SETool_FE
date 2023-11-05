@@ -46,12 +46,10 @@ const AddMember = ({ form, form2, onClose }) => {
       .unwrap()
       .then(() => {
         message.success("Found successfully.");
+        dispatch(setShowForm2(true));
       })
       .catch((err) => {
         message.error(err);
-      })
-      .finally(() => {
-        dispatch(setShowForm2(true));
       });
   };
 

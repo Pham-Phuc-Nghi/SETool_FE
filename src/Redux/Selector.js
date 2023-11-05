@@ -10,6 +10,7 @@ export const getDashboardSelector = (state) => state.dashboard.dashboard;
 //collaboration
 export const getDSMemberAllSelector = (state) => state.collaboration.dsMember;
 export const getDSMemberListSelector = (state) => state.collaboration.dsMemberList;
+export const isAdminSelector = (state) => state.collaboration.isAdmin;
 
 export const getUserInfoID = (state) => state.collaboration.userInfoID;
 export const getUserInfoName = (state) => state.collaboration.userInfoName;
