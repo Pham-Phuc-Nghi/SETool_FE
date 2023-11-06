@@ -28,6 +28,7 @@ export const getProjectDetailSelector = (state) => state.manager.projectDetails;
 export const getListDevSelector = (state) => state.manager.dsDev;
 export const getListQASelector = (state) => state.manager.dsQA;
 export const getCurrentSprintSelector = (state) => state.manager.currenSprint;
+export const getProgressDetailSelector = (state) => state.manager.progress;
 
 //my task
 export const getDSMyTaskSelector = (state) => state.task.dsMyTask;

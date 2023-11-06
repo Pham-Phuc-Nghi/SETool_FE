@@ -5,8 +5,11 @@ import {
   UnorderedListOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
-import { Card, Col, List, Progress, Row, Typography } from "antd";
-import { useState } from "react";
+import { Card, Col, List, Progress, Row, Spin, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { getProgressDetails } from "../../Redux/Slices/ManagerZone/ManagerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getProgressDetailSelector } from "../../Redux/Selector";
 const { Title, Text } = Typography;
 
 const nhanVienTongStyle = {
@@ -25,28 +28,46 @@ const iconStyle = {
 };
 
 const AdminDashboard = () => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const refreshTable = false;
+  const progressDetails = useSelector(getProgressDetailSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(getProgressDetails(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
+
   const tasksData = [
     {
       title: "TODO tasks",
-      count: 123,
+      count: progressDetails && progressDetails.todoTaskCount,
       color: "#FFCF96",
       icon: <UnorderedListOutlined style={iconStyle} />,
     },
     {
       title: "IN PROGRESS tasks",
-      count: 465,
+      count: progressDetails && progressDetails.inProgressTaskCount,
       color: "#F99A9C",
       icon: <PullRequestOutlined style={iconStyle} />,
     },
     {
       title: "TESTING tasks",
-      count: 789,
+      count: progressDetails && progressDetails.testingTaskCount,
       color: "#F2D98D",
       icon: <MonitorOutlined style={iconStyle} />,
     },
     {
       title: "DONE tasks",
-      count: 789,
+      count: progressDetails && progressDetails.doneTaskCount,
       color: "#84D9BA",
       icon: <CheckSquareOutlined style={iconStyle} />,
     },
@@ -56,16 +77,16 @@ const AdminDashboard = () => {
     {
       id: 1,
       name: "Current Progress",
-      number: 10,
-      total: 120,
-      percent: 60,
+      number: progressDetails && progressDetails.doneTaskCount,
+      total: progressDetails && progressDetails.totalTask,
+      percent: progressDetails && progressDetails.progressPercentage,
     },
     {
       id: 2,
       name: "Day left",
-      number: 10,
-      total: 12,
-      percent: 45,
+      number: progressDetails && progressDetails.currentDay,
+      total: progressDetails && progressDetails.totalDayInProject,
+      percent: progressDetails && progressDetails.periodPercentage,
     },
   ];
 
@@ -108,125 +129,153 @@ const AdminDashboard = () => {
         height: "60vh",
       }}
     >
-      <div style={{ width: "100%" }}>
+      {loading ? (
         <div
           style={{
-            width: "90%",
-            margin: "0 auto",
-            textAlign: "center",
-            lineHeight: 7,
-            marginTop: 30,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70vh",
           }}
         >
-          <List
-            itemLayout="horizontal"
-            dataSource={progress}
-            renderItem={(task, taskIndex) => (
-              <List.Item>
-                <List.Item.Meta
-                  title={
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 800,
-                          color:
-                            taskIndex === 0 ? currentProgressColor : "black",
-                        }}
-                      >
-                        {task.name}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 800,
-                          color:
-                            taskIndex === 0 ? currentProgressColor : "black",
-                        }}
-                      >
-                        {taskIndex === 0 ? (
-                          <span>
-                            {currentProgressIcon} {task.number} / {task.total}
-                          </span>
-                        ) : (
-                          <span>
-                            {task.number} / {task.total}
-                          </span>
-                        )}
-                      </Text>
-                    </div>
-                  }
-                  description={
-                    <Progress
-                      strokeWidth={14}
-                      percent={task.percent}
-                      format={(percent) => (
-                        <span
+          <Spin
+            size="large"
+            style={{ fontSize: "77px", marginRight: "17px" }}
+          ></Spin>
+          <h1 style={{ color: "blue", marginTop: "33px", fontSize: "37px" }}>
+            Vui Lòng Đợi Trong Giây Lát...
+          </h1>
+        </div>
+      ) : (
+        <>
+          <div style={{ width: "100%" }}>
+            <div
+              style={{
+                width: "90%",
+                margin: "0 auto",
+                textAlign: "center",
+                lineHeight: 7,
+                marginTop: 30,
+              }}
+            >
+              <List
+                itemLayout="horizontal"
+                dataSource={progress}
+                renderItem={(task, taskIndex) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      title={
+                        <div
                           style={{
-                            color:
-                              taskIndex === 0
-                                ? currentProgressPercentColor
-                                : getStatusColor(percent),
+                            display: "flex",
+                            justifyContent: "space-between",
                           }}
                         >
-                          {percent}%
-                        </span>
-                      )}
-                      strokeColor={
-                        taskIndex === 0
-                          ? currentProgressPercentColor
-                          : getStatusColor(task.percent)
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 800,
+                              color:
+                                taskIndex === 0
+                                  ? currentProgressColor
+                                  : "black",
+                            }}
+                          >
+                            {task.name}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 800,
+                              color:
+                                taskIndex === 0
+                                  ? currentProgressColor
+                                  : "black",
+                            }}
+                          >
+                            {taskIndex === 0 ? (
+                              <span>
+                                {currentProgressIcon} {task.number} /{" "}
+                                {task.total}
+                              </span>
+                            ) : (
+                              <span>
+                                {task.number} / {task.total}
+                              </span>
+                            )}
+                          </Text>
+                        </div>
+                      }
+                      description={
+                        <Progress
+                          strokeWidth={14}
+                          percent={task.percent}
+                          format={(percent) => (
+                            <span
+                              style={{
+                                color:
+                                  taskIndex === 0
+                                    ? currentProgressPercentColor
+                                    : getStatusColor(percent),
+                              }}
+                            >
+                              {percent}%
+                            </span>
+                          )}
+                          strokeColor={
+                            taskIndex === 0
+                              ? currentProgressPercentColor
+                              : getStatusColor(task.percent)
+                          }
+                        />
                       }
                     />
-                  }
-                />
-              </List.Item>
-            )}
-          />
-        </div>
-        <div style={{ bottom: "0" }}>
-          <Row gutter={20} style={{ marginTop: 30 }}>
-            {tasksData.map((task, index) => (
-              <Col span={6} key={index}>
-                <Card
-                  onMouseEnter={() => setHoveredCard(index)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  title={
-                    <div style={{ marginTop: 30, textAlign: "-webkit-center" }}>
-                      <div style={nhanVienTongStyle}>{task.icon}</div>
-                      <Title level={3} style={{ marginTop: 25 }}>
-                        {task.title}
-                      </Title>
-                    </div>
-                  }
-                  headStyle={{ borderBottom: 0 }}
-                  style={{
-                    backgroundColor: task.color,
-                    opacity: 0.9,
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transform:
-                      hoveredCard === index ? "scale(1.1)" : "scale(1)",
-                    transition: "transform 0.2s",
-                  }}
-                >
-                  <Text style={{ fontSize: 50, color: "white" }} strong>
-                    {task.count}
-                  </Text>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </div>
-      </div>
+                  </List.Item>
+                )}
+              />
+            </div>
+            <div style={{ bottom: "0" }}>
+              <Row gutter={20} style={{ marginTop: 30 }}>
+                {tasksData.map((task, index) => (
+                  <Col span={6} key={index}>
+                    <Card
+                      onMouseEnter={() => setHoveredCard(index)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                      title={
+                        <div
+                          style={{ marginTop: 30, textAlign: "-webkit-center" }}
+                        >
+                          <div style={nhanVienTongStyle}>{task.icon}</div>
+                          <Title level={3} style={{ marginTop: 25 }}>
+                            {task.title}
+                          </Title>
+                        </div>
+                      }
+                      headStyle={{ borderBottom: 0 }}
+                      style={{
+                        backgroundColor: task.color,
+                        opacity: 0.9,
+                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transform:
+                          hoveredCard === index ? "scale(1.1)" : "scale(1)",
+                        transition: "transform 0.2s",
+                      }}
+                    >
+                      <Text style={{ fontSize: 50, color: "white" }} strong>
+                        {task.count}
+                      </Text>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
