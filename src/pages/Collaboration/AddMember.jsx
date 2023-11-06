@@ -59,8 +59,9 @@ const AddMember = ({ form, form2, onClose }) => {
       const data = {
         projectID: projectID,
         newUserID: userInfoID,
-        role: value.role[0],
+        role: value.role,
       };
+      console.log("🚀 ~ file: AddMember.jsx:64 ~ handleFormAdd ~ data:", data)
       dispatch(addMemberToProject(data))
         .unwrap()
         .then((value) => {
