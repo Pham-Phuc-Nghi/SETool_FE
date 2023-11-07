@@ -42,6 +42,26 @@ export const CollaborationSlice = createSlice({
   },
 });
 
+export const acceptOrDenyInvite = createAsyncThunk(
+  "collaboration/acceptOrDenyInvite",
+  async (data, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { projectID, inviterID, status } = data;
+      const res = await getRequest(
+        `projects/update-user-invite-status/${projectID}/${inviterID}/${status}`
+      );
+      if (res.status == 200) {
+        return fulfillWithValue(res.data.message);
+      }
+      if (res.response.status === 400) {
+        return rejectWithValue(res.response.data.message);
+      }
+    } catch (error) {
+      return rejectWithValue("Something went wrong.");
+    }
+  }
+)
+
 export const addMemberToProject = createAsyncThunk(
   "collaboration/addMemberToProject",
   async (data, { fulfillWithValue, rejectWithValue }) => {
