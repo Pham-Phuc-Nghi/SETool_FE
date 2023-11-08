@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  deleteRequest,
   getRequest,
   patchRequest,
   postRequest,
@@ -85,6 +86,23 @@ export const createComment = createAsyncThunk(
       }
     } catch (error) {
       return rejectWithValue("Add comment thất bại!");
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "task/deleteComment",
+  async (commentID, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const res = await deleteRequest(`/Comment/delete-comment/${commentID}`);
+      if (res.status === 200) {
+        return fulfillWithValue(res.data);
+      }
+      if (res.response?.status === 400) {
+        return rejectWithValue(res.response.data);
+      }
+    } catch (error) {
+      return rejectWithValue("Delete comment thất bại!");
     }
   }
 );

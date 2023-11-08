@@ -17,6 +17,7 @@ import {
   Form,
   message,
   Typography,
+  Popconfirm,
 } from "antd";
 import AddMember from "./AddMember";
 import { useDispatch, useSelector } from "react-redux";
@@ -244,20 +245,26 @@ const Collab = () => {
       width: 100,
       render: (text, record) => (
         <div>
-          <Button
-            className="custom-btn-del"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.key)}
-            style={{
-              display:
-                (record.role && record.role.includes(0)) ||
-                ( roleM.result && roleM.result.includes("manager"))
-                  ? "none"
-                  : "",
-            }}
+          <Popconfirm
+            title="Are you sure you want to delete member?"
+            onConfirm={() => handleDelete(record.key)}
+            okText="Yes"
+            cancelText="No"
           >
-            DELETE
-          </Button>
+            <Button
+              className="custom-btn-del"
+              icon={<DeleteOutlined />}
+              style={{
+                display:
+                  (record.role && record.role.includes(0)) ||
+                  (roleM.result && roleM.result.includes("manager"))
+                    ? "none"
+                    : "",
+              }}
+            >
+              DELETE
+            </Button>
+          </Popconfirm>
         </div>
       ),
     },

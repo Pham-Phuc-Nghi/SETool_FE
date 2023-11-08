@@ -104,6 +104,7 @@ const CreateProject = ({ onClose }) => {
           name="projectTotalSprint"
           rules={[
             {
+              required: "true",
               type: "number",
               min: 1,
               message: "Sprint must be larger than one",

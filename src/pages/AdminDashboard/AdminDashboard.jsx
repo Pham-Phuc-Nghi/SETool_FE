@@ -106,7 +106,7 @@ const AdminDashboard = () => {
 
   const currentProgressPercent = progress[0].percent;
 
-  const isDayLeftGreater = progress[1].percent > currentProgressPercent;
+  const isDayLeftGreater = progress[1].percent >= currentProgressPercent;
   const currentProgressColor = isDayLeftGreater ? "red" : "black";
   const currentProgressPercentColor = isDayLeftGreater
     ? "red"

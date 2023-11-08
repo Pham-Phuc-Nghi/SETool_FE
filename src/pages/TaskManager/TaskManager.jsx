@@ -1,6 +1,20 @@
-import { Card, Modal, Select, Spin, Tag, Tooltip, Typography, message } from "antd";
+import {
+  Card,
+  Modal,
+  Select,
+  Spin,
+  Tag,
+  Tooltip,
+  Typography,
+  message,
+} from "antd";
 import { useEffect, useState } from "react";
-import { ArrowDownOutlined, ArrowRightOutlined, IssuesCloseOutlined, RiseOutlined } from "@ant-design/icons";
+import {
+  ArrowDownOutlined,
+  ArrowRightOutlined,
+  IssuesCloseOutlined,
+  RiseOutlined,
+} from "@ant-design/icons";
 const { Title, Text } = Typography;
 import "./taskManager.css";
 import TaskDetail from "./TaskDetail";
@@ -138,7 +152,7 @@ const TaskManager = () => {
                         {task.taskType === 0 ? "DEV" : "QA"}
                       </Text>
                     </Text>{" "}
-                    - {" "}
+                    -{" "}
                     {task.taskPriority === 0 ? (
                       <Tag color="yellow">
                         <ArrowDownOutlined /> LOW
@@ -192,12 +206,12 @@ const TaskManager = () => {
   const cardHeights = {};
 
   statuses.forEach((status) => {
-    if (myTask.data !== undefined) {
+    if (Array.isArray(myTask.data)) {
       const filteredTasks = myTask.data.filter(
         (task) => task.taskStatus === status
       );
       if (filteredTasks.length > 0) {
-        const height = `${filteredTasks.length * 115 + 100}px`;
+        const height = `${filteredTasks.length * 123 + 100}px`;
         cardHeights[status] = height;
       } else {
         cardHeights[status] = "auto";
@@ -344,9 +358,9 @@ const TaskManager = () => {
               display: "flex",
               justifyContent: "space-between",
               width: "100%",
-              height: "auto",
+              height: "100%",
               overflowX: shouldShowScrollBar ? "auto" : "hidden",
-              minWidth: `${statuses.length * (300 + 10)}px`,
+              minWidth: `${statuses.length * 300 + 10}px`,
             }}
           >
             {statuses.map((status, index) => (
@@ -356,7 +370,7 @@ const TaskManager = () => {
                   style={{
                     width: "300px",
                     height: cardHeights[status],
-                    marginRight: 20,
+                    marginRight: 30,
                     verticalAlign: "top",
                   }}
                   onDragOver={handleDragOver}
@@ -391,7 +405,7 @@ const TaskManager = () => {
           </div>
           <Modal
             title="Task Details"
-            visible={isModalVisible}
+            open={isModalVisible}
             onCancel={() => {
               setIsModalVisible(false);
               setRefreshTable(!refreshTable);
@@ -404,7 +418,7 @@ const TaskManager = () => {
           </Modal>
           <Modal
             title="Xác nhận"
-            visible={confirmModalVisible}
+            open={confirmModalVisible}
             onOk={handleOk}
             onCancel={handleCancel}
           >
