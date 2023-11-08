@@ -1,11 +1,50 @@
 import "./login.css";
-import { Typography, Button } from "antd";
+import { Typography, Button, message } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { acceptOrDenyInvite } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 const Invite = () => {
-  const { inviter, inviterEmail, guest, guestID } = useParams();
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const { projectID, inviter, inviterEmail, guest, guestID } = useParams();
   console.log("Param: ", inviter, inviterEmail, guest, guestID);
+
+  const handleJoin = () => {
+    const data = {
+      projectID: projectID,
+      inviterID: guestID,
+      status: 1
+    }
+    dispatch(acceptOrDenyInvite(data))
+      .unwrap()
+      .then((result) => {
+        message.success(result, 1.5);
+        nav("/login");
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }
+
+  const handleDeny = () => {
+    const projectID = sessionStorage.getItem("current_project");
+    const data = {
+      projectID: projectID,
+      inviterID: guestID,
+      status: 2
+    }
+    dispatch(acceptOrDenyInvite(data))
+      .unwrap()
+      .then((result) => {
+        message.success(result, 1.5);
+        nav("/login");
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }
 
   return (
     <div className="container">
@@ -37,11 +76,11 @@ const Invite = () => {
           }}
         >
           <Text style={{ color: "white", fontSize: 20, marginBottom: 16 }}>
-            Hello <Text style={{ color: "#BEADFA", fontSize: 20 }}>user2</Text>,
+            Hello <Text style={{ color: "#BEADFA", fontSize: 20 }}>{guest && guest}</Text>,
           </Text>
           <Text style={{ color: "white", fontSize: 16 }}>
-            <Text style={{ color: "violet", fontSize: 16 }}>User1</Text>{" "}
-            (user1@gmail.com) has invited you to the
+            <Text style={{ color: "violet", fontSize: 16 }}>{inviter && inviter}</Text>{" "}
+            ({inviterEmail && inviterEmail}) has invited you to the
             <Text style={{ color: "#F9B572", fontSize: 16 }}>
               My project
             </Text>{" "}
@@ -49,10 +88,10 @@ const Invite = () => {
           </Text>
         </div>
         <div className="button-container">
-          <Button className="btn-grad" style={{ color: "white", margin: 30 }}>
+          <Button className="btn-grad" style={{ color: "white", margin: 30 }} onClick={handleDeny}>
             Decline
           </Button>
-          <Button className="btn-grad" style={{ color: "white", margin: 30 }}>
+          <Button className="btn-grad" style={{ color: "white", margin: 30 }} onClick={handleJoin}>
             Click to join
           </Button>
         </div>
