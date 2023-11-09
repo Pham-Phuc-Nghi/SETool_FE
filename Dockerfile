@@ -8,4 +8,4 @@ WORKDIR /app
 COPY --from=builder /app ./
 COPY --from=builder /app/dist /app
 EXPOSE 4000
-CMD ["npm", "run", "preview", "--host"]
+CMD ["npm", "run", "preview —-port 4000", "--host"]
