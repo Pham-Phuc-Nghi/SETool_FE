@@ -7,5 +7,5 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app ./
 COPY --from=builder /app/dist /app
-EXPOSE 4000
-CMD ["npm", "run", "preview —-port 4000", "--host"]
+EXPOSE 8080
+CMD ["npm", "run", "preview"]
