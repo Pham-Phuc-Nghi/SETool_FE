@@ -167,9 +167,6 @@ const TaskDetail = ({ idTask }) => {
               <Space direction="vertical" style={{ width: "100%" }}>
                 <Text>
                   <Tag color="yellow"> task ID: {taskID} </Tag>
-                  from: {dayjs(taskDetail.taskStartDay).format("DD/MM/YYYY")} -
-                  to: {""}
-                  {dayjs(taskDetail.taskEndDay).format("DD/MM/YYYY")}
                 </Text>
                 <Title style={{ marginBottom: 8 }}>{taskDetail.taskName}</Title>
                 <Text>{taskDetail.taskDescription}</Text>
