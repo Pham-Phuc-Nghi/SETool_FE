@@ -275,7 +275,7 @@ const TaskDetail = ({ idTask }) => {
                         ? "Testing"
                         : taskDetail.taskStatus === 4
                         ? "Done"
-                        : "Unknown"}
+                        : "IN BACKLOG"}
                     </Text>
                   </Col>
                 </Row>
@@ -308,7 +308,11 @@ const TaskDetail = ({ idTask }) => {
                     <Tag color="purple">Sprint</Tag>
                   </Col>
                   <Col span={18}>
-                    <Text>Sprint {taskDetail.sprintNumber}</Text>
+                    {taskDetail.sprintNumber !== 0 ? (
+                      <Text>Sprint {taskDetail.sprintNumber}</Text>
+                    ) : (
+                      <Text>_____</Text>
+                    )}
                   </Col>
                 </Row>
                 <Row gutter={24}>

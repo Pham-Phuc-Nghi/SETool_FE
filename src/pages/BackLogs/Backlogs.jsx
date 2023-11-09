@@ -348,7 +348,13 @@ const Backlogs = () => {
                           }}
                         >
                           <Text>
-                            <Tag color="orange">Sprint {item.sprintNumber}</Tag>
+                            {item.sprintNumber !== 0 ? (
+                              <Tag color="orange">
+                                Sprint {item.sprintNumber}
+                              </Tag>
+                            ) : (
+                              <Tag color="orange">___</Tag>
+                            )}
                           </Text>
                           <Text style={{ marginTop: 10 }}>
                             <Tag color="blue">Task Name </Tag>{" "}
