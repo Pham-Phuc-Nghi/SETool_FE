@@ -2,7 +2,6 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
-  DatePicker,
   Form,
   Modal,
   Row,
@@ -11,7 +10,6 @@ import {
   Typography,
   message,
 } from "antd";
-import dayjs from "dayjs";
 const { Text } = Typography;
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -211,60 +209,6 @@ const Assignee = ({ onClose, form }) => {
                 placeholder="Choose Sprint"
                 options={option_list_Sprint}
               ></Select>
-            </Form.Item>
-            <Form.Item
-              label={<Text>Start date</Text>}
-              name="taskStartDay"
-              initialValue={
-                dsAssignee && dsAssignee.taskStartDay
-                  ? dayjs(dsAssignee.taskStartDay)
-                  : dayjs()
-              }
-              style={{ marginRight: 10 }}
-              rules={[
-                {
-                  required: true,
-                  message: "Please select a start date",
-                },
-              ]}
-            >
-              <DatePicker
-                placeholder="Select start date"
-                style={{ width: "60%" }}
-                disabledDate={(current) => {
-                  const currentDate = dayjs(current);
-                  const today = dayjs();
-                  return currentDate.isBefore(today, "day");
-                }}
-                format="DD/MM/YYYY"
-              ></DatePicker>
-            </Form.Item>
-            <Form.Item
-              label={<Text>End date</Text>}
-              name="taskEndDay"
-              initialValue={
-                dsAssignee && dsAssignee.taskEndDay
-                  ? dayjs(dsAssignee.taskEndDay)
-                  : dayjs()
-              }
-              style={{ marginRight: 10 }}
-              rules={[
-                {
-                  required: true,
-                  message: "Please select an end date",
-                },
-              ]}
-            >
-              <DatePicker
-                placeholder="Select end date"
-                style={{ width: "60%" }}
-                disabledDate={(current) => {
-                  const currentDate = dayjs(current);
-                  const today = dayjs();
-                  return currentDate.isBefore(today, "day");
-                }}
-                format="DD/MM/YYYY"
-              ></DatePicker>
             </Form.Item>
             <Row gutter={24} style={{ marginRight: "5px" }}>
               <Col

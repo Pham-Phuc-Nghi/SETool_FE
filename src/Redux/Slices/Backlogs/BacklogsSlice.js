@@ -127,17 +127,10 @@ export const editAssignee = createAsyncThunk(
   async (values, { rejectWithValue, fulfillWithValue }) => {
     try {
       const projectID = sessionStorage.getItem("current_project");
-      let {
-        taskID,
-        sprintID,
-        assigneeID,
-        reporterID,
-        taskStartDay,
-        taskEndDay,
-      } = values;
+      let { taskID, sprintID, assigneeID, reporterID } = values;
       const res = await postRequest(
         `/Task/${projectID}/set-assignee-review/${taskID}`,
-        { sprintID, assigneeID, reporterID, taskStartDay, taskEndDay }
+        { sprintID, assigneeID, reporterID }
       );
       if (res.status === 200) {
         return fulfillWithValue(res.data.message);
