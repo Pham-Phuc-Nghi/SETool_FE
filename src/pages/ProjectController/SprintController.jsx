@@ -60,9 +60,6 @@ const SprintController = () => {
     }
   };
 
-  const handleCancel = () => {
-    form.resetFields();
-  };
   const layout = {
     labelCol: {
       span: 6,
@@ -214,15 +211,6 @@ const SprintController = () => {
                       span={24}
                       style={{ display: "flex", justifyContent: "flex-end" }}
                     >
-                      <Form.Item>
-                        <Button
-                          className="custom-btn-close"
-                          onClick={handleCancel}
-                          style={{ marginRight: "10px" }}
-                        >
-                          Cancel
-                        </Button>
-                      </Form.Item>
                       <Button
                         icon={<EditOutlined style={{ marginTop: 5 }} />}
                         htmlType="submit"

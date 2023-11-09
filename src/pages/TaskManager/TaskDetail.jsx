@@ -13,6 +13,9 @@ import {
   Tag,
   Spin,
   message,
+  Menu,
+  Dropdown,
+  Popconfirm,
 } from "antd";
 import { useEffect, useState } from "react";
 const { Title, Text } = Typography;
@@ -27,11 +30,14 @@ import {
   ArrowDownOutlined,
   RiseOutlined,
   IssuesCloseOutlined,
+  EllipsisOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createComment,
+  deleteComment,
   getDSMytaskDetail,
 } from "../../Redux/Slices/TaskManager/TaskManagerSlice";
 import { getDSMyTaskDetailSelector } from "../../Redux/Selector";
@@ -43,6 +49,7 @@ const TaskDetail = ({ idTask }) => {
   const dispatch = useDispatch();
   const taskDetail = useSelector(getDSMyTaskDetailSelector);
   const [form] = Form.useForm();
+  const username_current = sessionStorage.getItem("name_current");
 
   useEffect(() => {
     if (taskID) {
@@ -50,7 +57,7 @@ const TaskDetail = ({ idTask }) => {
         .unwrap()
         .then(() => {
           setLoading(false);
-          setRefreshTable(!refreshTable)
+          setRefreshTable(!refreshTable);
         })
         .catch((error) => {
           setLoading(false);
@@ -95,6 +102,36 @@ const TaskDetail = ({ idTask }) => {
     3: <MonitorOutlined />,
     4: <CheckSquareOutlined />,
   };
+  const [idComment, setIdComment] = useState(null);
+
+  const handleDeleteComments = () => {
+    if (idComment !== null) {
+      dispatch(deleteComment(idComment))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          setRefreshTable(!refreshTable);
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
+    }
+  };
+
+  const menu = (
+    <Menu>
+      <Popconfirm
+        title="Are you sure you want to delete comment?"
+        onConfirm={handleDeleteComments}
+        okText="Yes"
+        cancelText="No"
+      >
+        <Menu.Item key="1" icon={<DeleteOutlined />}>
+          Delete comment
+        </Menu.Item>
+      </Popconfirm>
+    </Menu>
+  );
 
   return (
     <>
@@ -172,12 +209,40 @@ const TaskDetail = ({ idTask }) => {
                       <Item.Meta
                         avatar={<Avatar>{item.userName.charAt(0)}</Avatar>}
                         title={
-                          <Text>
-                            {item.userName} -{" "}
-                            {dayjs(item.commentDate).format(
-                              "HH:mm - DD/MM/YYYY"
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text>
+                              {item.userName} -{" "}
+                              {dayjs(item.commentDate).format(
+                                "HH:mm - DD/MM/YYYY"
+                              )}
+                            </Text>
+                            {username_current === item.userName ? (
+                              <Dropdown
+                                arrow={{
+                                  pointAtCenter: true,
+                                }}
+                                overlay={menu}
+                                placement="topRight"
+                              >
+                                <span>
+                                  <EllipsisOutlined
+                                    onClick={() => setIdComment(item.id)}
+                                    style={{
+                                      marginRight: 10,
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </span>
+                              </Dropdown>
+                            ) : (
+                              ""
                             )}
-                          </Text>
+                          </div>
                         }
                         description={item.commentContent}
                       />

@@ -168,7 +168,7 @@ export const editRole = createAsyncThunk(
         return fulfillWithValue(res.data.message);
       }
       if (res.response?.status === 400) {
-        const err = res.response.data;
+        const err = res.response.data.message;
         return rejectWithValue(err);
       }
       if (res.response?.status === 403) {

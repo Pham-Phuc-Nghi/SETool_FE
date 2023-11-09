@@ -39,7 +39,6 @@ const Dashboard = () => {
 
   const dashboard = useSelector(getDashboardSelector);
   const [filteredData, setFilteredData] = useState(dashboard);
-
   const dispatch = useDispatch();
   const refreshTable = false;
   const [loading, setLoading] = useState(true);
@@ -132,7 +131,7 @@ const Dashboard = () => {
                 >
                   <Tag color="yellow" style={{ fontSize: 10 }}>
                     {" "}
-                    Sprint: {task.sprintNumber}{" "}
+                    Sprint {task.sprintNumber}{" "}
                   </Tag>
                   <div>
                     {task.status === "Done" ? (
@@ -193,7 +192,6 @@ const Dashboard = () => {
   const statuses = [1, 2, 3, 4];
   const shouldShowScrollBar =
     filteredData !== undefined ? filteredData.length >= 5 : false;
-
   const cardHeights = {};
 
   statuses.forEach((status) => {
@@ -201,12 +199,15 @@ const Dashboard = () => {
       const filteredTasks = filteredData.filter(
         (task) => task.taskStatus === status
       );
+
       if (filteredTasks.length > 0) {
         const height = `${filteredTasks.length * 115 + 100}px`;
         cardHeights[status] = height;
       } else {
         cardHeights[status] = "auto";
       }
+    } else {
+      cardHeights[status] = "auto";
     }
   });
 
@@ -268,7 +269,6 @@ const Dashboard = () => {
   };
   const handleResetFilter = () => {
     setMemberName(null);
-    // Thực hiện các xử lý khác nếu cần
   };
 
   return (
@@ -317,7 +317,7 @@ const Dashboard = () => {
                 style={{ fontSize: 20, marginRight: 10, color: "#FF4500" }}
               />
               <Tag color="red" style={{ fontSize: 17 }}>
-                <FieldTimeOutlined /> 4 days remaining
+                <FieldTimeOutlined /> {currentSprint.dayleft} days remaining
               </Tag>
               <Tag color="cyan" style={{ fontSize: 17 }}>
                 Current Sprint : Sprint {currentSprint.sprintNumber}
@@ -331,7 +331,7 @@ const Dashboard = () => {
               width: "100%",
               height: "100%",
               overflowX: shouldShowScrollBar ? "auto" : "hidden",
-              minWidth: `${statuses.length * (300 + 10)}px`,
+              minWidth: `${statuses.length * 300 + 10}px`,
             }}
           >
             {statuses.map((status) => (
