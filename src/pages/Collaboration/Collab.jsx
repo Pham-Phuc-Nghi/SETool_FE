@@ -191,6 +191,9 @@ const Collab = () => {
               initialValue={record.role}
               name="role"
               style={{ flex: 1, marginRight: 10, marginBottom: 0 }}
+              rules={[
+                { required: true, message: "Member Role must not be a blank" },
+              ]}
             >
               {record.role && !record.role.includes(0) ? (
                 <Select
