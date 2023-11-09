@@ -4,24 +4,32 @@ import TaskManager from "../pages/TaskManager/TaskManager"
 import Collab from "../pages/Collaboration/Collab";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import ManagerZone from "../pages/ManagerZone/ManagerZone";
-
+import { useDispatch, useSelector } from "react-redux";
+import { isAdminSelector } from "../Redux/Selector";
+import { isAdminOfProject } from "../Redux/Slices/Collaboration/CollaborationSlice";
+import { useEffect, useState } from "react";
 
 const adminRoutesData = [
   { path: "task", component: <TaskManager /> },
-  { path: "management", component: <ManagerZone /> },
   { path: "collaborators", component: <Collab /> },
   { path: "dashboard", component: <Dashboard /> },
 ];
 
 const ManagerRouter = () => {
-  //   const nav = useNavigate();
-  //   useEffect(() => {
-  //     const isAdmin_key = sessionStorage.getItem('isAdmin_key');
-  //     if (isAdmin_key === 'false') {
-  //       message.error('Tài Khoản của bạn không được phép truy cập vào trang này!');
-  //       nav('/staff');
-  //     }
-  //   }, [nav])
+  const dispatch = useDispatch();
+  const isAdmin = useSelector(isAdminSelector);
+  const [isAdminRoute, setIsAdminRoute] = useState(false);
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(isAdminOfProject(projectID))
+      .unwrap()
+      .then(() => {
+        setIsAdminRoute(isAdmin && isAdmin);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, [dispatch, isAdmin]);
 
   return (
     <>
@@ -30,6 +38,13 @@ const ManagerRouter = () => {
           {adminRoutesData.map((route, index) => (
             <Route key={index} path={route.path} element={route.component} />
           ))}
+
+          {isAdminRoute && (
+            <Route 
+              path="management"
+              element={<ManagerZone />} 
+            />  
+          )}
         </Routes>
       </DefaultLayout>
     </>

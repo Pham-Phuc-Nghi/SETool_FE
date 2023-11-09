@@ -17,8 +17,9 @@ import setImage from "../assets/789.png";
 import setImage2 from "../assets/cdww.png";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjectDetails } from "../Redux/Slices/ManagerZone/ManagerSlice";
-import { getProjectDetailSelector } from "../Redux/Selector";
+import { getProjectDetailSelector, isAdminSelector } from "../Redux/Selector";
 import { useNavigate } from "react-router-dom";
+import { isAdminOfProject } from "../Redux/Slices/Collaboration/CollaborationSlice";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -37,12 +38,11 @@ const items_for_manager = [
   getItem("My Task", "task", <SolutionOutlined />),
 ];
 
-// const items_for_member = [
-//   getItem("Dashboard", "dashboardMember", <HomeOutlined />),
-//   getItem("Collaborators & Teams", "collaborators", <TeamOutlined />),
-//   getItem("My Task", "task", <ContainerOutlined />),
-//   getItem("Issue", "issue", <WechatOutlined />),
-// ];
+const items_for_member = [
+  getItem("Dashboard", "dashboard", <HomeOutlined />),
+  getItem("Collaborators & Teams", "collaborators", <TeamOutlined />),
+  getItem("My Task", "task", <SolutionOutlined />),
+];
 
 const DefaultLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -51,6 +51,21 @@ const DefaultLayout = ({ children }) => {
   const projectDetails = useSelector(getProjectDetailSelector);
   const refreshTable = false;
   const navigate = useNavigate();
+
+  const isAdmin = useSelector(isAdminSelector);
+
+  useEffect(() => {
+    const projectID = sessionStorage.getItem("current_project");
+    dispatch(isAdminOfProject(projectID))
+      .unwrap()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data: ", error);
+      });
+  }, [refreshTable]);
 
   useEffect(() => {
     const projectID = sessionStorage.getItem("current_project");
@@ -116,7 +131,7 @@ const DefaultLayout = ({ children }) => {
                   />
                 </Tooltip>
               )}
-              <SidebarMenu items={items_for_manager} />
+              <SidebarMenu items={isAdmin.isAdmin === true ? items_for_manager : items_for_member} />
             </Sider>
             <Layout>
               <Header
