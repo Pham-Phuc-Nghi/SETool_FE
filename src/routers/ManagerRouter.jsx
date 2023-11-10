@@ -29,7 +29,7 @@ const ManagerRouter = () => {
       .catch((error) => {
         console.error("Error fetching data: ", error);
       });
-  }, [dispatch, isAdmin]);
+  }, [dispatch, setIsAdminRoute]);
 
   return (
     <>
