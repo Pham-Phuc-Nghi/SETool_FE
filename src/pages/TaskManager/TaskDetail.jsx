@@ -16,6 +16,7 @@ import {
   Menu,
   Dropdown,
   Popconfirm,
+  Image,
 } from "antd";
 import { useEffect, useState } from "react";
 const { Title, Text } = Typography;
@@ -40,8 +41,12 @@ import {
   deleteComment,
   getDSMytaskDetail,
 } from "../../Redux/Slices/TaskManager/TaskManagerSlice";
-import { getDSMyTaskDetailSelector } from "../../Redux/Selector";
+import {
+  getDSMyTaskDetailSelector,
+  getURLSelector,
+} from "../../Redux/Selector";
 import dayjs from "dayjs";
+import { getImage } from "../../helper/uploadImage";
 const TaskDetail = ({ idTask }) => {
   const taskID = idTask;
   const [refreshTable, setRefreshTable] = useState(false);
@@ -50,7 +55,7 @@ const TaskDetail = ({ idTask }) => {
   const taskDetail = useSelector(getDSMyTaskDetailSelector);
   const [form] = Form.useForm();
   const username_current = sessionStorage.getItem("name_current");
-
+  const URL = useSelector(getURLSelector);
   useEffect(() => {
     if (taskID) {
       dispatch(getDSMytaskDetail(taskID))
@@ -65,6 +70,10 @@ const TaskDetail = ({ idTask }) => {
         });
     }
   }, [refreshTable, taskID, dispatch]);
+
+  useEffect(() => {
+    getImageEdit(taskID);
+  }, [taskID]);
 
   const handleFormSubmitComment = (values) => {
     const data = { ...values, taskID };
@@ -102,6 +111,40 @@ const TaskDetail = ({ idTask }) => {
     3: <MonitorOutlined />,
     4: <CheckSquareOutlined />,
   };
+  const [imageUrlAvatar, setImageUrlAvatar] = useState([]);
+
+  useEffect(() => {
+    if (taskDetail.comment) {
+      const promises = taskDetail.comment.map((_filteredData) => {
+        const memberId = _filteredData.userID;
+        return getAvatar(memberId);
+      });
+
+      Promise.all(promises)
+        .then((urls) => {
+          setImageUrlAvatar(urls);
+        })
+        .catch((error) => {
+          console.error("Error getting images:", error);
+        });
+    }
+  }, [taskDetail]);
+
+  const getAvatar = async (memberId) => {
+    if (memberId) {
+      try {
+        const url = await getImage(memberId);
+        return url;
+      } catch (error) {
+        console.error("Error getting image:", error);
+        return null;
+      }
+    } else {
+      console.error("Please provide an ID to get the image.");
+      return null;
+    }
+  };
+
   const [idComment, setIdComment] = useState(null);
 
   const handleDeleteComments = () => {
@@ -132,6 +175,22 @@ const TaskDetail = ({ idTask }) => {
       </Popconfirm>
     </Menu>
   );
+  const [imageUrl, setImageUrl] = useState("");
+
+  const getImageEdit = async (taskID) => {
+    if (taskID) {
+      try {
+        const url = await getImage(taskID);
+        setImageUrl(url);
+      } catch (error) {
+        console.error("Error getting image:", error);
+        setImageUrl(null);
+      }
+    } else {
+      console.error("Please provide an ID to get the image.");
+      setImageUrl(null);
+    }
+  };
 
   return (
     <>
@@ -170,6 +229,11 @@ const TaskDetail = ({ idTask }) => {
                 </Text>
                 <Title style={{ marginBottom: 8 }}>{taskDetail.taskName}</Title>
                 <Text>{taskDetail.taskDescription}</Text>
+                {imageUrl ? (
+                  <Image src={imageUrl} width={100} style={{ margin: 0 }} />
+                ) : (
+                  ""
+                )}
                 <Divider style={{ border: "1px solid gray" }}></Divider>
                 <Form
                   form={form}
@@ -181,7 +245,12 @@ const TaskDetail = ({ idTask }) => {
                   }}
                 >
                   <Form.Item
-                    label={<Avatar>A</Avatar>}
+                    label={
+                      <Avatar
+                        src={<img src={URL} style={{ margin: 0 }}></img>}
+                        size="small"
+                      ></Avatar>
+                    }
                     name="commentContent"
                     style={{ marginBottom: 8 }}
                   >
@@ -201,10 +270,22 @@ const TaskDetail = ({ idTask }) => {
                   header={<div>Comments</div>}
                   itemLayout="horizontal"
                   dataSource={taskDetail.comment}
-                  renderItem={(item) => (
+                  renderItem={(item, index) => (
                     <Item>
                       <Item.Meta
-                        avatar={<Avatar>{item.userName.charAt(0)}</Avatar>}
+                        avatar={
+                          imageUrlAvatar[index] && (
+                            <Avatar
+                              src={
+                                <img
+                                  src={imageUrlAvatar[index]}
+                                  style={{ margin: 0 }}
+                                  alt={`Avatar ${index + 1}`}
+                                ></img>
+                              }
+                            ></Avatar>
+                          )
+                        }
                         title={
                           <div
                             style={{

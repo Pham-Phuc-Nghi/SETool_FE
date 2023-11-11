@@ -34,6 +34,7 @@ import {
   isAdminOfProject,
 } from "../../Redux/Slices/Collaboration/CollaborationSlice";
 import { setShowForm2 } from "../../Redux/Slices/StateChange/StateChangeSlice";
+import { getImage } from "../../helper/uploadImage";
 const { Text } = Typography;
 
 const Collab = () => {
@@ -141,6 +142,37 @@ const Collab = () => {
         .catch((error) => {
           message.error(error, 1.5);
         });
+    }
+  };
+  const [imageUrl, setImageUrl] = useState([]);
+
+  useEffect(() => {
+    const promises = filteredData.map((_filteredData) => {
+      const memberId = _filteredData.id;
+      return getImageEdit(memberId);
+    });
+
+    Promise.all(promises)
+      .then((urls) => {
+        setImageUrl(urls);
+      })
+      .catch((error) => {
+        console.error("Error getting images:", error);
+      });
+  }, [filteredData]);
+
+  const getImageEdit = async (memberId) => {
+    if (memberId) {
+      try {
+        const url = await getImage(memberId);
+        return url;
+      } catch (error) {
+        console.error("Error getting image:", error);
+        return null;
+      }
+    } else {
+      console.error("Please provide an ID to get the image.");
+      return null;
     }
   };
 
@@ -332,20 +364,33 @@ const Collab = () => {
             dataSource={
               filteredData &&
               Array.isArray(filteredData) &&
-              filteredData.map((_filteredData, index) => ({
-                index: index + 1,
-                key: _filteredData.id,
-                avatarAndName: (
-                  <span>
-                    <Avatar style={{ backgroundColor: "orange" }}>
-                      {`${_filteredData.name}`.charAt(0)}
-                    </Avatar>{" "}
-                    {`${_filteredData.name}`.substring(0)}
-                  </span>
-                ),
-                email: _filteredData.email,
-                role: _filteredData.role,
-              }))
+              filteredData.map((_filteredData, index) => {
+                const memberId = _filteredData.id;
+                return {
+                  index: index + 1,
+                  key: memberId,
+                  avatarAndName: (
+                    <span>
+                      {imageUrl[index] && (
+                        <Avatar
+                          src={
+                            <img
+                              src={imageUrl[index]}
+                              style={{ margin: 0 }}
+                              alt={`Avatar ${index + 1}`}
+                            ></img>
+                          }
+                        >
+                          {`${_filteredData.name}`.charAt(0)}
+                        </Avatar>
+                      )}
+                      {`${_filteredData.name}`.substring(0)}
+                    </span>
+                  ),
+                  email: _filteredData.email,
+                  role: _filteredData.role,
+                };
+              })
             }
             bordered
             size="middle"

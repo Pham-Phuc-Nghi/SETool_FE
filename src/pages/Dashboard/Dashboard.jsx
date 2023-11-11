@@ -27,6 +27,7 @@ import {
 } from "../../Redux/Selector";
 import { getDashboard } from "../../Redux/Slices/Dashboard/DashboardSlice";
 import { getDSMember } from "../../Redux/Slices/Collaboration/CollaborationSlice";
+import { getImage } from "../../helper/uploadImage";
 
 const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -89,6 +90,11 @@ const Dashboard = () => {
           if (taskName.length > 28) {
             taskName = taskName.substring(0, 28) + "...";
           }
+
+          const assigneeIndex = dsMemberAll.findIndex(
+            (member) => member.name === task.assigneeName
+          );
+
           return (
             <Tooltip key={task.id} title="Double click to see more detail">
               <Card
@@ -143,12 +149,18 @@ const Dashboard = () => {
                         }}
                       />
                     ) : null}
-                    <Avatar
-                      style={{ backgroundColor: "red", fontSize: 10 }}
-                      size={"small"}
-                    >
-                      A
-                    </Avatar>
+                    {assigneeIndex !== -1 && imageUrl[assigneeIndex] && (
+                      <Avatar
+                        size="small"
+                        src={
+                          <img
+                            src={imageUrl[assigneeIndex]}
+                            alt={`Assignee Avatar`}
+                            style={{ margin: 0 }}
+                          />
+                        }
+                      />
+                    )}
                   </div>
                 </div>
               </Card>
@@ -223,18 +235,59 @@ const Dashboard = () => {
     "#ABEBC8",
   ];
 
+  const [imageUrl, setImageUrl] = useState([]);
+
+  useEffect(() => {
+    const promises = dsMemberAll.map((_dsMemberAll) => {
+      const memberId = _dsMemberAll.id;
+      return getImageEdit(memberId);
+    });
+
+    Promise.all(promises)
+      .then((urls) => {
+        setImageUrl(urls);
+      })
+      .catch((error) => {
+        console.error("Error getting images:", error);
+      });
+  }, [dsMemberAll]);
+
+  const getImageEdit = async (memberId) => {
+    if (memberId) {
+      try {
+        const url = await getImage(memberId);
+        return url;
+      } catch (error) {
+        console.error("Error getting image:", error);
+        return null;
+      }
+    } else {
+      console.error("Please provide an ID to get the image.");
+      return null;
+    }
+  };
+
   const avatars = dsMemberAll.slice(0, 9).map((member, index) => (
     <Tooltip key={index} title={member.name}>
-      <Avatar
-        onClick={() => handleAvatarClick(member.name)}
-        style={{
-          backgroundColor: pastelColors[index],
-          fontSize: 10,
-          cursor: "pointer",
-        }}
-      >
-        {member.name}
-      </Avatar>
+      {imageUrl[index] && (
+        <Avatar
+          src={
+            <img
+              src={imageUrl[index]}
+              style={{ margin: 0 }}
+              alt={`Avatar ${index + 1}`}
+            ></img>
+          }
+          onClick={() => handleAvatarClick(member.name)}
+          style={{
+            backgroundColor: pastelColors[index],
+            fontSize: 10,
+            cursor: "pointer",
+          }}
+        >
+          {member.name}
+        </Avatar>
+      )}
     </Tooltip>
   ));
 
@@ -369,7 +422,7 @@ const Dashboard = () => {
             onCancel={() => setIsModalVisible(false)}
             footer={null}
             width={1200}
-            style={{ top: 40 }}
+            style={{ top: 30 }}
           >
             <TaskDetail idTask={selectedTask}></TaskDetail>
           </Modal>

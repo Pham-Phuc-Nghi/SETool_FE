@@ -37,8 +37,10 @@ export const verifyVsLogin = createAsyncThunk(
   async (data, { rejectWithValue, fulfillWithValue }) => {
     try {
       const { email, otp } = data;
-      const res = await postRequest(`User/verify-email-in-email-url/${email}/${otp}`)
-      console.log(res)
+      const res = await postRequest(
+        `User/verify-email-in-email-url/${email}/${otp}`
+      );
+      console.log(res);
 
       if (res.status === 200) {
         handleDangNhap(res.data.accessToken);
@@ -51,7 +53,7 @@ export const verifyVsLogin = createAsyncThunk(
       return rejectWithValue(err);
     }
   }
-)
+);
 
 export const login = createAsyncThunk(
   "dang_nhap/login",
@@ -59,7 +61,6 @@ export const login = createAsyncThunk(
     try {
       const { email, password } = data;
       const res = await postRequest(`User/authenticate`, { email, password });
-      console.log(res)
       if (res.status === 200) {
         //console.log("🚀 ~ Đăng Nhập Thành Công ~ :", res);
         sessionStorage.setItem("id_current", res.data.id);
@@ -95,6 +96,28 @@ export const create = createAsyncThunk(
       if (res.response?.status === 400) {
         const err = res.response.data.error;
         // console.log("loi", err);
+        return rejectWithValue(err);
+      }
+    } catch (error) {
+      return rejectWithValue("Đăng ký không thành công!");
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "dang_nhap/changePassword",
+  async (values, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      let { password, newPassword } = values;
+      const res = await postRequest(`/User/change-password`, {
+        password,
+        newPassword,
+      });
+      if (res.status === 200) {
+        return fulfillWithValue(res.data.message);
+      }
+      if (res.response?.status === 400) {
+        const err = res.response.data.error;
         return rejectWithValue(err);
       }
     } catch (error) {

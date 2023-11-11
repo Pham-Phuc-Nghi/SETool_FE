@@ -15,11 +15,15 @@ import {
   Menu,
   Row,
   Typography,
+  message,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { handleDangXuat } from "../../config/AxiosInstance";
 import { useNavigate } from "react-router";
 import { addImage, getImage } from "../../helper/uploadImage";
+import { useDispatch } from "react-redux";
+import { setImageURL } from "../../Redux/Slices/StateChange/StateChangeSlice";
+import { changePassword } from "../../Redux/Slices/DangNhap/DangNhapSlice";
 const { Text } = Typography;
 
 const UserAvatar = () => {
@@ -32,9 +36,15 @@ const UserAvatar = () => {
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
 
+  useEffect(() => {
+    getImageEdit();
+  }, []);
+
   const showChangePasswordDrawer = () => {
     setIsChangePasswordVisible(true);
+    getImageEdit();
   };
+
   const showChangeUserInfoDrawer = () => {
     setIsChangeUserInfoVisible(true);
     getImageEdit();
@@ -80,19 +90,18 @@ const UserAvatar = () => {
 
   const submitChangePassword = (values) => {
     const data = { ...values };
-    console.log(data);
-    // if (data) {
-    //   dispatch(changePassword(data))
-    //     .unwrap()
-    //     .then((result) => {
-    //       message.success(result);
-    //       setIsChangePasswordVisible(false);
-    //       form.resetFields();
-    //     })
-    //     .catch((error) => {
-    //       message.error(error);
-    //     });
-    // }
+    if (data) {
+      dispatch(changePassword(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          setIsChangePasswordVisible(false);
+          form.resetFields();
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
+    }
   };
 
   const changePasswordContent = (
@@ -123,6 +132,18 @@ const UserAvatar = () => {
             message:
               "A new password must have at least 6 characters, one uppercase letter, one digit, and one special character.",
           },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue("password") !== value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(
+                new Error(
+                  "New password must be different from the current password."
+                )
+              );
+            },
+          }),
         ]}
       >
         <Input.Password allowClear placeholder="Input New Password" />
@@ -152,7 +173,7 @@ const UserAvatar = () => {
         <Input.Password allowClear placeholder="Input new password confirm." />
       </Form.Item>
       <Button block type="primary" htmlType="submit">
-        Đổi mật khẩu
+        SUBMIT
       </Button>
     </Form>
   );
@@ -179,12 +200,14 @@ const UserAvatar = () => {
       console.error("Please select a file and provide an ID.");
     }
   };
+  const dispatch = useDispatch();
 
   const getImageEdit = async () => {
     if (id_current) {
       try {
         const url = await getImage(id_current);
         setImageUrl(url);
+        dispatch(setImageURL(url));
       } catch (error) {
         console.error("Error getting image:", error);
       }
