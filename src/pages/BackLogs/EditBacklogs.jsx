@@ -10,6 +10,7 @@ import {
   Tag,
   message,
   Spin,
+  Image,
 } from "antd";
 import { useEffect, useState } from "react";
 const { Text } = Typography;
@@ -17,11 +18,9 @@ import PropTypes from "prop-types";
 import {
   ArrowDownOutlined,
   EditOutlined,
-  InboxOutlined,
   IssuesCloseOutlined,
   RiseOutlined,
 } from "@ant-design/icons";
-import Dragger from "antd/es/upload/Dragger";
 import { useDispatch, useSelector } from "react-redux";
 import { getDSTaskByIdSelector, getKeyIdSelector } from "../../Redux/Selector";
 import {
@@ -29,6 +28,7 @@ import {
   getDSTaskById,
 } from "../../Redux/Slices/Backlogs/BacklogsSlice";
 import { setKeyId } from "../../Redux/Slices/StateChange/StateChangeSlice";
+import { addImage, getImage } from "../../helper/uploadImage";
 
 const EditBacklogs = ({ onClose, form1 }) => {
   const dispatch = useDispatch();
@@ -46,6 +46,7 @@ const EditBacklogs = ({ onClose, form1 }) => {
         .unwrap()
         .then(() => {
           setLoading(false);
+          getImageEdit();
         })
         .catch((error) => {
           setLoading(false);
@@ -54,29 +55,43 @@ const EditBacklogs = ({ onClose, form1 }) => {
     }
   }, [refreshTable, taskID, dispatch]);
 
-  const props = {
-    name: "file",
-    multiple: true,
-    accept: ".png,.jpg",
-    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleUpload = async (values) => {
+    if (file && values) {
+      try {
+        await addImage(file, values);
+        console.log("Image uploaded successfully!");
+      } catch (error) {
+        console.error("Error uploading image:", error);
       }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`, 1.5);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`, 1.5);
+    } else {
+      console.error("Please select a file and provide an ID.");
+    }
+  };
+
+  const getImageEdit = async () => {
+    if (taskID) {
+      try {
+        const url = await getImage(taskID);
+        setImageUrl(url);
+      } catch (error) {
+        console.error("Error getting image:", error);
       }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
+    } else {
+      console.error("Please provide an ID to get the image.");
+    }
   };
 
   const handleFormEdit = (values) => {
     const data = { ...values, taskID };
+    handleUpload(taskID);
     if (data) {
       dispatch(editBacklogs(data))
         .unwrap()
@@ -236,22 +251,11 @@ const EditBacklogs = ({ onClose, form1 }) => {
               ></Select>
             </Form.Item>
             <Form.Item
-              label={<Text>imgLink</Text>}
+              label={<Text>Image Description </Text>}
               name="imgLink"
-              style={{ marginRight: 10 }}
             >
-              <Dragger {...props}>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">
-                  Click or drag file to this area to upload
-                </p>
-                <p className="ant-upload-hint">
-                  Support for a single or bulk upload. Strictly prohibited from
-                  uploading company data or other banned files.
-                </p>
-              </Dragger>
+              <input type="file" onChange={handleFileChange} style={{marginBottom:20,marginTop:6}} />
+              <Image src={imageUrl} width={150} style={{margin:0}}/>
             </Form.Item>
             <Row gutter={24} style={{ width: "100%" }}>
               <Col

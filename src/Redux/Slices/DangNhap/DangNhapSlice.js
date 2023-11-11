@@ -38,6 +38,8 @@ export const verifyVsLogin = createAsyncThunk(
     try {
       const { email, otp } = data;
       const res = await postRequest(`User/verify-email-in-email-url/${email}/${otp}`)
+      console.log(res)
+
       if (res.status === 200) {
         handleDangNhap(res.data.accessToken);
         sessionStorage.setItem("name_current", res.data.name);
@@ -57,12 +59,16 @@ export const login = createAsyncThunk(
     try {
       const { email, password } = data;
       const res = await postRequest(`User/authenticate`, { email, password });
+      console.log(res)
       if (res.status === 200) {
         //console.log("🚀 ~ Đăng Nhập Thành Công ~ :", res);
+        sessionStorage.setItem("id_current", res.data.id);
+        sessionStorage.setItem("email_current", res.data.email);
         return res.data;
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
+
         return rejectWithValue(err);
       }
     } catch (err) {

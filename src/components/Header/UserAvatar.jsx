@@ -1,28 +1,32 @@
 import {
+  EditOutlined,
   LockOutlined,
   LogoutOutlined,
-  PlusOutlined,
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
   Button,
+  Col,
   Drawer,
   Dropdown,
   Form,
   Input,
   Menu,
+  Row,
   Typography,
-  Upload,
 } from "antd";
 import { useState } from "react";
 import { handleDangXuat } from "../../config/AxiosInstance";
 import { useNavigate } from "react-router";
+import { addImage, getImage } from "../../helper/uploadImage";
 const { Text } = Typography;
 
 const UserAvatar = () => {
   const nav = useNavigate();
   const username_current = sessionStorage.getItem("name_current");
+  const id_current = sessionStorage.getItem("id_current");
+  const email_current = sessionStorage.getItem("email_current");
   const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
   const [isChangeUserInfoVisible, setIsChangeUserInfoVisible] = useState(false);
   const [form] = Form.useForm();
@@ -33,6 +37,7 @@ const UserAvatar = () => {
   };
   const showChangeUserInfoDrawer = () => {
     setIsChangeUserInfoVisible(true);
+    getImageEdit();
   };
 
   const menu = (
@@ -42,14 +47,14 @@ const UserAvatar = () => {
         icon={<LockOutlined />}
         onClick={showChangePasswordDrawer}
       >
-        Đổi mật khẩu
+        Change password
       </Menu.Item>
       <Menu.Item
         key="2"
         icon={<UserSwitchOutlined />}
         onClick={showChangeUserInfoDrawer}
       >
-        Thông tin cá nhân
+        User information
       </Menu.Item>
       <Menu.Item
         key="3"
@@ -59,7 +64,7 @@ const UserAvatar = () => {
           nav("/");
         }}
       >
-        Đăng xuất
+        Log out
       </Menu.Item>
     </Menu>
   );
@@ -89,62 +94,46 @@ const UserAvatar = () => {
     //     });
     // }
   };
-  const submitChangeUserInfo = (values) => {
-    const data = { ...values };
-    console.log(data);
-    // if (data) {
-    //   dispatch(changePassword(data))
-    //     .unwrap()
-    //     .then((result) => {
-    //       message.success(result);
-    //       setIsChangePasswordVisible(false);
-    //       form.resetFields();
-    //     })
-    //     .catch((error) => {
-    //       message.error(error);
-    //     });
-    // }
-  };
 
   const changePasswordContent = (
     <Form {...layout} form={form} onFinish={submitChangePassword}>
       <Form.Item
-        label={<Text>Mật khẩu hiện tại </Text>}
+        label={<Text>Current Password </Text>}
         name="password"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập mật khẩu hiện tại!",
+            message: "Current Password must not be a blank",
           },
         ]}
       >
-        <Input.Password allowClear placeholder="Nhập mật khẩu hiện tại" />
+        <Input.Password allowClear placeholder="Input Current Password" />
       </Form.Item>
       <Form.Item
-        label={<Text>Mật khẩu mới </Text>}
+        label={<Text>New Password </Text>}
         name="newPassword"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập mật khẩu mới",
+            message: "New Password must not be a blank",
           },
           {
             pattern:
               /^(?=.*[A-Z])(?=.*\d)(?=.*[@$#!%*?&])[A-Za-z\d@$#!%*?&]{6,}$/,
             message:
-              "Mật khẩu cần có ít nhất 6 kí tự, một chữ in hoa, một số và một kí tự đặc biệt.",
+              "A new password must have at least 6 characters, one uppercase letter, one digit, and one special character.",
           },
         ]}
       >
-        <Input.Password allowClear placeholder="Nhập mật khẩu mới" />
+        <Input.Password allowClear placeholder="Input New Password" />
       </Form.Item>
       <Form.Item
-        label={<Text>Xác nhận mật khẩu mới </Text>}
+        label={<Text>Confirm new password </Text>}
         name="confirmPassword"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập mật khẩu mới xác nhận",
+            message: "Confirm new password must not be blank",
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
@@ -153,14 +142,14 @@ const UserAvatar = () => {
               }
               return Promise.reject(
                 new Error(
-                  "Mật khẩu mà bạn vừa nhập vào không giống với mật khẩu cũ"
+                  "The password you just entered does not match the old password."
                 )
               );
             },
           }),
         ]}
       >
-        <Input.Password allowClear placeholder="Nhập xác nhận mật khẩu mới" />
+        <Input.Password allowClear placeholder="Input new password confirm." />
       </Form.Item>
       <Button block type="primary" htmlType="submit">
         Đổi mật khẩu
@@ -168,58 +157,98 @@ const UserAvatar = () => {
     </Form>
   );
 
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
   };
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
+  const handleUpload = async () => {
+    if (file && id_current) {
+      try {
+        await addImage(file, id_current);
+        console.log("Image uploaded successfully!");
+        setIsChangeUserInfoVisible(false);
+        form.resetFields();
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    } else {
+      console.error("Please select a file and provide an ID.");
+    }
+  };
+
+  const getImageEdit = async () => {
+    if (id_current) {
+      try {
+        const url = await getImage(id_current);
+        setImageUrl(url);
+      } catch (error) {
+        console.error("Error getting image:", error);
+      }
+    } else {
+      console.error("Please provide an ID to get the image.");
+    }
+  };
 
   const changeUserInfoContent = (
-    <Form {...layout} form={form1} onFinish={submitChangeUserInfo}>
-      <Form.Item
-        labelCol={6}
-        wrapperCol={18}
-        style={{ alignItems: "center", textAlign: "center" }}
-        name="avatar"
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-      >
-        <Upload
-        disabled
-          listType="picture-card"
-          maxCount={1}
-          beforeUpload={() => false}
+    <Form {...layout} form={form1}>
+      <Form.Item wrapperCol={24} name="avatar" style={{ width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          {uploadButton}
-        </Upload>
+          <Avatar
+            src={<img src={imageUrl} style={{ margin: 0 }}></img>}
+            size={140}
+          ></Avatar>
+        </div>
       </Form.Item>
-      <Form.Item
-        label={<Text>Username </Text>}
-        name="username"
-      >
-        <Text disabled allowClear placeholder="Nhập username mới" />
+      <Form.Item wrapperCol={24} name="imgLink" style={{ width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <input
+            type="file"
+            onChange={handleFileChange}
+            style={{ marginLeft: 110 }}
+          />
+        </div>
       </Form.Item>
-      <Form.Item
-        label={<Text>Email </Text>}
-        name="email"
-        
-      >
-        <Text disabled allowClear placeholder="Nhập email mới" />
+      <Form.Item label={<Text>Username </Text>} name="username">
+        <Text>{username_current}</Text>
       </Form.Item>
+      <Form.Item label={<Text>Email </Text>} name="email">
+        <Text>{email_current}</Text>
+      </Form.Item>
+      <Row gutter={24} style={{ width: "100%" }}>
+        <Col
+          span={24}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+          }}
+        >
+          <Button
+            className="custom-btn-watch-report"
+            htmlType="submit"
+            icon={<EditOutlined></EditOutlined>}
+            onClick={handleUpload}
+          >
+            Edit
+          </Button>
+        </Col>
+      </Row>
     </Form>
   );
 
@@ -237,8 +266,8 @@ const UserAvatar = () => {
     <div style={{ marginRight: 50 }}>
       <span>
         <Avatar
+          src={<img src={imageUrl} style={{ margin: 0 }}></img>}
           style={{
-            backgroundColor: "#FF4500",
             marginRight: "6px",
             marginBottom: 4,
           }}
@@ -260,7 +289,7 @@ const UserAvatar = () => {
         </Dropdown>
       </span>
       <Drawer
-        title="Đổi mật khẩu"
+        title="Change password"
         placement="right"
         closable={true}
         onClose={closeChangePasswordDrawer}
@@ -270,7 +299,7 @@ const UserAvatar = () => {
         {changePasswordContent}
       </Drawer>
       <Drawer
-        title="Thông tin người dùng"
+        title="User information"
         placement="right"
         closable={true}
         onClose={closeChangeUserInfoDrawer}

@@ -132,7 +132,7 @@ const TaskManager = () => {
 
   const renderTasks = (status) => {
     if (myTask.data === undefined || myTask.data.length === 0) {
-      return "Chưa có dữ liệu";
+      return "No data available";
     } else {
       return myTask.data
         .filter((task) => task.taskStatus === status)

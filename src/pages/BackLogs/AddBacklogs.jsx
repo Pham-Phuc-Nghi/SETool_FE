@@ -23,6 +23,7 @@ import {
 import "dayjs/locale/vi";
 import { useDispatch } from "react-redux";
 import { createBacklogs } from "../../Redux/Slices/Backlogs/BacklogsSlice";
+import { addImage } from "../../helper/uploadImage";
 
 const AddBacklogs = ({ onClose, form }) => {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
@@ -57,15 +58,28 @@ const AddBacklogs = ({ onClose, form }) => {
     setFile(selectedFile);
   };
 
+  const handleUpload = async (values) => {
+    if (file && values) {
+      try {
+        await addImage(file, values);
+        console.log("Image uploaded successfully!");
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    } else {
+      console.error("Please select a file and provide an ID.");
+    }
+  };
+
   const handleCreateBacklogs = (values) => {
     const data = { ...values };
-    data.imgLink = file;
-    console.log(data);
     if (data) {
       dispatch(createBacklogs(data))
         .unwrap()
         .then((result) => {
-          message.success(result, 1.5);
+          const { messageSuccess, newTaskID } = result;
+          message.success(messageSuccess, 1.5);
+          handleUpload(newTaskID);
           form.resetFields();
           onClose();
         })

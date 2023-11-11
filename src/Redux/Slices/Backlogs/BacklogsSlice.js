@@ -85,7 +85,8 @@ export const createBacklogs = createAsyncThunk(
         taskDescription,
       });
       if (res.status === 200) {
-        return fulfillWithValue(res.data.message);
+        const newTaskID = res.data.newTaskID;
+        return fulfillWithValue({ messageSuccess: res.data.message, newTaskID });
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
