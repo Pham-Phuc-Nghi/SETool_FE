@@ -12,7 +12,7 @@ import {
 import {
   UserOutlined,
   LockOutlined,
-  GoogleOutlined,
+  // GoogleOutlined,
   MailOutlined,
 } from "@ant-design/icons";
 const { Text, Title } = Typography;
@@ -20,7 +20,11 @@ import "./login.css";
 import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { create, forgotPassword, login } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import {
+  create,
+  forgotPassword,
+  login,
+} from "../../Redux/Slices/DangNhap/DangNhapSlice";
 import {
   getAccessTokenSelector,
   getUserNameSelector,
@@ -50,9 +54,9 @@ const Login = () => {
     }
   }, [username, accessToken]);
 
-  const handleClickLoginByGG = () => {
-    nav("/homepage");
-  };
+  // const handleClickLoginByGG = () => {
+  //   nav("/homepage");
+  // };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -63,13 +67,16 @@ const Login = () => {
 
   //login
   const handleLogin = (values) => {
+    setLoading(true);
     dispatch(login(values))
       .unwrap()
       .then(() => {
         nav("/homepage");
+        setLoading(false);
       })
       .catch((error) => {
         message.error(error);
+        setLoading(false);
       });
   };
 
@@ -104,13 +111,14 @@ const Login = () => {
   // Forgot Password
   const handleForgotPassword = (values) => {
     const data = { ...values };
-    console.log(data)
+    setLoading(true);
     dispatch(forgotPassword(data))
       .unwrap()
       .then((result) => {
         message.success(result, 1.5);
         setCurrentForm("userLogin");
         form3.resetFields();
+        setLoading(false);
       })
       .catch((error) => {
         error.forEach((errorMessage, index) => {
@@ -118,6 +126,7 @@ const Login = () => {
             openNotification("error " + (index + 1) + ": ", errorMessage);
           }
         });
+        setLoading(false);
       });
   };
 
@@ -307,7 +316,7 @@ const Login = () => {
                     >
                       Login
                     </Button>
-                    <Text
+                    {/* <Text
                       style={{
                         display: "flex",
                         justifyContent: "center",
@@ -339,7 +348,7 @@ const Login = () => {
                       className="task-card"
                     >
                       Login with mail @fpt.edu.vn
-                    </Button>
+                    </Button> */}
                     <Text
                       style={{
                         display: "flex",

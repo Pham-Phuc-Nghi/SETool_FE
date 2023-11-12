@@ -4,11 +4,15 @@ const { Text } = Typography;
 import setImage from "../../assets/789.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAccessTokenSelector, getUserNameSelector } from "../../Redux/Selector";
+import {
+  getAccessTokenSelector,
+  getUserNameSelector,
+} from "../../Redux/Selector";
 import { verifyVsLogin } from "../../Redux/Slices/DangNhap/DangNhapSlice";
 import { useEffect } from "react";
 import { handleDangNhap } from "../../config/AxiosInstance";
-
+import { addImage } from "../../helper/uploadImage";
+import avatar from "../../assets/avatar.jpg";
 const VerifyEmail = () => {
   const dispatch = useDispatch();
   const nav = useNavigate();
@@ -28,20 +32,26 @@ const VerifyEmail = () => {
     }
   }, [usernameCurrent, accessTokenCurrent, dispatch]);
 
-  const handleClickSubmit = () => {
+  const handleClickSubmit = async () => {
     if (email !== null && otp !== null) {
+      const fileContent = await fetch(avatar).then(res => res.arrayBuffer()); 
+      const avatarFile = new File([fileContent], "avatar.jpg", {
+        type: "image/jpg",
+      });
       const data = { email: email, otp: otp };
       dispatch(verifyVsLogin(data))
         .unwrap()
-        .then((value) => {
-          message.success(value);
+        .then(async (result) => {
+          const { messageSuccess, userID } = result;
+          message.success(messageSuccess);
+          await addImage(avatarFile, userID);
           nav("/homepage");
         })
         .catch((err) => {
           message.error(err);
-        })
+        });
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -71,9 +81,17 @@ const VerifyEmail = () => {
           }}
         >
           <Text style={{ color: "white", fontSize: 20, marginBottom: 30 }}>
-            Hello<Text style={{ color: "#BEADFA", fontSize: 20 }}>{username}</Text>,
+            Hello
+            <Text style={{ color: "#BEADFA", fontSize: 20 }}>{username}</Text>,
           </Text>
-          <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginBottom: 10 }}>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              alignSelf: "center",
+              marginBottom: 10,
+            }}
+          >
             Click the button below to verify your email
           </Text>
           <Text style={{ color: "#FF4500", fontSize: 20, alignSelf: "center" }}>
@@ -81,7 +99,11 @@ const VerifyEmail = () => {
           </Text>
         </div>
         <div className="button-container">
-          <Button className="btn-grad" style={{ color: "white", margin: 26, marginTop: 20 }} onClick={handleClickSubmit}>
+          <Button
+            className="btn-grad"
+            style={{ color: "white", margin: 26, marginTop: 20 }}
+            onClick={handleClickSubmit}
+          >
             Click to verify - OTP: {otp}
           </Button>
         </div>

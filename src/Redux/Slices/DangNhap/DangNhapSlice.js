@@ -40,12 +40,12 @@ export const verifyVsLogin = createAsyncThunk(
       const res = await postRequest(
         `User/verify-email-in-email-url/${email}/${otp}`
       );
-      console.log(res);
 
       if (res.status === 200) {
         handleDangNhap(res.data.accessToken);
         sessionStorage.setItem("name_current", res.data.name);
-        return fulfillWithValue(res.data.message);
+        const userID = res.data.id;
+        return fulfillWithValue( { messageSuccess:res.data.message, userID });
       } else {
         return rejectWithValue(res.response.data.message);
       }
