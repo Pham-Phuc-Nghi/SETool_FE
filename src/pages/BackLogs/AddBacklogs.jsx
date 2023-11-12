@@ -66,14 +66,44 @@ const AddBacklogs = ({ onClose, form }) => {
       } catch (error) {
         console.error("Error uploading image:", error);
       }
-    } else {
-      console.error("Please select a file and provide an ID.");
     }
   };
 
   const handleCreateBacklogs = (values) => {
     const data = { ...values };
-    if (data) {
+
+    if (file) {
+      const allowedFileTypes = [".jpeg", ".png", ".jpg"];
+      const fileTypeIsValid = allowedFileTypes.some((allowedType) =>
+        file.name.includes(allowedType)
+      );
+
+      if (!fileTypeIsValid) {
+        openNotification(
+          "error: ",
+          "Please select a valid image file (JPEG, PNG, or JPG)."
+        );
+        return;
+      }
+
+      dispatch(createBacklogs(data))
+        .unwrap()
+        .then((result) => {
+          const { messageSuccess, newTaskID } = result;
+          message.success(messageSuccess, 1.5);
+          handleUpload(newTaskID);
+          form.resetFields();
+          onClose();
+        })
+        .catch((error) => {
+          error.forEach((errorMessage, index) => {
+            if (errorMessage) {
+              openNotification("error " + (index + 1) + ": ", errorMessage);
+            }
+          });
+        });
+    } else {
+      // If file is null, proceed with dispatching action without imgLink
       dispatch(createBacklogs(data))
         .unwrap()
         .then((result) => {
@@ -203,7 +233,11 @@ const AddBacklogs = ({ onClose, form }) => {
           name="imgLink"
           style={{ marginRight: 10 }}
         >
-          <input type="file" onChange={handleFileChange} />
+          <input
+            type="file"
+            onChange={handleFileChange}
+            accept=".jpg, .jpeg, .png"
+          />
         </Form.Item>
         <Row gutter={24} style={{ marginRight: "5px" }}>
           <Col

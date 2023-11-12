@@ -56,6 +56,7 @@ const TaskDetail = ({ idTask }) => {
   const [form] = Form.useForm();
   const username_current = sessionStorage.getItem("name_current");
   const URL = useSelector(getURLSelector);
+
   useEffect(() => {
     if (taskID) {
       dispatch(getDSMytaskDetail(taskID))
@@ -124,8 +125,8 @@ const TaskDetail = ({ idTask }) => {
         .then((urls) => {
           setImageUrlAvatar(urls);
         })
-        .catch((error) => {
-          console.error("Error getting images:", error);
+        .catch(() => {
+          // console.error("Error getting images:", error);
         });
     }
   }, [taskDetail]);
@@ -136,12 +137,9 @@ const TaskDetail = ({ idTask }) => {
         const url = await getImage(memberId);
         return url;
       } catch (error) {
-        console.error("Error getting image:", error);
+        // console.error("Error getting image:", error);
         return null;
       }
-    } else {
-      console.error("Please provide an ID to get the image.");
-      return null;
     }
   };
 
@@ -247,9 +245,17 @@ const TaskDetail = ({ idTask }) => {
                   <Form.Item
                     label={
                       <Avatar
-                        src={<img src={URL} style={{ margin: 0 }}></img>}
-                        size="small"
-                      ></Avatar>
+                        src={
+                          URL ? (
+                            <img src={URL} style={{ margin: 0 }}></img>
+                          ) : null
+                        }
+                        style={{
+                          backgroundColor: URL ? "transparent" : "#FF4500",
+                        }}
+                      >
+                        {URL ? null : `${username_current}`.charAt(0)}
+                      </Avatar>
                     }
                     name="commentContent"
                     style={{ marginBottom: 8 }}
@@ -274,17 +280,26 @@ const TaskDetail = ({ idTask }) => {
                     <Item>
                       <Item.Meta
                         avatar={
-                          imageUrlAvatar[index] && (
-                            <Avatar
-                              src={
+                          <Avatar
+                            src={
+                              imageUrlAvatar[index] && (
                                 <img
                                   src={imageUrlAvatar[index]}
                                   style={{ margin: 0 }}
                                   alt={`Avatar ${index + 1}`}
                                 ></img>
-                              }
-                            ></Avatar>
-                          )
+                              )
+                            }
+                            style={{
+                              backgroundColor: imageUrlAvatar[index]
+                                ? "transparent"
+                                : "#FF4500",
+                            }}
+                          >
+                            {imageUrlAvatar[index]
+                              ? null
+                              : `${item.userName}`.charAt(0)}
+                          </Avatar>
                         }
                         title={
                           <div

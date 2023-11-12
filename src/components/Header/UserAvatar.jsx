@@ -289,10 +289,11 @@ const UserAvatar = () => {
     <div style={{ marginRight: 50 }}>
       <span>
         <Avatar
-          src={<img src={imageUrl} style={{ margin: 0 }}></img>}
+          src={imageUrl ? <img src={imageUrl} style={{ margin: 0 }} /> : null}
           style={{
             marginRight: "6px",
             marginBottom: 4,
+            backgroundColor: imageUrl ? "transparent" : "#FF4500",
           }}
         >
           {username_current && username_current.charAt(0)}

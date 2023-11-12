@@ -81,7 +81,7 @@ const Dashboard = () => {
 
   const renderTasks = (status) => {
     if (filteredData === undefined || filteredData.length === 0) {
-      return "Chưa có dữ liệu";
+      return "No data available";
     } else {
       return filteredData
         .filter((task) => task.taskStatus === status)
@@ -149,16 +149,25 @@ const Dashboard = () => {
                         }}
                       />
                     ) : null}
-                    {assigneeIndex !== -1 && imageUrl[assigneeIndex] && (
+                    {assigneeIndex !== -1 && (
                       <Avatar
                         size="small"
                         src={
-                          <img
-                            src={imageUrl[assigneeIndex]}
-                            alt={`Assignee Avatar`}
-                            style={{ margin: 0 }}
-                          />
+                          imageUrl[assigneeIndex] && (
+                            <img
+                              src={imageUrl[assigneeIndex]}
+                              alt={`Assignee Avatar`}
+                              style={{
+                                margin: 0,
+                              }}
+                            />
+                          )
                         }
+                        style={{
+                          backgroundColor: imageUrl[assigneeIndex]
+                            ? "transparent"
+                            : "#FF4500",
+                        }}
                       />
                     )}
                   </div>
@@ -258,7 +267,7 @@ const Dashboard = () => {
         const url = await getImage(memberId);
         return url;
       } catch (error) {
-        console.error("Error getting image:", error);
+        // console.error("Error getting image:", error);
         return null;
       }
     } else {
@@ -269,7 +278,7 @@ const Dashboard = () => {
 
   const avatars = dsMemberAll.slice(0, 9).map((member, index) => (
     <Tooltip key={index} title={member.name}>
-      {imageUrl[index] && (
+      {imageUrl[index] ? (
         <Avatar
           src={
             <img
@@ -278,6 +287,16 @@ const Dashboard = () => {
               alt={`Avatar ${index + 1}`}
             ></img>
           }
+          onClick={() => handleAvatarClick(member.name)}
+          style={{
+            fontSize: 10,
+            cursor: "pointer",
+          }}
+        >
+          {member.name}
+        </Avatar>
+      ) : (
+        <Avatar
           onClick={() => handleAvatarClick(member.name)}
           style={{
             backgroundColor: pastelColors[index],
@@ -290,6 +309,7 @@ const Dashboard = () => {
       )}
     </Tooltip>
   ));
+  
 
   const getStatusName = (status) => {
     switch (status) {

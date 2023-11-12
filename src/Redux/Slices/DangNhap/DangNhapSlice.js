@@ -125,3 +125,22 @@ export const changePassword = createAsyncThunk(
     }
   }
 );
+
+export const forgotPassword = createAsyncThunk(
+  "dang_nhap/forgotPassword",
+  async (values, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      let { email } = values;
+      const res = await postRequest(`/User/forgot-password/${email}`);
+      if (res.status === 200) {
+        return fulfillWithValue(res.data.message);
+      }
+      if (res.response?.status === 400) {
+        const err = res.response.data.error;
+        return rejectWithValue(err);
+      }
+    } catch (error) {
+      return rejectWithValue("Submit không thành công!");
+    }
+  }
+);

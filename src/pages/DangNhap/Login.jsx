@@ -20,7 +20,7 @@ import "./login.css";
 import setImage from "../../assets/789.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { create, login } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+import { create, forgotPassword, login } from "../../Redux/Slices/DangNhap/DangNhapSlice";
 import {
   getAccessTokenSelector,
   getUserNameSelector,
@@ -34,6 +34,7 @@ const Login = () => {
   const [currentForm, setCurrentForm] = useState("userLogin");
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
+  const [form3] = Form.useForm();
 
   const username = useSelector(getUserNameSelector);
   const accessToken = useSelector(getAccessTokenSelector);
@@ -103,22 +104,23 @@ const Login = () => {
   // Forgot Password
   const handleForgotPassword = (values) => {
     const data = { ...values };
-    console.log(data);
-    // dispatch(create(values))
-    //   .unwrap()
-    //   .then((result) => {
-    //     message.success(result, 1.5);
-    //     setCurrentForm("userLogin");
-    //     form2.resetFields();
-    //   })
-    //   .catch((error) => {
-    //     error.forEach((errorMessage, index) => {
-    //       if (errorMessage) {
-    //         openNotification("error " + (index + 1) + ": ", errorMessage);
-    //       }
-    //     });
-    //   });
+    console.log(data)
+    dispatch(forgotPassword(data))
+      .unwrap()
+      .then((result) => {
+        message.success(result, 1.5);
+        setCurrentForm("userLogin");
+        form3.resetFields();
+      })
+      .catch((error) => {
+        error.forEach((errorMessage, index) => {
+          if (errorMessage) {
+            openNotification("error " + (index + 1) + ": ", errorMessage);
+          }
+        });
+      });
   };
+
   const [loading, setLoading] = useState(false);
 
   return (
@@ -542,7 +544,7 @@ const Login = () => {
                 )}
                 {currentForm === "forgotPassword" && (
                   <Form
-                    form={form2}
+                    form={form3}
                     name="basic"
                     key="forgot"
                     labelCol={{

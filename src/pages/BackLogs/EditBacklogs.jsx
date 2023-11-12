@@ -11,6 +11,7 @@ import {
   message,
   Spin,
   Image,
+  notification,
 } from "antd";
 import { useEffect, useState } from "react";
 const { Text } = Typography;
@@ -82,22 +83,41 @@ const EditBacklogs = ({ onClose, form1 }) => {
         const url = await getImage(taskID);
         setImageUrl(url);
       } catch (error) {
-        console.error("Error getting image:", error);
+        // console.error("Error getting image:", error);
       }
-    } else {
-      console.error("Please provide an ID to get the image.");
     }
+  };
+
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
   };
 
   const handleFormEdit = (values) => {
     const data = { ...values, taskID };
-    handleUpload(taskID);
+
     if (data) {
+      const allowedFileTypes = [".jpeg", ".png", ".jpg"];
+      const fileTypeIsValid = allowedFileTypes.some((allowedType) =>
+        file.name.includes(allowedType)
+      );
+
+      if (!fileTypeIsValid) {
+        openNotification(
+          "error: ",
+          "Please select a valid image file (JPEG, PNG or JPG)."
+        );
+        return;
+      }
+
       dispatch(editBacklogs(data))
         .unwrap()
         .then((result) => {
           message.success(result);
           form1.resetFields();
+          handleUpload(taskID);
           dispatch(setKeyId(null));
           onClose();
         })
@@ -250,12 +270,14 @@ const EditBacklogs = ({ onClose, form1 }) => {
                 ]}
               ></Select>
             </Form.Item>
-            <Form.Item
-              label={<Text>Image Description </Text>}
-              name="imgLink"
-            >
-              <input type="file" onChange={handleFileChange} style={{marginBottom:20,marginTop:6}} />
-              <Image src={imageUrl} width={150} style={{margin:0}}/>
+            <Form.Item label={<Text>Image Description </Text>} name="imgLink">
+              <input
+                type="file"
+                onChange={handleFileChange}
+                style={{ marginBottom: 20, marginTop: 6 }}
+                accept=".jpg, .jpeg, .png"
+              />
+              <Image src={imageUrl} width={150} style={{ margin: 0 }} />
             </Form.Item>
             <Row gutter={24} style={{ width: "100%" }}>
               <Col

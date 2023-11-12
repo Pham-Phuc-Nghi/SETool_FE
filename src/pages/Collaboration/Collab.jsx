@@ -120,7 +120,7 @@ const Collab = () => {
         .unwrap()
         .then((result) => {
           message.success(result, 1.5);
-          setRefreshTable(true);
+          setRefreshTable(!refreshTable);
         })
         .catch((error) => {
           message.error(error, 1.5);
@@ -156,8 +156,8 @@ const Collab = () => {
       .then((urls) => {
         setImageUrl(urls);
       })
-      .catch((error) => {
-        console.error("Error getting images:", error);
+      .catch(() => {
+        // console.error("Error getting images:", error);
       });
   }, [filteredData]);
 
@@ -167,7 +167,7 @@ const Collab = () => {
         const url = await getImage(memberId);
         return url;
       } catch (error) {
-        console.error("Error getting image:", error);
+        // console.error("Error getting image:", error);
         return null;
       }
     } else {
@@ -327,87 +327,101 @@ const Collab = () => {
       ) : (
         <>
           <div>
-            <Input.Search
-              allowClear
-              placeholder="Input member name"
-              style={{ width: "25%", marginBottom: 20 }}
-              onSearch={handleSearch}
-              onChange={(e) => handleSearch(e.target.value)}
-              value={searchText}
-            />
-            <Button
-              className="custom-btn-add-d"
-              icon={<PlusOutlined />}
-              onClick={showModalTaoDon}
-              style={{
-                float: "right",
-                display:
+            <div>
+              <Input.Search
+                allowClear
+                placeholder="Input member name"
+                style={{ width: "25%", marginBottom: 20 }}
+                onSearch={handleSearch}
+                onChange={(e) => handleSearch(e.target.value)}
+                value={searchText}
+              />
+              <Button
+                className="custom-btn-add-d"
+                icon={<PlusOutlined />}
+                onClick={showModalTaoDon}
+                style={{
+                  float: "right",
+                  display:
+                    isAdmin.isAdmin !== true
+                      ? "none"
+                      : roleM.result && roleM.result.includes("manager")
+                      ? "none"
+                      : "",
+                }}
+              >
+                Add members
+              </Button>
+            </div>
+            <div style={{ maxHeight: 500, overflow: "auto" }}>
+              <Table
+                scroll={{ x: 600 }}
+                columns={
                   isAdmin.isAdmin !== true
-                    ? "none"
+                    ? column.slice(0, 3)
                     : roleM.result && roleM.result.includes("manager")
-                    ? "none"
-                    : "",
-              }}
+                    ? column.slice(0, 3)
+                    : column
+                }
+                dataSource={
+                  filteredData &&
+                  Array.isArray(filteredData) &&
+                  filteredData.map((_filteredData, index) => {
+                    const memberId = _filteredData.id;
+                    return {
+                      index: index + 1,
+                      key: memberId,
+                      avatarAndName: (
+                        <span>
+                          <Avatar
+                            src={
+                              imageUrl[index] && (
+                                <img
+                                  src={imageUrl[index]}
+                                  style={{
+                                    margin: 0,
+                                  }}
+                                  alt={`Avatar ${index + 1}`}
+                                ></img>
+                              )
+                            }
+                            style={{
+                              backgroundColor: imageUrl[index]
+                                ? "transparent"
+                                : "#FF4500",
+                            }}
+                          >
+                            {imageUrl[index]
+                              ? null
+                              : `${_filteredData.name}`.charAt(0)}
+                          </Avatar>{" "}
+                          {`${_filteredData.name}`.substring(0)}
+                        </span>
+                      ),
+
+                      email: _filteredData.email,
+                      role: _filteredData.role,
+                    };
+                  })
+                }
+                bordered
+                size="middle"
+              />
+            </div>
+            <Modal
+              open={isModalAdd}
+              footer={null}
+              onCancel={closeAddModal}
+              title="Add member"
+              width={700}
             >
-              Add members
-            </Button>
+              <AddMember
+                form={form}
+                form2={form2}
+                onClose={closeAddModal}
+              ></AddMember>
+            </Modal>
           </div>
-          <Table
-            scroll={{ x: 600 }}
-            columns={
-              isAdmin.isAdmin !== true
-                ? column.slice(0, 3)
-                : roleM.result && roleM.result.includes("manager")
-                ? column.slice(0, 3)
-                : column
-            }
-            dataSource={
-              filteredData &&
-              Array.isArray(filteredData) &&
-              filteredData.map((_filteredData, index) => {
-                const memberId = _filteredData.id;
-                return {
-                  index: index + 1,
-                  key: memberId,
-                  avatarAndName: (
-                    <span>
-                      {imageUrl[index] && (
-                        <Avatar
-                          src={
-                            <img
-                              src={imageUrl[index]}
-                              style={{ margin: 0 }}
-                              alt={`Avatar ${index + 1}`}
-                            ></img>
-                          }
-                        >
-                          {`${_filteredData.name}`.charAt(0)}
-                        </Avatar>
-                      )}
-                      {`${_filteredData.name}`.substring(0)}
-                    </span>
-                  ),
-                  email: _filteredData.email,
-                  role: _filteredData.role,
-                };
-              })
-            }
-            bordered
-            size="middle"
-          />
-          <Modal
-            open={isModalAdd}
-            footer={null}
-            onCancel={closeAddModal}
-            title="Add member"
-            width={700}
-          >
-            <AddMember
-              form={form}
-              form2={form2}
-              onClose={closeAddModal}
-            ></AddMember>
-          </Modal>
         </>
       )}
     </>
