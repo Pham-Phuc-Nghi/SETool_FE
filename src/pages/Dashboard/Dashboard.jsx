@@ -372,7 +372,7 @@ const Dashboard = () => {
         </div>
       ) : (
         <>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
             <div style={{ display: "flex", justifyContent: "left" }}>
               <Avatar.Group maxCount={7} style={{ marginBottom: 20 }}>
                 {avatars}{" "}
