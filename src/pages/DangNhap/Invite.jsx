@@ -29,6 +29,7 @@ const Invite = () => {
   }
 
   const handleDeny = () => {
+
     const data = {
       projectID: projectID,
       inviterID: guestID,
@@ -79,11 +80,11 @@ const Invite = () => {
           </Text>
           <Text style={{ color: "white", fontSize: 16 }}>
             <Text style={{ color: "violet", fontSize: 16 }}>{inviter && inviter}</Text>{" "}
-            ({inviterEmail && inviterEmail}) has invited you to the
-            <Text style={{ color: "#F9B572", fontSize: 16 }}>
-              My project
-            </Text>{" "}
-            team on SETOOL
+            ({inviterEmail && inviterEmail}) has invited you to their project team on SETOOL
+            {/* <Text style={{ color: "#F9B572", fontSize: 16 }}> */}
+             
+            {/* </Text>{" "} */}
+            
           </Text>
         </div>
         <div className="button-container">
