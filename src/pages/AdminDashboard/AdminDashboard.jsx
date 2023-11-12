@@ -148,7 +148,7 @@ const AdminDashboard = () => {
         </div>
       ) : (
         <>
-          <div style={{ width: "100%" }}>
+          <div style={{ width: "100%",marginTop:40}}>
             <div
               style={{
                 width: "90%",
