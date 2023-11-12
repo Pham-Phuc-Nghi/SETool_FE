@@ -16,6 +16,7 @@ import {
   Row,
   Typography,
   message,
+  notification,
 } from "antd";
 import { useEffect, useState } from "react";
 import { handleDangXuat } from "../../config/AxiosInstance";
@@ -42,7 +43,6 @@ const UserAvatar = () => {
 
   const showChangePasswordDrawer = () => {
     setIsChangePasswordVisible(true);
-    getImageEdit();
   };
 
   const showChangeUserInfoDrawer = () => {
@@ -186,12 +186,34 @@ const UserAvatar = () => {
     setFile(selectedFile);
   };
 
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
+  };
+
   const handleUpload = async () => {
+    if (file) {
+      const allowedFileTypes = [".jpeg", ".png", ".jpg"];
+      const fileTypeIsValid = allowedFileTypes.some((allowedType) =>
+        file.name.includes(allowedType)
+      );
+
+      if (!fileTypeIsValid) {
+        openNotification(
+          "error: ",
+          "Please select a valid image file (JPEG, PNG, or JPG)."
+        );
+        return;
+      }
+    }
     if (file && id_current) {
       try {
         await addImage(file, id_current);
-        console.log("Image uploaded successfully!");
+        message.success("Image uploaded successfully!", 1.5);
         setIsChangeUserInfoVisible(false);
+        nav()
         form.resetFields();
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -200,6 +222,7 @@ const UserAvatar = () => {
       console.error("Please select a file and provide an ID.");
     }
   };
+
   const dispatch = useDispatch();
 
   const getImageEdit = async () => {
