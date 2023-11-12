@@ -24,7 +24,7 @@ const Invite = () => {
         nav("/login");
       })
       .catch((error) => {
-        message.success(error, 1.5);
+        message.error(error, 1.5);
       });
   }
 
@@ -42,7 +42,7 @@ const Invite = () => {
         nav("/login");
       })
       .catch((error) => {
-        message.success(error, 1.5);
+        message.error(error, 1.5);
       });
   }
 
