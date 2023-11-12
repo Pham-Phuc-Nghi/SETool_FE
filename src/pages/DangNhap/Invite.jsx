@@ -9,7 +9,7 @@ const Invite = () => {
   const dispatch = useDispatch();
   const nav = useNavigate();
   const { projectID, inviter, inviterEmail, guest, guestID } = useParams();
-  console.log("Param: ", inviter, inviterEmail, guest, guestID);
+  // console.log("Param: ", inviter, inviterEmail, guest, guestID);
 
   const handleJoin = () => {
     const data = {

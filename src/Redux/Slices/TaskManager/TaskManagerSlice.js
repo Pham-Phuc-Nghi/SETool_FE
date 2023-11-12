@@ -66,7 +66,7 @@ export const updateMytask = createAsyncThunk(
         return rejectWithValue(res.response.data.message[0]);
       }
     } catch (error) {
-      return rejectWithValue("Chuyển task thất bại!");
+      return rejectWithValue("Changing task status fail!");
     }
   }
 );
@@ -85,7 +85,7 @@ export const createComment = createAsyncThunk(
         return rejectWithValue(res.response.data.message[0]);
       }
     } catch (error) {
-      return rejectWithValue("Add comment thất bại!");
+      return rejectWithValue("Adding comment fail!");
     }
   }
 );
@@ -102,7 +102,7 @@ export const deleteComment = createAsyncThunk(
         return rejectWithValue(res.response.data);
       }
     } catch (error) {
-      return rejectWithValue("Delete comment thất bại!");
+      return rejectWithValue("Deleting comment fail!");
     }
   }
 );

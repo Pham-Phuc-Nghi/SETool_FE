@@ -149,7 +149,7 @@ export const editProject = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Edit project thất bại!");
+      return rejectWithValue("Editing project fail!");
     }
   }
 );
@@ -167,7 +167,7 @@ export const deleteProject = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Delete project thất bại!");
+      return rejectWithValue("Deleting project fail!");
     }
   }
 );
@@ -185,7 +185,7 @@ export const createSprint = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Tạo sprint thất bại!");
+      return rejectWithValue("Creating sprint fail!");
     }
   }
 );
@@ -207,7 +207,7 @@ export const editSprint = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Edit sprint thất bại!");
+      return rejectWithValue("Editing sprint fail!");
     }
   }
 );

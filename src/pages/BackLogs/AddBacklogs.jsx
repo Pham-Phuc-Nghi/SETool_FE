@@ -62,7 +62,7 @@ const AddBacklogs = ({ onClose, form }) => {
     if (file && values) {
       try {
         await addImage(file, values);
-        console.log("Image uploaded successfully!");
+        // console.log("Image uploaded successfully!");
       } catch (error) {
         console.error("Error uploading image:", error);
       }

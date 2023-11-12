@@ -93,7 +93,7 @@ export const createBacklogs = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Tạo task thất bại!");
+      return rejectWithValue("Creating task fail!");
     }
   }
 );
@@ -118,7 +118,7 @@ export const editBacklogs = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Edit task thất bại!");
+      return rejectWithValue("Editing task fail!");
     }
   }
 );
@@ -141,7 +141,7 @@ export const editAssignee = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Edit assignee thất bại!");
+      return rejectWithValue("Editing assignee fail!");
     }
   }
 );
@@ -159,7 +159,7 @@ export const deleteBacklogs = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Delete task thất bại!");
+      return rejectWithValue("Deleting task fail!");
     }
   }
 );

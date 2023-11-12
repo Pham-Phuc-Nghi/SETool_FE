@@ -270,9 +270,6 @@ const Dashboard = () => {
         // console.error("Error getting image:", error);
         return null;
       }
-    } else {
-      console.error("Please provide an ID to get the image.");
-      return null;
     }
   };
 
@@ -309,7 +306,6 @@ const Dashboard = () => {
       )}
     </Tooltip>
   ));
-  
 
   const getStatusName = (status) => {
     switch (status) {

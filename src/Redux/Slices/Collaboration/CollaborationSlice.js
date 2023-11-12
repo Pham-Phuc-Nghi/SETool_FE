@@ -176,7 +176,7 @@ export const editRole = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Edit role thất bại!");
+      return rejectWithValue("Editing role fail!");
     }
   }
 );
@@ -201,7 +201,7 @@ export const deleteMember = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Delete member thất bại!");
+      return rejectWithValue("Deleting member fail!");
     }
   }
 );

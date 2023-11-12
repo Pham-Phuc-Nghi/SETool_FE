@@ -1,41 +1,35 @@
 import "./login.css";
-import { Typography, Button, message } from "antd";
+import { Typography, Button, notification } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getAccessTokenSelector,
-  getUserNameSelector,
-} from "../../Redux/Selector";
+import { useDispatch } from "react-redux";
 import { verifyVsLogin } from "../../Redux/Slices/DangNhap/DangNhapSlice";
-import { useEffect } from "react";
-import { handleDangNhap } from "../../config/AxiosInstance";
 import { addImage } from "../../helper/uploadImage";
 import avatar from "../../assets/avatar.jpg";
+
 const VerifyEmail = () => {
   const dispatch = useDispatch();
   const nav = useNavigate();
   const { username, email, otp } = useParams();
 
-  const usernameCurrent = useSelector(getUserNameSelector);
-  const accessTokenCurrent = useSelector(getAccessTokenSelector);
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
+  };
 
-  useEffect(() => {
-    if (
-      accessTokenCurrent !== null &&
-      accessTokenCurrent !== "" &&
-      accessTokenCurrent !== undefined
-    ) {
-      handleDangNhap(accessTokenCurrent);
-      sessionStorage.setItem("name_current", usernameCurrent);
-    }
-  }, [usernameCurrent, accessTokenCurrent, dispatch]);
-
+  const openNotificationSuccess = (type, message) => {
+    notification.success({
+      message,
+      duration: 3,
+    });
+  };
 
   const handleClickSubmit = async () => {
     if (email !== null && otp !== null) {
-      const fileContent = await fetch(avatar).then(res => res.arrayBuffer()); 
+      const fileContent = await fetch(avatar).then((res) => res.arrayBuffer());
       const avatarFile = new File([fileContent], "avatar.jpg", {
         type: "image/jpg",
       });
@@ -44,12 +38,18 @@ const VerifyEmail = () => {
         .unwrap()
         .then(async (result) => {
           const { messageSuccess, userID } = result;
-          message.success(messageSuccess);
+          if (messageSuccess) {
+            openNotificationSuccess("success: ", messageSuccess);
+          }
           await addImage(avatarFile, userID);
           nav("/login");
         })
         .catch((err) => {
-          message.error(err);
+          err.forEach((errorMessage, index) => {
+            if (errorMessage) {
+              openNotification("error " + (index + 1) + ": ", errorMessage);
+            }
+          });
         });
     }
   };

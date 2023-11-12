@@ -184,9 +184,6 @@ const TaskDetail = ({ idTask }) => {
         console.error("Error getting image:", error);
         setImageUrl(null);
       }
-    } else {
-      console.error("Please provide an ID to get the image.");
-      setImageUrl(null);
     }
   };
 

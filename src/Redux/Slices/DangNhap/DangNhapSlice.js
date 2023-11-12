@@ -99,7 +99,7 @@ export const create = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Đăng ký không thành công!");
+      return rejectWithValue("Signing up fail!");
     }
   }
 );
@@ -121,7 +121,7 @@ export const changePassword = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Đăng ký không thành công!");
+      return rejectWithValue("Changing password fail!");
     }
   }
 );
@@ -140,7 +140,7 @@ export const forgotPassword = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Submit không thành công!");
+      return rejectWithValue("Submiting forgot password fail!");
     }
   }
 );

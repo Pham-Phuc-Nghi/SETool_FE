@@ -218,9 +218,7 @@ const UserAvatar = () => {
       } catch (error) {
         console.error("Error uploading image:", error);
       }
-    } else {
-      console.error("Please select a file and provide an ID.");
-    }
+    } 
   };
 
   const dispatch = useDispatch();
@@ -234,9 +232,7 @@ const UserAvatar = () => {
       } catch (error) {
         console.error("Error getting image:", error);
       }
-    } else {
-      console.error("Please provide an ID to get the image.");
-    }
+    } 
   };
 
   const changeUserInfoContent = (

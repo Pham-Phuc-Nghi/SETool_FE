@@ -68,13 +68,11 @@ const EditBacklogs = ({ onClose, form1 }) => {
     if (file && values) {
       try {
         await addImage(file, values);
-        console.log("Image uploaded successfully!");
+        // console.log("Image uploaded successfully!");
       } catch (error) {
         console.error("Error uploading image:", error);
       }
-    } else {
-      console.error("Please select a file and provide an ID.");
-    }
+    } 
   };
 
   const getImageEdit = async () => {

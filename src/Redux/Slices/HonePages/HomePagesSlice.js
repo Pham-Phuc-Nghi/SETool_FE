@@ -46,14 +46,14 @@ export const createProject = createAsyncThunk(
         projectDayPerSprint,
       });
       if (res.status === 200) {
-        return fulfillWithValue("Đã tạo project thành công");
+        return fulfillWithValue("Projects has been created");
       }
       if (res.response?.status === 400) {
         const err = res.response.data.error;
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Tạo project thất bại!");
+      return rejectWithValue("Creating project fail!");
     }
   }
 );
