@@ -87,13 +87,22 @@ const Login = () => {
     });
   };
 
+  const openNotificationSuccess = (type, message) => {
+    notification.success({
+      message,
+      duration: 3,
+    });
+  };
+  
   //sign up
   const handleSignUp = (values) => {
     setLoading(true);
     dispatch(create(values))
       .unwrap()
       .then((result) => {
-        message.success(result, 1.5);
+        if (result) {
+          openNotificationSuccess("success: ", result);
+        }
         setCurrentForm("userLogin");
         form2.resetFields();
         setLoading(false);

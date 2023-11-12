@@ -32,6 +32,7 @@ const VerifyEmail = () => {
     }
   }, [usernameCurrent, accessTokenCurrent, dispatch]);
 
+
   const handleClickSubmit = async () => {
     if (email !== null && otp !== null) {
       const fileContent = await fetch(avatar).then(res => res.arrayBuffer()); 
@@ -45,7 +46,7 @@ const VerifyEmail = () => {
           const { messageSuccess, userID } = result;
           message.success(messageSuccess);
           await addImage(avatarFile, userID);
-          nav("/homepage");
+          nav("/login");
         })
         .catch((err) => {
           message.error(err);
