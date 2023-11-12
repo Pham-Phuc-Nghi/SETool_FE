@@ -24,12 +24,11 @@ const Invite = () => {
         nav("/login");
       })
       .catch((error) => {
-        console.error("Error fetching data: ", error);
+        message.success(error, 1.5);
       });
   }
 
   const handleDeny = () => {
-    const projectID = sessionStorage.getItem("current_project");
     const data = {
       projectID: projectID,
       inviterID: guestID,
@@ -42,7 +41,7 @@ const Invite = () => {
         nav("/login");
       })
       .catch((error) => {
-        console.error("Error fetching data: ", error);
+        message.success(error, 1.5);
       });
   }
 
