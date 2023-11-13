@@ -1,5 +1,5 @@
 import "./login.css";
-import { Typography, Button, Form, Input, message, notification } from "antd";
+import { Typography, Button, Form, Input, notification } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
 import { useNavigate, useParams } from "react-router-dom";
