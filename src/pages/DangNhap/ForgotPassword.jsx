@@ -15,18 +15,20 @@ const ForgotPassword = () => {
     const data = {
       email: email,
       otp: otp,
-      password: value.newPassword
+      password: value.newPassword,
+    };
+    if (data) {
+      dispatch(resetPassword(data))
+        .unwrap()
+        .then((result) => {
+          message.success(result, 1.5);
+          nav("/login");
+        })
+        .catch((error) => {
+          message.error(error, 1.5);
+        });
     }
-    dispatch(resetPassword(data))
-      .unwrap()
-      .then((result) => {
-        message.success(result, 1.5);
-        nav("/login");
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-      });
-  }
+  };
   const [form] = Form.useForm();
 
   const layout = {
@@ -85,7 +87,9 @@ const ForgotPassword = () => {
               <Input.Password allowClear placeholder="Input New Password" />
             </Form.Item>
             <Form.Item
-              label={<Text style={{ color: "white" }}>Confirm new password </Text>}
+              label={
+                <Text style={{ color: "white" }}>Confirm new password </Text>
+              }
               name="confirmPassword"
               rules={[
                 {

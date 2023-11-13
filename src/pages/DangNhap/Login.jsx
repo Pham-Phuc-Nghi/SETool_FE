@@ -93,7 +93,7 @@ const Login = () => {
       duration: 3,
     });
   };
-  
+
   //sign up
   const handleSignUp = (values) => {
     setLoading(true);
@@ -130,11 +130,9 @@ const Login = () => {
         setLoading(false);
       })
       .catch((error) => {
-        error.forEach((errorMessage, index) => {
-          if (errorMessage) {
-            openNotification("error " + (index + 1) + ": ", errorMessage);
-          }
-        });
+        if (error) {
+          openNotification("error: ", error);
+        }
         setLoading(false);
       });
   };

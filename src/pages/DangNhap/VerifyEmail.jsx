@@ -44,12 +44,10 @@ const VerifyEmail = () => {
           await addImage(avatarFile, userID);
           nav("/login");
         })
-        .catch((err) => {
-          err.forEach((errorMessage, index) => {
-            if (errorMessage) {
-              openNotification("error " + (index + 1) + ": ", errorMessage);
-            }
-          });
+        .catch((error) => {
+          if (error) {
+            openNotification("error: ", error);
+          }
         });
     }
   };
