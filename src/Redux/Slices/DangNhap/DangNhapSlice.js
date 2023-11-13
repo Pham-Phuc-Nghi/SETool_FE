@@ -143,9 +143,9 @@ export const resetPassword = createAsyncThunk(
   "dang_nhap/resetPassword",
   async (values, { rejectWithValue, fulfillWithValue }) => {
     try {
-      let { otp, password } = values;
+      let { email, otp, password } = values;
       console.log("Aloo: ", otp, password)
-      const res = await postRequest(`/User/reset-password`, {
+      const res = await postRequest(`/User/reset-password/${email}`, {
         otp,
         password,
       });

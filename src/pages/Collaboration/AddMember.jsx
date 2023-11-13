@@ -50,6 +50,7 @@ const AddMember = ({ form, form2, onClose }) => {
       })
       .catch((err) => {
         message.error(err);
+        dispatch(setShowForm2(false));
       });
   };
 

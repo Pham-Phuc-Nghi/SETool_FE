@@ -6,15 +6,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetPassword } from "../../Redux/Slices/DangNhap/DangNhapSlice";
 
-const FotgotPassword = () => {
+const ForgotPassword = () => {
   const dispatch = useDispatch();
   const nav = useNavigate();
   const { email, otp } = useParams();
-  console.log("Param: ", email, otp);
 
   const handleSubmit = (value) => {
-    console.log("🚀 ~ file: FotgotPassword.jsx:16 ~ handleSubmit ~ value:", value.newPassword)
     const data = {
+      email: email,
       otp: otp,
       password: value.newPassword
     }
@@ -55,7 +54,7 @@ const FotgotPassword = () => {
           }}
           src={setImage}
         />
-        <Text style={{ color: "white", fontSize: 40 }}>RESET PASSSWORD</Text>
+        <Text style={{ color: "white", fontSize: 40 }}>RESET PASSWORD</Text>
         <div
           style={{
             display: "flex",
@@ -128,4 +127,4 @@ const FotgotPassword = () => {
   );
 };
 
-export default FotgotPassword;
+export default ForgotPassword;
