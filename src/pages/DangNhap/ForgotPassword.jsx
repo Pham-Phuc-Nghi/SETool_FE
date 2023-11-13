@@ -11,6 +11,20 @@ const ForgotPassword = () => {
   const nav = useNavigate();
   const { email, otp } = useParams();
 
+  const openNotification = (type, message) => {
+    notification.error({
+      message,
+      duration: 3,
+    });
+  };
+
+  const openNotificationSuccess = (type, message) => {
+    notification.success({
+      message,
+      duration: 3,
+    });
+  };
+
   const handleSubmit = (value) => {
     const data = {
       email: email,
@@ -21,14 +35,19 @@ const ForgotPassword = () => {
       dispatch(resetPassword(data))
         .unwrap()
         .then((result) => {
-          notification.success(result, 1.5);
+          if (result) {
+            openNotificationSuccess("success: ", result);
+          }
           nav("/login");
         })
         .catch((error) => {
-          notification.error(error, 1.5);
+          if (error) {
+            openNotification("error: ", error);
+          }
         });
     }
   };
+
   const [form] = Form.useForm();
 
   const layout = {
