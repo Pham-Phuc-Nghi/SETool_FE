@@ -5,7 +5,7 @@ import setImage from "../../assets/789.png";
 // import { useNavigate, useParams } from "react-router-dom";
 // import { useDispatch } from "react-redux";
 // import { acceptOrDenyInvite } from "../../Redux/Slices/Collaboration/CollaborationSlice";
-const FotgotPassword = () => {
+const ForgotPassword = () => {
   //   const dispatch = useDispatch();
   //   const nav = useNavigate();
   //   const { projectID, inviter, inviterEmail, guest, guestID } = useParams();
@@ -145,4 +145,4 @@ const FotgotPassword = () => {
   );
 };
 
-export default FotgotPassword;
+export default ForgotPassword;
