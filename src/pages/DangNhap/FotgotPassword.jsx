@@ -1,50 +1,33 @@
 import "./login.css";
-import { Typography, Button, Form, Input } from "antd";
+import { Typography, Button, Form, Input, message } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
-// import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { acceptOrDenyInvite } from "../../Redux/Slices/Collaboration/CollaborationSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetPassword } from "../../Redux/Slices/DangNhap/DangNhapSlice";
+
 const FotgotPassword = () => {
-  //   const dispatch = useDispatch();
-  //   const nav = useNavigate();
-  //   const { projectID, inviter, inviterEmail, guest, guestID } = useParams();
-  //   console.log("Param: ", inviter, inviterEmail, guest, guestID);
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const { email, otp } = useParams();
+  console.log("Param: ", email, otp);
 
-  //   const handleJoin = () => {
-  //     const data = {
-  //       projectID: projectID,
-  //       inviterID: guestID,
-  //       status: 1
-  //     }
-  //     dispatch(acceptOrDenyInvite(data))
-  //       .unwrap()
-  //       .then((result) => {
-  //         message.success(result, 1.5);
-  //         nav("/login");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data: ", error);
-  //       });
-  //   }
-
-  //   const handleDeny = () => {
-  //     const projectID = sessionStorage.getItem("current_project");
-  //     const data = {
-  //       projectID: projectID,
-  //       inviterID: guestID,
-  //       status: 2
-  //     }
-  //     dispatch(acceptOrDenyInvite(data))
-  //       .unwrap()
-  //       .then((result) => {
-  //         message.success(result, 1.5);
-  //         nav("/login");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data: ", error);
-  //       });
-  //   }
+  const handleSubmit = (value) => {
+    console.log("🚀 ~ file: FotgotPassword.jsx:16 ~ handleSubmit ~ value:", value.newPassword)
+    const data = {
+      otp: otp,
+      password: value.newPassword
+    }
+    dispatch(resetPassword(data))
+      .unwrap()
+      .then((result) => {
+        message.success(result, 1.5);
+        nav("/login");
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }
   const [form] = Form.useForm();
 
   const layout = {
@@ -83,9 +66,9 @@ const FotgotPassword = () => {
             marginBottom: 40,
           }}
         >
-          <Form {...layout} form={form}>
+          <Form {...layout} form={form} onFinish={handleSubmit}>
             <Form.Item
-              label={<Text style={{color:"white"}}>New Password </Text>}
+              label={<Text style={{ color: "white" }}>New Password </Text>}
               name="newPassword"
               rules={[
                 {
@@ -103,7 +86,7 @@ const FotgotPassword = () => {
               <Input.Password allowClear placeholder="Input New Password" />
             </Form.Item>
             <Form.Item
-              label={<Text style={{color:"white"}}>Confirm new password </Text>}
+              label={<Text style={{ color: "white" }}>Confirm new password </Text>}
               name="confirmPassword"
               rules={[
                 {

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postRequest } from "../../../Services/HttpMethods";
-import { handleDangNhap } from "../../../config/AxiosInstance";
 
 const initialState = {
   id: "",
@@ -8,7 +7,6 @@ const initialState = {
   email: "",
   accessToken: "",
   emailConfirmOtp: null,
-  //imageFile: "",
 };
 
 export const DangNhapSlice = createSlice({
@@ -20,14 +18,12 @@ export const DangNhapSlice = createSlice({
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
-      //state.imageFile = action.payload.userInfor.imageFile;
     });
     builder.addCase(verifyVsLogin.fulfilled, (state, action) => {
       state.accessToken = action.payload.accessToken;
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
-      //state.imageFile = action.payload.userInfor.imageFile;
     });
   },
 });
@@ -42,10 +38,8 @@ export const verifyVsLogin = createAsyncThunk(
       );
 
       if (res.status === 200) {
-        handleDangNhap(res.data.accessToken);
-        sessionStorage.setItem("name_current", res.data.name);
         const userID = res.data.id;
-        return fulfillWithValue( { messageSuccess:res.data.message, userID });
+        return fulfillWithValue({ messageSuccess: res.data.message, userID });
       } else {
         return rejectWithValue(res.response.data.message);
       }
@@ -140,7 +134,31 @@ export const forgotPassword = createAsyncThunk(
         return rejectWithValue(err);
       }
     } catch (error) {
-      return rejectWithValue("Submiting forgot password fail!");
+      return rejectWithValue("Submitting forgot password fail!");
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "dang_nhap/resetPassword",
+  async (values, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      let { otp, password } = values;
+      console.log("Aloo: ", otp, password)
+      const res = await postRequest(`/User/reset-password`, {
+        otp,
+        password,
+      });
+
+      if (res.status === 200) {
+        return fulfillWithValue(res.data.message);
+      }
+      if (res.response?.status === 400) {
+        const err = res.response.data.error;
+        return rejectWithValue(err);
+      }
+    } catch (error) {
+      return rejectWithValue("Submitting forgot password fail!");
     }
   }
 );
