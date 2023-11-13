@@ -1,5 +1,5 @@
 import "./login.css";
-import { Typography, Button, Form, Input, message } from "antd";
+import { Typography, Button, Form, Input, message, notification } from "antd";
 const { Text } = Typography;
 import setImage from "../../assets/789.png";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,11 +21,11 @@ const ForgotPassword = () => {
       dispatch(resetPassword(data))
         .unwrap()
         .then((result) => {
-          message.success(result, 1.5);
+          notification.success(result, 1.5);
           nav("/login");
         })
         .catch((error) => {
-          message.error(error, 1.5);
+          notification.error(error, 1.5);
         });
     }
   };

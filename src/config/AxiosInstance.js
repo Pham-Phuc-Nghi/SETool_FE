@@ -3,8 +3,8 @@ import axios from "axios";
 let authToken = sessionStorage.getItem('AccessToken');
 
 const AxiosInstance = axios.create({
-    baseURL: "https://localhost:7254/api/",
-    //baseURL: "https://besetool.azurewebsites.net/api/",
+    //baseURL: "https://localhost:7254/api/",
+    baseURL: "https://besetool.azurewebsites.net/api/",
     headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
