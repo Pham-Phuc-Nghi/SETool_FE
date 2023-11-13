@@ -80,8 +80,8 @@ const VerifyEmail = () => {
           }}
         >
           <Text style={{ color: "white", fontSize: 20, marginBottom: 30 }}>
-            Hello
-            <Text style={{ color: "#BEADFA", fontSize: 20 }}>{username}</Text>,
+          Hello{" "}
+            <Text style={{ color: "#BEADFA", fontSize: 20 , marginLeft: 10 }}> {username}</Text>,
           </Text>
           <Text
             style={{
@@ -103,7 +103,7 @@ const VerifyEmail = () => {
             style={{ color: "white", margin: 26, marginTop: 20 }}
             onClick={handleClickSubmit}
           >
-            Click to verify - OTP: {otp}
+            Click to verify
           </Button>
         </div>
       </div>
